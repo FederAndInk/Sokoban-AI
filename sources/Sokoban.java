@@ -25,12 +25,11 @@
  *          38401 Saint Martin d'Hères
  */
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 
 public class Sokoban {
     public static void main(String [] args) {
-        InputStream in=null;
+        InputStream in;
         in = ClassLoader.getSystemClassLoader().getResourceAsStream("Niveaux/Original.txt");
         if (in == null) {
             System.err.println("ERREUR : impossible de trouver le fichier de niveaux");
@@ -38,9 +37,11 @@ public class Sokoban {
         }
         
         LecteurNiveaux l = new LecteurNiveaux(in);
-        boolean aProchain = l.lisProchainNiveau();
-        while (aProchain) {
-            l.lisProchainNiveau();
+        Niveau n = l.lisProchainNiveau();
+        while (n != null) {
+            System.out.println("Niveau lu :");
+            System.out.print(n);
+            n = l.lisProchainNiveau();
         }
     }
 }

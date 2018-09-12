@@ -35,38 +35,46 @@ public class LecteurNiveaux {
         s = new Scanner(in);
     }
 
-    boolean estLigneVide(String s) {
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == ';') {
-                return true;
-            }
-            if (!Character.isWhitespace(s.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    boolean lisProchainNiveau() {
-        int i = -1;
-        String ligne = s.nextLine();
-        while (estLigneVide(ligne)) {
+    String lireLigne() {
+        String ligne = null;
+        try {
             ligne = s.nextLine();
-        }
-        i = 0;
-        while (!estLigneVide(ligne)) {
-            for (int j = 0; j < ligne.length(); j++) {
-                char c = ligne.charAt(j);
-                switch (c) {
-                    case ';':
-                        j = ligne.length();
-                        break;
-                    default:
-                        System.err.println("Caractère inconnu : " + c);
+            // Nettoyage des séparateurs de fin et commentaires
+            int dernier = -1;
+            for (int i = 0; i < ligne.length(); i++) {
+                char c = ligne.charAt(i);
+                if (!Character.isWhitespace(c) && (c != ';')) {
+                    dernier = i;
+                }
+                if (c == ';') {
+                    i = ligne.length();
                 }
             }
-            ligne = s.nextLine();
+            return ligne.substring(0, dernier + 1);
+        } catch (Exception e) {
         }
-        return i>=0;
+        return ligne;
+    }
+
+    Niveau lisProchainNiveau() {
+        String ligne = lireLigne();
+        while (ligne.length() == 0) {
+            ligne = lireLigne();
+            if (ligne == null) {
+                return null;
+            }
+        }
+        int i = 0;
+        int jMax = 0;
+        SequenceChaines seq = new SequenceChainesListe();
+        while (ligne.length() > 0) {
+            if (ligne.length() > jMax) {
+                jMax = ligne.length();
+            }
+            seq.insereQueue(ligne);
+            ligne = lireLigne();
+            i++;
+        }
+        return new Niveau(i, jMax, seq);
     }
 }
