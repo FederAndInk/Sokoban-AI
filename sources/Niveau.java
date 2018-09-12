@@ -87,7 +87,11 @@ public class Niveau {
         int capacite = lignes() * (colonnes() + 1);
         StringBuilder result = new StringBuilder(capacite);
         for (int i = 0; i < lignes(); i++) {
-            for (int j = 0; j < colonnes(); j++) {
+            int dernier = 0;
+            for (int j=0; j<colonnes(); j++)
+                if (cases[i][j] != VIDE)
+                    dernier = j;
+            for (int j = 0; j <= dernier; j++) {
                 char c;
                 switch (cases[i][j]) {
                     case VIDE:
