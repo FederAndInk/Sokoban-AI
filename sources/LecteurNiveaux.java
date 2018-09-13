@@ -66,7 +66,7 @@ public class LecteurNiveaux {
         }
         int i = 0;
         int jMax = 0;
-        SequenceChaines seq = new SequenceChainesListe();
+        SequenceChaines seq = new SequenceChainesTableau();
         while (ligne.length() > 0) {
             if (ligne.length() > jMax) {
                 jMax = ligne.length();

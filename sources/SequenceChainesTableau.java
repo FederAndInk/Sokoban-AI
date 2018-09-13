@@ -41,9 +41,11 @@ class SequenceChainesTableau implements SequenceChaines {
         
         if (nouvelleCapacite > elements.length) {
             nouveau = new String[nouvelleCapacite];
-            for (int i = 0; i<taille; i++)
+            int aCopier = taille;
+            for (int i = 0; i<aCopier; i++)
                 nouveau[i] = extraitTete();
             debut = 0;
+            taille = aCopier;
             elements = nouveau;
         }
     }
