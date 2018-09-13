@@ -30,6 +30,7 @@ class SequenceChainesListe implements SequenceChaines {
 
     // Les méthodes implémentant l'interface
     // doivent être publiques
+    @Override
     public void insereQueue(String element) {
         MaillonChaines m = new MaillonChaines(element, null);
         if (queue == null) {
@@ -40,9 +41,10 @@ class SequenceChainesListe implements SequenceChaines {
         }
     }
 
+    @Override
     public String extraitTete() {
         String resultat;
-        // Exception si sommet == null (pile vide)
+        // Exception si tete == null (sequence vide)
         resultat = tete.element;
         tete = tete.suivant;
         if (tete == null) {
@@ -51,6 +53,7 @@ class SequenceChainesListe implements SequenceChaines {
         return resultat;
     }
 
+    @Override
     public boolean estVide() {
         return tete == null;
     }
