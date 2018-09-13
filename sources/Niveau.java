@@ -121,10 +121,8 @@ public class Niveau {
                                 i + ", " + j + ") : " + cases[i][j]);
                 }
                 result.append(c);
-                //result.setCharAt(i * (colonnes() + 1) + j, c);
             }
             result.append('\n');
-            //result.setCharAt(i*(colonnes()+1)+colonnes(), '\n');
         }
         return result.toString();
     }
