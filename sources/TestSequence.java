@@ -31,30 +31,33 @@ public class TestSequence {
     public static void main(String [] args) {
         int min=0, max=0, count=0;
         Random r = new Random();
-        Sequence<Integer> seq = new SequenceListe<>();
-        // Changer les construction pour tester l'autre sequence
-        //SequenceChaines seq = new SequenceChainesTableau();
+        Sequence<Integer> [] seq;
+        seq = new Sequence[2];
+        seq[0] = new SequenceListe<>();
+        seq[1] = new SequenceTableau<>();
         
-        assert(seq.estVide());
+        for (int k=0; k<seq.length; k++)
+            assert(seq[k].estVide());
         for (int i=0; i<10000; i++) {
             if (r.nextBoolean()) {
-                // Superflu (java s'en occupe en cas d'ommission)
-                Integer s = new Integer(max);
+                System.out.println("Insertion de " + max);
+                for (int k=0; k<seq.length; k++) {
+                    seq[k].insereQueue(max);
+                    assert(!seq[k].estVide());
+                }
                 max++;
-                System.out.println("Insertion de " + s);
-                seq.insereQueue(s);
                 count++;
-                assert(!seq.estVide());
             } else {
                 if (count > 0) {
-                    Integer s = seq.extraitTete();
-                    System.out.println("Extraction de " + s);
-                    // Superflu
-                    int val = s.intValue();
-                    assert(val == min);
-                    min++;
+                    Integer s = null;
                     count--;
-                    assert((count == 0) == (seq.estVide()));
+                    for (int k=0; k<seq.length; k++) {
+                        s = seq[k].extraitTete();
+                        assert(s == min);
+                        assert((count == 0) == (seq[k].estVide()));
+                    }
+                    System.out.println("Extraction de " + s);
+                    min++;
                 }
             }
         }
