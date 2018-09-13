@@ -26,7 +26,9 @@
  */
 
 interface SequenceChaines {
-	void insereQueue(String element);
-	String extraitTete();
-	boolean estVide();
+    void insereQueue(String element);
+
+    String extraitTete();
+
+    boolean estVide();
 }
