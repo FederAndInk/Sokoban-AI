@@ -25,36 +25,14 @@
  *          38401 Saint Martin d'Hères
  */
 
-class SequenceChainesListe implements SequenceChaines {
-    MaillonChaines tete, queue;
+package Structures;
 
-    // Les méthodes implémentant l'interface
-    // doivent être publiques
-    @Override
-    public void insereQueue(String element) {
-        MaillonChaines m = new MaillonChaines(element, null);
-        if (queue == null) {
-            tete = queue = m;
-        } else {
-            queue.suivant = m;
-            queue = m;
-        }
-    }
+class Maillon<E> {
+    E element;
+    Maillon<E> suivant;
 
-    @Override
-    public String extraitTete() {
-        String resultat;
-        // Exception si tete == null (sequence vide)
-        resultat = tete.element;
-        tete = tete.suivant;
-        if (tete == null) {
-            queue = null;
-        }
-        return resultat;
-    }
-
-    @Override
-    public boolean estVide() {
-        return tete == null;
+    Maillon(E element, Maillon<E> suivant) {
+        this.element = element;
+        this.suivant = suivant;
     }
 }

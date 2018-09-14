@@ -25,6 +25,9 @@
  *          38401 Saint Martin d'Hères
  */
 
+import Structures.SequenceTableau;
+import Structures.Sequence;
+import Structures.SequenceListe;
 import java.util.Random;
 
 public class TestSequence {

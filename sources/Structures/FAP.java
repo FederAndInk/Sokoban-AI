@@ -25,12 +25,12 @@
  *          38401 Saint Martin d'Hères
  */
 
-class MaillonChaines {
-    String element;
-    MaillonChaines suivant;
+package Structures;
 
-    MaillonChaines(String element, MaillonChaines suivant) {
-        this.element = element;
-        this.suivant = suivant;
-    }
+public interface FAP<E extends Comparable<E>> {
+    void insere(E element);
+    
+    E extrait();
+    
+    boolean estVide();
 }

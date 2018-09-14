@@ -25,6 +25,8 @@
  *          38401 Saint Martin d'Hères
  */
 
+import Structures.FAPListe;
+import Structures.FAP;
 import java.util.Random;
 
 public class TestFAP {
