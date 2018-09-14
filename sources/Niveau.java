@@ -83,6 +83,7 @@ public class Niveau {
         return cases[0].length;
     }
 
+    @Override
     public String toString() {
         int capacite = lignes() * (colonnes() + 1);
         StringBuilder result = new StringBuilder(capacite);
