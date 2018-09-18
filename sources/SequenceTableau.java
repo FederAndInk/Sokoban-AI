@@ -71,4 +71,9 @@ class SequenceTableau<E> implements Sequence<E> {
     public boolean estVide() {
         return taille == 0;
     }
+
+    @Override
+    public Iterateur<E> iterateur() {
+        return new IterateurSequenceTableau<>(this);
+    }
 }

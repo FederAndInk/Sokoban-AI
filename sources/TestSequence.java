@@ -28,22 +28,32 @@
 import java.util.Random;
 
 public class TestSequence {
-    public static void main(String [] args) {
-        int min=0, max=0, count=0;
+    public static void afficheSequence(Sequence<Integer> s) {
+        System.out.print("Sequence : ");
+        Iterateur<Integer> it = s.iterateur();
+        while (it.aProchain()) {
+            Integer i = it.prochain();
+            System.out.print(i + " ");
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        int min = 0, max = 0, count = 0;
         Random r = new Random();
-        Sequence<Integer> [] seq;
+        Sequence<Integer>[] seq;
         seq = new Sequence[2];
         seq[0] = new SequenceListe<>();
         seq[1] = new SequenceTableau<>();
-        
-        for (int k=0; k<seq.length; k++)
-            assert(seq[k].estVide());
-        for (int i=0; i<10000; i++) {
+        for (int k = 0; k < seq.length; k++) {
+            assert (seq[k].estVide());
+        }
+        for (int i = 0; i < 100; i++) {
             if (r.nextBoolean()) {
                 System.out.println("Insertion de " + max);
-                for (int k=0; k<seq.length; k++) {
+                for (int k = 0; k < seq.length; k++) {
                     seq[k].insereQueue(max);
-                    assert(!seq[k].estVide());
+                    assert (!seq[k].estVide());
                 }
                 max++;
                 count++;
@@ -51,15 +61,17 @@ public class TestSequence {
                 if (count > 0) {
                     Integer s = null;
                     count--;
-                    for (int k=0; k<seq.length; k++) {
+                    for (int k = 0; k < seq.length; k++) {
                         s = seq[k].extraitTete();
-                        assert(s == min);
-                        assert((count == 0) == (seq[k].estVide()));
+                        assert (s == min);
+                        assert ((count == 0) == (seq[k].estVide()));
                     }
                     System.out.println("Extraction de " + s);
                     min++;
                 }
             }
+            for (int k = 0; k < seq.length; k++)
+                afficheSequence(seq[k]);
         }
     }
 }
