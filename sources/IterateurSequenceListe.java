@@ -65,6 +65,9 @@ class IterateurSequenceListe<T> implements Iterateur<T> {
             } else {
                 pprec.suivant = courant;
             }
+            if (prec == e.queue) {
+                e.queue = pprec;
+            }
             prec = pprec;
             last = false;
         } else {

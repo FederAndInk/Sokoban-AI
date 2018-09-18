@@ -62,7 +62,7 @@ class IterateurSequenceTableau<T> implements Iterateur<T> {
             // On recule
             position = last;
             // On décale les éléments qui suivent
-            int courant = rang+1;
+            int courant = rang;
             while (courant < e.taille) {
                 int next = (last + 1)%e.elements.length;
                 e.elements[last] = e.elements[next];
@@ -70,6 +70,7 @@ class IterateurSequenceTableau<T> implements Iterateur<T> {
                 courant++;
             }
             last = -1;
+            rang--;
             e.taille--;
         } else {
             throw new IllegalStateException();
