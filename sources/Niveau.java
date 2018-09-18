@@ -33,7 +33,7 @@ public class Niveau {
     static final int BUT = 8;
     int[][] cases;
 
-    Niveau(int lignes, int colonnes, SequenceChaines s) {
+    Niveau(int lignes, int colonnes, Sequence<String> s) {
         cases = new int[lignes][colonnes];
         for (int i = 0; i < lignes; i++) {
             for (int j = 0; j < colonnes; j++) {
