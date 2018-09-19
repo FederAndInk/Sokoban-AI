@@ -25,44 +25,81 @@
  *          38401 Saint Martin d'Hères
  */
 
+import Structures.Iterateur;
 import Structures.SequenceTableau;
 import Structures.Sequence;
 import Structures.SequenceListe;
 import java.util.Random;
 
 public class TestSequence {
-    public static void main(String [] args) {
-        int min=0, max=0, count=0;
+    static void afficheSequence(Sequence<Integer> s) {
+        System.out.print("Sequence : ");
+        Iterateur<Integer> it = s.iterateur();
+        while (it.aProchain()) {
+            Integer i = it.prochain();
+            System.out.print(i + " ");
+        }
+        System.out.println();
+    }
+
+    public static void main(String[] args) {
+        int max = 0, count = 0;
         Random r = new Random();
-        Sequence<Integer> [] seq;
+        Sequence<Integer>[] seq;
+        Iterateur<Integer>[] it;
         seq = new Sequence[2];
+        it = new Iterateur[2];
         seq[0] = new SequenceListe<>();
         seq[1] = new SequenceTableau<>();
-        
-        for (int k=0; k<seq.length; k++)
-            assert(seq[k].estVide());
-        for (int i=0; i<10000; i++) {
+        for (int k = 0; k < seq.length; k++) {
+            assert (seq[k].estVide());
+        }
+        for (int i = 0; i < 100; i++) {
             if (r.nextBoolean()) {
                 System.out.println("Insertion de " + max);
-                for (int k=0; k<seq.length; k++) {
+                for (int k = 0; k < seq.length; k++) {
                     seq[k].insereQueue(max);
-                    assert(!seq[k].estVide());
+                    assert (!seq[k].estVide());
                 }
                 max++;
                 count++;
             } else {
                 if (count > 0) {
                     Integer s = null;
-                    count--;
-                    for (int k=0; k<seq.length; k++) {
-                        s = seq[k].extraitTete();
-                        assert(s == min);
-                        assert((count == 0) == (seq[k].estVide()));
+                    if (r.nextBoolean()) {
+                        for (int k = 0; k < seq.length; k++) {
+                            s = seq[k].extraitTete();
+                            assert ((count == 0) == (seq[k].estVide()));
+                        }
+                        System.out.println("Extraction (tete)");
+                    } else {
+                        int position = r.nextInt(count);
+                        for (int k = 0; k < seq.length; k++) {
+                            it[k] = seq[k].iterateur();
+                        }
+                        for (int j=0; j<=position; j++) {
+                            s = null;
+                            for (int k = 0; k < seq.length; k++) {
+                                assert(it[k].aProchain());
+                                if (s == null)
+                                    s = it[k].prochain();
+                                else {
+                                    Integer elt = it[k].prochain();
+                                    assert(s == elt);
+                                }
+                            }
+                        }
+                        for (int k = 0; k < seq.length; k++)
+                            it[k].supprime();
+                        System.out.println("Extraction (random) en position " + position);                        
                     }
-                    System.out.println("Extraction de " + s);
-                    min++;
+                    count--;
+                    for (int k = 0; k < seq.length; k++)
+                        assert ((count == 0) == (seq[k].estVide()));
                 }
             }
+            for (int k = 0; k < seq.length; k++)
+                afficheSequence(seq[k]);
         }
     }
 }
