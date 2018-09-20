@@ -25,6 +25,7 @@
  *          38401 Saint Martin d'Hères
  */
 
+import Global.Configuration;
 import Structures.Sequence;
 import Structures.SequenceTableau;
 import java.io.InputStream;
@@ -68,7 +69,7 @@ public class LecteurNiveaux {
         }
         int i = 0;
         int jMax = 0;
-        Sequence<String> seq = new SequenceTableau<>();
+        Sequence<String> seq = Configuration.fabriqueSequence().nouvelle();
         while (ligne.length() > 0) {
             if (ligne.length() > jMax) {
                 jMax = ligne.length();

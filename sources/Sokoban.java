@@ -38,6 +38,8 @@ public class Sokoban {
             System.exit(1);
         }
         
+        Global.Configuration.logger().info("Niveaux trouvés");
+        
         LecteurNiveaux l = new LecteurNiveaux(in);
         Niveau n = l.lisProchainNiveau();
         while (n != null) {

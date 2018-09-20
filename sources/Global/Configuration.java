@@ -24,9 +24,86 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
-
 package Global;
 
-public class Configuration {
+import Structures.FabriqueSequence;
+import Structures.FabriqueSequenceListe;
+import Structures.FabriqueSequenceTableau;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+public class Configuration {
+    static Properties prop;
+    static FabriqueSequence fab;
+    static Logger logger;
+
+    static void chargerProprietes(Properties p, InputStream in, String nom) {
+        try {
+            p.load(in);
+            System.err.println("Fichier de configuration " + nom + " lu.");
+        } catch (IOException e) {
+            System.err.println("Impossible de charger " + nom);
+            System.err.println(e);
+            System.exit(1);
+        }
+    }
+
+    static Properties proprietes() {
+        Properties p;
+        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("defaut.cfg");
+        Properties defaut = new Properties();
+        chargerProprietes(defaut, in, "defaut.cfg");
+        String nom = System.getProperty("user.home") + "/.armoroides";
+        try {
+            in = new FileInputStream(nom);
+            p = new Properties(defaut);
+            chargerProprietes(p, in, nom);
+        } catch (FileNotFoundException e) {
+            p = defaut;
+        }
+        return p;
+    }
+
+    public static String lis(String nom) {
+        if (prop == null) {
+            prop = proprietes();
+        }
+        String value = prop.getProperty(nom);
+        if (value != null) {
+            return value;
+        } else {
+            throw new NoSuchElementException("Propriété " + nom + " manquante");
+        }
+    }
+
+    public static FabriqueSequence fabriqueSequence() {
+        if (fab == null) {
+            String type = lis("Sequence");
+            switch (type) {
+                case "Liste":
+                    fab = new FabriqueSequenceListe();
+                    break;
+                case "Tableau":
+                    fab = new FabriqueSequenceTableau();
+                    break;
+                default:
+                    throw new NoSuchElementException("Sequences de type " + type + " non supportées");
+            }
+        }
+        return fab;
+    }
+
+    public static Logger logger() {
+        if (logger == null) {
+            logger = Logger.getLogger("Sokoban.Logger");
+            logger.setLevel(Level.parse(lis("LogLevel")));
+        }
+        return logger;
+    }
 }
