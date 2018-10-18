@@ -27,7 +27,6 @@
 
 import Global.Configuration;
 import Structures.Sequence;
-import Structures.SequenceTableau;
 import java.io.InputStream;
 import java.util.Scanner;
 

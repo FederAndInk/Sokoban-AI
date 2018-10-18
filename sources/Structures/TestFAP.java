@@ -25,6 +25,8 @@
  *          38401 Saint Martin d'Hères
  */
 
+package Structures;
+
 import Structures.FAPListe;
 import Structures.FAP;
 import java.util.Random;

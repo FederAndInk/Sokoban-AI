@@ -25,6 +25,8 @@
  *          38401 Saint Martin d'Hères
  */
 
+package Structures;
+
 import Structures.Iterateur;
 import Structures.SequenceTableau;
 import Structures.Sequence;
