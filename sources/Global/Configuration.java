@@ -39,71 +39,78 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Configuration {
-    static Properties prop;
-    static FabriqueSequence fab;
-    static Logger logger;
+	static Properties prop;
+	static FabriqueSequence fab;
+	static Logger logger;
 
-    static void chargerProprietes(Properties p, InputStream in, String nom) {
-        try {
-            p.load(in);
-            System.err.println("Fichier de configuration " + nom + " lu.");
-        } catch (IOException e) {
-            System.err.println("Impossible de charger " + nom);
-            System.err.println(e);
-            System.exit(1);
-        }
-    }
+	public static InputStream charge(String nom) {
+		// La méthode de chargement suivante ne dépend pas du système de fichier et sera
+		// donc utilisable pour un .jar
+		// Attention, par contre, le fichier doit se trouver dans le CLASSPATH
+		return ClassLoader.getSystemClassLoader().getResourceAsStream(nom);
+	}
 
-    static Properties proprietes() {
-        Properties p;
-        InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("defaut.cfg");
-        Properties defaut = new Properties();
-        chargerProprietes(defaut, in, "defaut.cfg");
-        String nom = System.getProperty("user.home") + "/.armoroides";
-        try {
-            in = new FileInputStream(nom);
-            p = new Properties(defaut);
-            chargerProprietes(p, in, nom);
-        } catch (FileNotFoundException e) {
-            p = defaut;
-        }
-        return p;
-    }
+	static void chargerProprietes(Properties p, InputStream in, String nom) {
+		try {
+			p.load(in);
+			System.err.println("Fichier de configuration " + nom + " lu.");
+		} catch (IOException e) {
+			System.err.println("Impossible de charger " + nom);
+			System.err.println(e);
+			System.exit(1);
+		}
+	}
 
-    public static String lis(String nom) {
-        if (prop == null) {
-            prop = proprietes();
-        }
-        String value = prop.getProperty(nom);
-        if (value != null) {
-            return value;
-        } else {
-            throw new NoSuchElementException("Propriété " + nom + " manquante");
-        }
-    }
+	static Properties proprietes() {
+		Properties p;
+		InputStream in = charge("defaut.cfg");
+		Properties defaut = new Properties();
+		chargerProprietes(defaut, in, "defaut.cfg");
+		String nom = System.getProperty("user.home") + "/.armoroides";
+		try {
+			in = new FileInputStream(nom);
+			p = new Properties(defaut);
+			chargerProprietes(p, in, nom);
+		} catch (FileNotFoundException e) {
+			p = defaut;
+		}
+		return p;
+	}
 
-    public static FabriqueSequence fabriqueSequence() {
-        if (fab == null) {
-            String type = lis("Sequence");
-            switch (type) {
-                case "Liste":
-                    fab = new FabriqueSequenceListe();
-                    break;
-                case "Tableau":
-                    fab = new FabriqueSequenceTableau();
-                    break;
-                default:
-                    throw new NoSuchElementException("Sequences de type " + type + " non supportées");
-            }
-        }
-        return fab;
-    }
+	public static String lis(String nom) {
+		if (prop == null) {
+			prop = proprietes();
+		}
+		String value = prop.getProperty(nom);
+		if (value != null) {
+			return value;
+		} else {
+			throw new NoSuchElementException("Propriété " + nom + " manquante");
+		}
+	}
 
-    public static Logger logger() {
-        if (logger == null) {
-            logger = Logger.getLogger("Sokoban.Logger");
-            logger.setLevel(Level.parse(lis("LogLevel")));
-        }
-        return logger;
-    }
+	public static FabriqueSequence fabriqueSequence() {
+		if (fab == null) {
+			String type = lis("Sequence");
+			switch (type) {
+			case "Liste":
+				fab = new FabriqueSequenceListe();
+				break;
+			case "Tableau":
+				fab = new FabriqueSequenceTableau();
+				break;
+			default:
+				throw new NoSuchElementException("Sequences de type " + type + " non supportées");
+			}
+		}
+		return fab;
+	}
+
+	public static Logger logger() {
+		if (logger == null) {
+			logger = Logger.getLogger("Sokoban.Logger");
+			logger.setLevel(Level.parse(lis("LogLevel")));
+		}
+		return logger;
+	}
 }
