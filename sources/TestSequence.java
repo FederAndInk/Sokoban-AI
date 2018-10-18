@@ -42,7 +42,7 @@ public class TestSequence {
         int max = 0, count = 0;
         Random r = new Random();
         @SuppressWarnings("unchecked")
-        Sequence<Integer> [] seq = (Sequence<Integer> []) new Sequence[2];
+        Sequence<Integer> [] seq = new Sequence[2];
         @SuppressWarnings("unchecked")
 		Iterateur<Integer>[] it = new Iterateur[2];
         seq[0] = new SequenceListe<>();
