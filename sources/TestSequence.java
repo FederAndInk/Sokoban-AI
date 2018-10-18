@@ -28,11 +28,11 @@
 import java.util.Random;
 
 public class TestSequence {
-    public static void main(String [] args) {
+	public static void main(String [] args) {
         int min=0, max=0, count=0;
         Random r = new Random();
-        Sequence<Integer> [] seq;
-        seq = new Sequence[2];
+        @SuppressWarnings("unchecked")
+        Sequence<Integer> [] seq = (Sequence<Integer> []) new Sequence[2];
         seq[0] = new SequenceListe<>();
         seq[1] = new SequenceTableau<>();
         
