@@ -45,10 +45,10 @@ public class TestSequence {
     public static void main(String[] args) {
         int max = 0, count = 0;
         Random r = new Random();
-        Sequence<Integer>[] seq;
-        Iterateur<Integer>[] it;
-        seq = new Sequence[2];
-        it = new Iterateur[2];
+        @SuppressWarnings("unchecked")
+        Sequence<Integer> [] seq = new Sequence[2];
+        @SuppressWarnings("unchecked")
+		Iterateur<Integer>[] it = new Iterateur[2];
         seq[0] = new SequenceListe<>();
         seq[1] = new SequenceTableau<>();
         for (int k = 0; k < seq.length; k++) {
