@@ -32,7 +32,7 @@ public class TestSequence {
         int min=0, max=0, count=0;
         Random r = new Random();
         @SuppressWarnings("unchecked")
-        Sequence<Integer> [] seq = (Sequence<Integer> []) new Sequence[2];
+        Sequence<Integer> [] seq = new Sequence[2];
         seq[0] = new SequenceListe<>();
         seq[1] = new SequenceTableau<>();
         
