@@ -61,7 +61,8 @@ class SequenceTableau<E> implements Sequence<E> {
     @Override
     public E extraitTete() {
         // Resultat invalide si la sequence est vide
-        E resultat = (E) elements[debut];
+        @SuppressWarnings("unchecked")
+		E resultat = (E) elements[debut];
         debut = (debut+1)%elements.length;
         taille--;
         return resultat;
