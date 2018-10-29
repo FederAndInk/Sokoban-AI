@@ -26,14 +26,11 @@
  *          38401 Saint Martin d'Hères
  */
 
-import java.util.Random;
-
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -46,7 +43,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -113,8 +109,8 @@ public class InterfaceGraphique extends Application {
 		can.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				int l = (int) Math.floor(e.getY() / tileHeight);
-				int c = (int) Math.floor(e.getX() / tileWidth);
+				int l = (int) (e.getY() / tileHeight);
+				int c = (int) (e.getX() / tileWidth);
 				System.out.println("Vous avez cliqué en ligne " + l + ", colonne " + c);
 			}
 		});
