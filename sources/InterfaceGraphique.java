@@ -36,6 +36,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -48,76 +49,64 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class InterfaceGraphique extends Application {
-	int x, y;
+	static LecteurNiveaux l = null;
+	Image pousseur, mur, sol, caisse, but, caisseSurBut;
 	Canvas can;
-	Image img;
-	Random r;
+	Niveau n;
+	
+	private Image lisImage(String nom) {
+		String resource = Global.Configuration.lis(nom);
+		Global.Configuration.logger().info("Lecture de " + resource);
+		return new Image(Global.Configuration.charge(resource));
+	}
 
-	// Methode permettant de démarrer une application JavaFX
+	@Override
+	public void init() {
+		pousseur = lisImage("Pousseur");
+		mur = lisImage("Mur");
+		sol = lisImage("Sol");
+		caisse = lisImage("Caisse");
+		but = lisImage("But");
+		caisseSurBut = lisImage("CaisseSurBut");
+		n = l.lisProchainNiveau();
+	}
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		final boolean fullScreen = false;
-		r = new Random();
-
 		primaryStage.setTitle("Sokoban");
-		// Plein écran (éventuellement)
-		if (fullScreen) {
-			primaryStage.setFullScreen(true);
-		}
 
-		/*
-		 * Exemple simple :
-		 * - quelques composants graphiques, une zone de dessin et du texte
-		 * - quelques conteneurs pour contenir ces composants, des boites
-		 * - une fenêtre dont le contenu est déterminé par un conteneur (c'est forcément un conteneur)
-		 * On peut remarquer que l'agencement des composants graphiques est déterminé par les conteneurs,
-		 * qui sont toujours associé à un plan d'organisation sous jacent (Layout)
-		 */
 		can = new Canvas(600, 400);
-		// Un conteneur simple qui remplit toute la place disponible et centre son contenu
 		Pane vue = new Pane(can);
 
-		// Une boite horizontale avec 3 bouts de texte
-		HBox boiteTexte = new HBox();
-		boiteTexte.getChildren().add(new Label("<"));
-		Label label = new Label("Redimensionez !");
-		boiteTexte.getChildren().add(label);
-		boiteTexte.getChildren().add(new Label(">"));
+		VBox boiteTexte = new VBox();
+		boiteTexte.getChildren().add(new Label("Sokoban"));
+		Button prochain = new Button("Prochain");
+		boiteTexte.getChildren().add(prochain);
+		boiteTexte.getChildren().add(new Label("Copyright G. Huard, 2018"));
 		// Le label est centré dans l'espace qu'on lui alloue
-		label.setAlignment(Pos.CENTER);
+		//label.setAlignment(Pos.CENTER);
 		// S'il y a de la place, on donne tout au label
-		HBox.setHgrow(label, Priority.ALWAYS);
-		label.setMaxWidth(Double.MAX_VALUE);
+		//HBox.setHgrow(label, Priority.ALWAYS);
+		//label.setMaxWidth(Double.MAX_VALUE);
 
-		// Une boite verticale pour contenir tout le reste
-		VBox boiteScene = new VBox();
+		HBox boiteScene = new HBox();
 		boiteScene.getChildren().add(vue);
 		boiteScene.getChildren().add(boiteTexte);
-		// S'il y a de la place, on donne tout à la vue
 		VBox.setVgrow(vue, Priority.ALWAYS);
 
-		// Contenu de la fenêtre
 		Scene s = new Scene(boiteScene);
 		primaryStage.setScene(s);
-		// On affiche la fenêtre (donne leur taille aux objets graphiques)
 		primaryStage.show();
 
 		/*
-		 * On définit l'interaction :
-		 * - toute interaction est gérée par l'utilisateur via une fonction de réaction, EventHandler.handle
-		 * - tout composant peut réagir à l'interaction
-		 * EventHandler est générique, on la spécialise pour le type d'évènement qui nous intéresse
-		 */
-		// Clics de souris sur le label
 		label.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				System.out.println("Vous lisez le label d'un oeil circonspet...");
 			}
 		});
-
-		/* Le redimensionnement aussi est géré par un évènement
 		 */
+
 		ChangeListener<Number> ecouteurRedimensionnement = new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -140,10 +129,6 @@ public class InterfaceGraphique extends Application {
 			}
 		});
 
-		// On affiche la première image dans la fenêtre
-		img = new Image(Global.Configuration.charge("Images/Kenny/PNG/Retina/Player/player_03.png"));
-		x = (int) can.getWidth() / 2;
-		y = (int) can.getHeight() / 2;
 		trace();
 	}
 
@@ -153,18 +138,6 @@ public class InterfaceGraphique extends Application {
 		// On remplit en blanc pour voir le Canvas
 		gc.setFill(Color.WHITE);
 		gc.fillRect(0, 0, can.getWidth(), can.getHeight());
-		gc.drawImage(img, x - 50, y - 50, 100, 100);
-	}
-
-	// Teste si des coordonnées données sont dans l'image
-	boolean toucheBonhomme(double nX, double nY) {
-		return (Math.abs(nX - x) < 50) && (Math.abs(nY - y) < 50);
-	}
-
-	// Déplace l'image aléatoirement
-	void deplacementAleatoire() {
-		x = r.nextInt((int) can.getWidth());
-		y = r.nextInt((int) can.getHeight());
-		trace();
+		gc.drawImage(pousseur, 250, 150, 100, 100);
 	}
 }
