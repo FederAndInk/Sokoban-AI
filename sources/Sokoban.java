@@ -45,13 +45,5 @@ public class Sokoban {
 		LecteurNiveaux l = new LecteurNiveaux(in);
 		InterfaceGraphique.l = l;
 		InterfaceGraphique.launch(InterfaceGraphique.class, args);
-		/*
-		Niveau n = l.lisProchainNiveau();
-		while (n != null) {
-			System.out.println("Niveau lu :");
-			System.out.print(n);
-			n = l.lisProchainNiveau();
-		}
-		*/
 	}
 }

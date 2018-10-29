@@ -132,7 +132,8 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		can.widthProperty().addListener(ecouteurRedimensionnement);
 		can.heightProperty().addListener(ecouteurRedimensionnement);
 		// On redimensionne le canvas en même temps que son conteneur
-		// Remarque : à faire après le primaryStage.show() sinon le Pane 'vue' a une taille nulle qui est transmise au Canvas
+		// Remarque : à faire après le primaryStage.show() sinon le Pane 'vue' a une
+		// taille nulle qui est transmise au Canvas
 		can.widthProperty().bind(vue.widthProperty());
 		can.heightProperty().bind(vue.heightProperty());
 

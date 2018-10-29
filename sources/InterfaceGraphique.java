@@ -113,8 +113,8 @@ public class InterfaceGraphique extends Application {
 		can.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				int l = (int) Math.floor(e.getY()/tileHeight);
-				int c = (int) Math.floor(e.getX()/tileWidth);
+				int l = (int) Math.floor(e.getY() / tileHeight);
+				int c = (int) Math.floor(e.getX() / tileWidth);
 				System.out.println("Vous avez cliqué en ligne " + l + ", colonne " + c);
 			}
 		});
@@ -151,13 +151,13 @@ public class InterfaceGraphique extends Application {
 		tileHeight = height / n.lignes();
 		tileWidth = Math.min(tileWidth, tileHeight);
 		tileHeight = Math.min(tileWidth, tileHeight);
-	
+
 		GraphicsContext gc = can.getGraphicsContext2D();
 		gc.clearRect(0, 0, width, height);
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
-				double x = colonne*tileWidth;
-				double y = ligne*tileHeight;
+				double x = colonne * tileWidth;
+				double y = ligne * tileHeight;
 				gc.drawImage(sol, x, y, tileWidth, tileHeight);
 				if (n.estMur(ligne, colonne)) {
 					gc.drawImage(mur, x, y, tileWidth, tileHeight);
@@ -169,7 +169,7 @@ public class InterfaceGraphique extends Application {
 					} else {
 						if (n.aCaisse(ligne, colonne))
 							gc.drawImage(caisse, x, y, tileWidth, tileHeight);
-					}	
+					}
 					if (n.aPousseur(ligne, colonne))
 						gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
 				}
