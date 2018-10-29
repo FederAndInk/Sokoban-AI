@@ -32,7 +32,7 @@ public class Niveau {
 	static final int VIDE = 0;
 	static final int MUR = 1;
 	static final int POUSSEUR = 2;
-	static final int SAC = 4;
+	static final int CAISSE = 4;
 	static final int BUT = 8;
 	int[][] cases;
 
@@ -62,10 +62,10 @@ public class Niveau {
 					cases[i][j] = POUSSEUR | BUT;
 					break;
 				case '$':
-					cases[i][j] = SAC;
+					cases[i][j] = CAISSE;
 					break;
 				case '*':
-					cases[i][j] = SAC | BUT;
+					cases[i][j] = CAISSE | BUT;
 					break;
 				case '.':
 					cases[i][j] = BUT;
@@ -85,7 +85,7 @@ public class Niveau {
 	public int colonnes() {
 		return cases[0].length;
 	}
-	
+
 	public boolean estMur(int l, int c) {
 		return (cases[l][c] & MUR) != 0;
 	}
@@ -99,7 +99,7 @@ public class Niveau {
 	}
 
 	public boolean aSac(int l, int c) {
-		return (cases[l][c] & SAC) != 0;
+		return (cases[l][c] & CAISSE) != 0;
 	}
 
 	@Override
@@ -126,10 +126,10 @@ public class Niveau {
 				case POUSSEUR | BUT:
 					c = '+';
 					break;
-				case SAC:
+				case CAISSE:
 					c = '$';
 					break;
-				case SAC | BUT:
+				case CAISSE | BUT:
 					c = '*';
 					break;
 				case BUT:
