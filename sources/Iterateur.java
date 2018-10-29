@@ -26,7 +26,9 @@
  */
 
 public interface Iterateur<T> {
-    boolean aProchain();
-    T prochain();
-    void supprime();
+	boolean aProchain();
+
+	T prochain();
+
+	void supprime();
 }
