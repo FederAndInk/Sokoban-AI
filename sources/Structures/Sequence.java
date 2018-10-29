@@ -28,11 +28,11 @@
 package Structures;
 
 public interface Sequence<E> {
-    void insereQueue(E element);
+	void insereQueue(E element);
 
-    E extraitTete();
+	E extraitTete();
 
-    boolean estVide();
-    
-    Iterateur<E> iterateur();
+	boolean estVide();
+
+	Iterateur<E> iterateur();
 }

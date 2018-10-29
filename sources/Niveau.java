@@ -1,3 +1,4 @@
+
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -28,105 +29,104 @@
 import Structures.Sequence;
 
 public class Niveau {
-    static final int VIDE = 0;
-    static final int MUR = 1;
-    static final int POUSSEUR = 2;
-    static final int SAC = 4;
-    static final int BUT = 8;
-    int[][] cases;
+	static final int VIDE = 0;
+	static final int MUR = 1;
+	static final int POUSSEUR = 2;
+	static final int SAC = 4;
+	static final int BUT = 8;
+	int[][] cases;
 
-    Niveau(int lignes, int colonnes, Sequence<String> s) {
-        cases = new int[lignes][colonnes];
-        for (int i = 0; i < lignes; i++) {
-            for (int j = 0; j < colonnes; j++) {
-                cases[i][j] = VIDE;
-            }
-        }
-        int i = 0;
-        while (!s.estVide()) {
-            String l = s.extraitTete();
-            for (int j = 0; j < l.length(); j++) {
-                char c = l.charAt(j);
-                switch (c) {
-                    case ' ':
-                        cases[i][j] = VIDE;
-                        break;
-                    case '#':
-                        cases[i][j] = MUR;
-                        break;
-                    case '@':
-                        cases[i][j] = POUSSEUR;
-                        break;
-                    case '+':
-                        cases[i][j] = POUSSEUR | BUT;
-                        break;
-                    case '$':
-                        cases[i][j] = SAC;
-                        break;
-                    case '*':
-                        cases[i][j] = SAC | BUT;
-                        break;
-                    case '.':
-                        cases[i][j] = BUT;
-                        break;
-                    default:
-                        System.err.println("Caractère inconnu : " + c);
-                }
-            }
-            i++;
-        }
-    }
+	Niveau(int lignes, int colonnes, Sequence<String> s) {
+		cases = new int[lignes][colonnes];
+		for (int i = 0; i < lignes; i++) {
+			for (int j = 0; j < colonnes; j++) {
+				cases[i][j] = VIDE;
+			}
+		}
+		int i = 0;
+		while (!s.estVide()) {
+			String l = s.extraitTete();
+			for (int j = 0; j < l.length(); j++) {
+				char c = l.charAt(j);
+				switch (c) {
+				case ' ':
+					cases[i][j] = VIDE;
+					break;
+				case '#':
+					cases[i][j] = MUR;
+					break;
+				case '@':
+					cases[i][j] = POUSSEUR;
+					break;
+				case '+':
+					cases[i][j] = POUSSEUR | BUT;
+					break;
+				case '$':
+					cases[i][j] = SAC;
+					break;
+				case '*':
+					cases[i][j] = SAC | BUT;
+					break;
+				case '.':
+					cases[i][j] = BUT;
+					break;
+				default:
+					System.err.println("Caractère inconnu : " + c);
+				}
+			}
+			i++;
+		}
+	}
 
-    public int lignes() {
-        return cases.length;
-    }
+	public int lignes() {
+		return cases.length;
+	}
 
-    public int colonnes() {
-        return cases[0].length;
-    }
+	public int colonnes() {
+		return cases[0].length;
+	}
 
-    @Override
-    public String toString() {
-        int capacite = lignes() * (colonnes() + 1);
-        StringBuilder result = new StringBuilder(capacite);
-        for (int i = 0; i < lignes(); i++) {
-            int dernier = 0;
-            for (int j=0; j<colonnes(); j++)
-                if (cases[i][j] != VIDE)
-                    dernier = j;
-            for (int j = 0; j <= dernier; j++) {
-                char c;
-                switch (cases[i][j]) {
-                    case VIDE:
-                        c = ' ';
-                        break;
-                    case MUR:
-                        c = '#';
-                        break;
-                    case POUSSEUR:
-                        c = '@';
-                        break;
-                    case POUSSEUR | BUT:
-                        c = '+';
-                        break;
-                    case SAC:
-                        c = '$';
-                        break;
-                    case SAC | BUT:
-                        c = '*';
-                        break;
-                    case BUT:
-                        c = '.';
-                        break;
-                    default:
-                        c = ' ';
-                        System.err.println("Bug interne, case inconnue en (" +
-                                i + ", " + j + ") : " + cases[i][j]);
-                }
-                result.append(c);
-            }
-            result.append('\n');
-        }
-        return result.toString();
-    }
+	@Override
+	public String toString() {
+		int capacite = lignes() * (colonnes() + 1);
+		StringBuilder result = new StringBuilder(capacite);
+		for (int i = 0; i < lignes(); i++) {
+			int dernier = 0;
+			for (int j = 0; j < colonnes(); j++)
+				if (cases[i][j] != VIDE)
+					dernier = j;
+			for (int j = 0; j <= dernier; j++) {
+				char c;
+				switch (cases[i][j]) {
+				case VIDE:
+					c = ' ';
+					break;
+				case MUR:
+					c = '#';
+					break;
+				case POUSSEUR:
+					c = '@';
+					break;
+				case POUSSEUR | BUT:
+					c = '+';
+					break;
+				case SAC:
+					c = '$';
+					break;
+				case SAC | BUT:
+					c = '*';
+					break;
+				case BUT:
+					c = '.';
+					break;
+				default:
+					c = ' ';
+					System.err.println("Bug interne, case inconnue en (" + i + ", " + j + ") : " + cases[i][j]);
+				}
+				result.append(c);
+			}
+			result.append('\n');
+		}
+		return result.toString();
+	}
 }
