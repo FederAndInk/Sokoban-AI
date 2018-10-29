@@ -53,10 +53,10 @@ public class Configuration {
 	static void chargerProprietes(Properties p, InputStream in, String nom) {
 		try {
 			p.load(in);
-			System.err.println("Fichier de configuration " + nom + " lu.");
+			logger().info("Fichier de configuration " + nom + " lu.");
 		} catch (IOException e) {
-			System.err.println("Impossible de charger " + nom);
-			System.err.println(e);
+			logger().severe("Impossible de charger " + nom);
+			logger().severe(e.toString());
 			System.exit(1);
 		}
 	}
@@ -108,6 +108,7 @@ public class Configuration {
 
 	public static Logger logger() {
 		if (logger == null) {
+			System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s : %5$s%n");
 			logger = Logger.getLogger("Sokoban.Logger");
 			logger.setLevel(Level.parse(lis("LogLevel")));
 		}
