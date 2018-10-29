@@ -47,7 +47,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class ExempleJavaFXAvecCanvas extends Application {
+public class InterfaceGraphique extends Application {
 	int x, y;
 	Canvas can;
 	Image img;
@@ -115,10 +115,6 @@ public class ExempleJavaFXAvecCanvas extends Application {
 				System.out.println("Vous lisez le label d'un oeil circonspet...");
 			}
 		});
-		/* Dans le cas de l'image, on veut compter le nombre de clics. Pour l'exemple, on passe
-		 * par une classe non anonyme qui contient un entier pour faire le compte.
-		 */
-		vue.setOnMouseClicked(new CibleMouvante(this));
 
 		/* Le redimensionnement aussi est géré par un évènement
 		 */
@@ -170,29 +166,5 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		x = r.nextInt((int) can.getWidth());
 		y = r.nextInt((int) can.getHeight());
 		trace();
-	}
-}
-
-class CibleMouvante implements EventHandler<MouseEvent> {
-	int i;
-	ExempleJavaFXAvecCanvas app;
-
-	CibleMouvante(ExempleJavaFXAvecCanvas e) {
-		i = 0;
-		app = e;
-	}
-
-	@Override
-	public void handle(MouseEvent e) {
-		// Si on clique dans l'image, on la retrace ailleurs
-		if (app.toucheBonhomme(e.getX(), e.getY())) {
-			i++;
-			System.out.print("Ouille, tu m'as clické " + i + " fois");
-			app.deplacementAleatoire();
-		} else {
-			System.out.print("Loupé");
-		}
-
-		System.out.println(", click en (" + e.getX() + ", " + e.getY() + ") !!!");
 	}
 }
