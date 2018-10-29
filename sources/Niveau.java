@@ -85,6 +85,22 @@ public class Niveau {
 	public int colonnes() {
 		return cases[0].length;
 	}
+	
+	public boolean estMur(int l, int c) {
+		return (cases[l][c] & MUR) != 0;
+	}
+
+	public boolean estBut(int l, int c) {
+		return (cases[l][c] & BUT) != 0;
+	}
+
+	public boolean aPousseur(int l, int c) {
+		return (cases[l][c] & POUSSEUR) != 0;
+	}
+
+	public boolean aSac(int l, int c) {
+		return (cases[l][c] & SAC) != 0;
+	}
 
 	@Override
 	public String toString() {

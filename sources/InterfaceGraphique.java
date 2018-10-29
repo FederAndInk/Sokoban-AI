@@ -53,7 +53,7 @@ public class InterfaceGraphique extends Application {
 	Image pousseur, mur, sol, caisse, but, caisseSurBut;
 	Canvas can;
 	Niveau n;
-	
+
 	private Image lisImage(String nom) {
 		String resource = Global.Configuration.lis(nom);
 		Global.Configuration.logger().info("Lecture de " + resource);
@@ -84,10 +84,10 @@ public class InterfaceGraphique extends Application {
 		boiteTexte.getChildren().add(prochain);
 		boiteTexte.getChildren().add(new Label("Copyright G. Huard, 2018"));
 		// Le label est centré dans l'espace qu'on lui alloue
-		//label.setAlignment(Pos.CENTER);
+		// label.setAlignment(Pos.CENTER);
 		// S'il y a de la place, on donne tout au label
-		//HBox.setHgrow(label, Priority.ALWAYS);
-		//label.setMaxWidth(Double.MAX_VALUE);
+		// HBox.setHgrow(label, Priority.ALWAYS);
+		// label.setMaxWidth(Double.MAX_VALUE);
 
 		HBox boiteScene = new HBox();
 		boiteScene.getChildren().add(vue);
@@ -116,28 +116,32 @@ public class InterfaceGraphique extends Application {
 		};
 		can.widthProperty().addListener(ecouteurRedimensionnement);
 		can.heightProperty().addListener(ecouteurRedimensionnement);
-		// On redimensionne le canvas en même temps que son conteneur
-		// Remarque : à faire après le primaryStage.show() sinon le Pane 'vue' a une taille nulle qui est transmise au Canvas
 		can.widthProperty().bind(vue.widthProperty());
 		can.heightProperty().bind(vue.heightProperty());
 
-		// Petit message dans la console quand la fenetre est fermée
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent we) {
-				System.out.println("Fin du jeu");
+				Global.Configuration.logger().info("Fin du jeu");
 			}
 		});
 
 		trace();
 	}
 
-	// Efface tout puis trace l'image aux coordonnées enregistrées
 	void trace() {
+		if (n == null)
+			System.exit(0);
+		double width = can.getWidth();
+		double height = can.getHeight();
+		double tileWidth = width / n.colonnes();
+		double tileHeight = height / n.lignes();
 		GraphicsContext gc = can.getGraphicsContext2D();
-		// On remplit en blanc pour voir le Canvas
 		gc.setFill(Color.WHITE);
-		gc.fillRect(0, 0, can.getWidth(), can.getHeight());
+		gc.fillRect(0, 0, width, height);
+		for (int ligne = 0; ligne < n.lignes(); ligne++)
+			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
 		gc.drawImage(pousseur, 250, 150, 100, 100);
+			}
 	}
 }
