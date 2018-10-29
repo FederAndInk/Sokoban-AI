@@ -28,40 +28,40 @@
 package Structures;
 
 public class FAPListe<E extends Comparable<E>> implements FAP<E> {
-    SequenceListe<E> s;
-    
-    public FAPListe() {
-        s = new SequenceListe<>();
-    }
-    
-    @Override
-    public void insere(E element) {
-        Maillon<E> precedent, courant;
-        
-        precedent = null;
-        courant = s.tete;
-        while ((courant != null) && (element.compareTo(courant.element) > 0)) {
-            precedent = courant;
-            courant = courant.suivant;
-        }
+	SequenceListe<E> s;
 
-        Maillon<E> m = new Maillon<>(element, courant); 
-        if (precedent == null) {
-            s.tete = m;
-        } else {
-            precedent.suivant = m;
-        }
-        if (courant == null)
-            s.queue = m;
-    }
+	public FAPListe() {
+		s = new SequenceListe<>();
+	}
 
-    @Override
-    public E extrait() {
-        return s.extraitTete();
-    }
+	@Override
+	public void insere(E element) {
+		Maillon<E> precedent, courant;
 
-    @Override
-    public boolean estVide() {
-        return s.estVide();
-    }
+		precedent = null;
+		courant = s.tete;
+		while ((courant != null) && (element.compareTo(courant.element) > 0)) {
+			precedent = courant;
+			courant = courant.suivant;
+		}
+
+		Maillon<E> m = new Maillon<>(element, courant);
+		if (precedent == null) {
+			s.tete = m;
+		} else {
+			precedent.suivant = m;
+		}
+		if (courant == null)
+			s.queue = m;
+	}
+
+	@Override
+	public E extrait() {
+		return s.extraitTete();
+	}
+
+	@Override
+	public boolean estVide() {
+		return s.estVide();
+	}
 }

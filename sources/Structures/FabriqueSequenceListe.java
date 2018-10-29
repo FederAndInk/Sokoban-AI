@@ -28,9 +28,9 @@ package Structures;
 
 public class FabriqueSequenceListe implements FabriqueSequence {
 
-    @Override
-    public <E> Sequence<E> nouvelle() {
-        return new SequenceListe<>();
-    }
+	@Override
+	public <E> Sequence<E> nouvelle() {
+		return new SequenceListe<>();
+	}
 
 }

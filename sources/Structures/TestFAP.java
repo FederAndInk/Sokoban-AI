@@ -1,3 +1,4 @@
+
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -32,32 +33,32 @@ import Structures.FAP;
 import java.util.Random;
 
 public class TestFAP {
-    public static void main(String [] args) {
-        int min=0;
-        int [] count = new int[100];
-        Random r = new Random();
-        FAP<Integer> f = new FAPListe<>();
-        
-        assert(f.estVide());
-        for (int i=0; i<10000; i++) {
-            if (r.nextBoolean()) {
-                int val = r.nextInt(count.length);
-                System.out.println("Insertion de " + val);
-                f.insere(val);
-                assert(!f.estVide());
-                if (val < min)
-                    min = val;
-                count[val]++;
-            } else {
-                if (!f.estVide()) {
-                    int val = f.extrait();
-                    assert(count[val]-- > 0);
-                    assert(val >= min);
-                    if (val > min)
-                        min = val;
-                    System.out.println("Extraction de " + val);
-                }
-            }
-        }
-    }
+	public static void main(String[] args) {
+		int min = 0;
+		int[] count = new int[100];
+		Random r = new Random();
+		FAP<Integer> f = new FAPListe<>();
+
+		assert (f.estVide());
+		for (int i = 0; i < 10000; i++) {
+			if (r.nextBoolean()) {
+				int val = r.nextInt(count.length);
+				System.out.println("Insertion de " + val);
+				f.insere(val);
+				assert (!f.estVide());
+				if (val < min)
+					min = val;
+				count[val]++;
+			} else {
+				if (!f.estVide()) {
+					int val = f.extrait();
+					assert (count[val]-- > 0);
+					assert (val >= min);
+					if (val > min)
+						min = val;
+					System.out.println("Extraction de " + val);
+				}
+			}
+		}
+	}
 }
