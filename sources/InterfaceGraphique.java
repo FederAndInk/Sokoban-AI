@@ -31,6 +31,7 @@ import java.util.Random;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -40,6 +41,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -53,6 +55,11 @@ public class InterfaceGraphique extends Application {
 	Image pousseur, mur, sol, caisse, but, caisseSurBut;
 	Canvas can;
 	Niveau n;
+
+	double width;
+	double height;
+	double tileWidth;
+	double tileHeight;
 
 	private Image lisImage(String nom) {
 		String resource = Global.Configuration.lis(nom);
@@ -81,31 +88,36 @@ public class InterfaceGraphique extends Application {
 		VBox boiteTexte = new VBox();
 		boiteTexte.getChildren().add(new Label("Sokoban"));
 		Button prochain = new Button("Prochain");
-		boiteTexte.getChildren().add(prochain);
+		BorderPane conteneurProchain = new BorderPane(prochain);
+		boiteTexte.getChildren().add(conteneurProchain);
 		boiteTexte.getChildren().add(new Label("Copyright G. Huard, 2018"));
-		// Le label est centré dans l'espace qu'on lui alloue
-		// label.setAlignment(Pos.CENTER);
-		// S'il y a de la place, on donne tout au label
-		// HBox.setHgrow(label, Priority.ALWAYS);
-		// label.setMaxWidth(Double.MAX_VALUE);
+		VBox.setVgrow(conteneurProchain, Priority.ALWAYS);
 
 		HBox boiteScene = new HBox();
 		boiteScene.getChildren().add(vue);
 		boiteScene.getChildren().add(boiteTexte);
-		VBox.setVgrow(vue, Priority.ALWAYS);
+		HBox.setHgrow(vue, Priority.ALWAYS);
 
 		Scene s = new Scene(boiteScene);
 		primaryStage.setScene(s);
 		primaryStage.show();
 
-		/*
-		label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+		prochain.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(MouseEvent e) {
-				System.out.println("Vous lisez le label d'un oeil circonspet...");
+			public void handle(ActionEvent event) {
+				n = l.lisProchainNiveau();
+				trace();
 			}
 		});
-		 */
+
+		can.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent e) {
+				int l = (int) Math.floor(e.getY()/tileHeight);
+				int c = (int) Math.floor(e.getX()/tileWidth);
+				System.out.println("Vous avez cliqué en ligne " + l + ", colonne " + c);
+			}
+		});
 
 		ChangeListener<Number> ecouteurRedimensionnement = new ChangeListener<Number>() {
 			@Override
@@ -132,16 +144,35 @@ public class InterfaceGraphique extends Application {
 	void trace() {
 		if (n == null)
 			System.exit(0);
-		double width = can.getWidth();
-		double height = can.getHeight();
-		double tileWidth = width / n.colonnes();
-		double tileHeight = height / n.lignes();
+
+		width = can.getWidth();
+		height = can.getHeight();
+		tileWidth = width / n.colonnes();
+		tileHeight = height / n.lignes();
+		tileWidth = Math.min(tileWidth, tileHeight);
+		tileHeight = Math.min(tileWidth, tileHeight);
+	
 		GraphicsContext gc = can.getGraphicsContext2D();
-		gc.setFill(Color.WHITE);
-		gc.fillRect(0, 0, width, height);
+		gc.clearRect(0, 0, width, height);
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
-		gc.drawImage(pousseur, 250, 150, 100, 100);
+				double x = colonne*tileWidth;
+				double y = ligne*tileHeight;
+				gc.drawImage(sol, x, y, tileWidth, tileHeight);
+				if (n.estMur(ligne, colonne)) {
+					gc.drawImage(mur, x, y, tileWidth, tileHeight);
+				} else {
+					if (n.estBut(ligne, colonne)) {
+						gc.drawImage(but, x, y, tileWidth, tileHeight);
+						if (n.aCaisse(ligne, colonne))
+							gc.drawImage(caisseSurBut, x, y, tileWidth, tileHeight);
+					} else {
+						if (n.aCaisse(ligne, colonne))
+							gc.drawImage(caisse, x, y, tileWidth, tileHeight);
+					}	
+					if (n.aPousseur(ligne, colonne))
+						gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
+				}
 			}
 	}
 }

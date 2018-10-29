@@ -98,7 +98,7 @@ public class Niveau {
 		return (cases[l][c] & POUSSEUR) != 0;
 	}
 
-	public boolean aSac(int l, int c) {
+	public boolean aCaisse(int l, int c) {
 		return (cases[l][c] & CAISSE) != 0;
 	}
 

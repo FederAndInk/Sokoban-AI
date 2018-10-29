@@ -74,7 +74,7 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		 * qui sont toujours associé à un plan d'organisation sous jacent (Layout)
 		 */
 		can = new Canvas(600, 400);
-		// Un conteneur simple qui remplit toute la place disponible et centre son contenu
+		// Un conteneur simple qui remplit toute la place disponible
 		Pane vue = new Pane(can);
 
 		// Une boite horizontale avec 3 bouts de texte
@@ -145,7 +145,7 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		});
 
 		// On affiche la première image dans la fenêtre
-		img = new Image(Global.Configuration.charge("Images/Kenny/PNG/Retina/Player/player_03.png"));
+		img = new Image(Global.Configuration.charge("Images/Pousseur.png"));
 		x = (int) can.getWidth() / 2;
 		y = (int) can.getHeight() / 2;
 		trace();
@@ -156,7 +156,7 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		GraphicsContext gc = can.getGraphicsContext2D();
 		// On remplit en blanc pour voir le Canvas
 		gc.setFill(Color.WHITE);
-		gc.fillRect(0, 0, can.getWidth(), can.getHeight());
+		gc.clearRect(0, 0, can.getWidth(), can.getHeight());
 		gc.drawImage(img, x - 50, y - 50, 100, 100);
 	}
 
