@@ -1,3 +1,4 @@
+
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -29,52 +30,52 @@ import java.io.InputStream;
 import java.util.Scanner;
 
 public class LecteurNiveaux {
-    Scanner s;
+	Scanner s;
 
-    LecteurNiveaux(InputStream in) {
-        s = new Scanner(in);
-    }
+	LecteurNiveaux(InputStream in) {
+		s = new Scanner(in);
+	}
 
-    String lireLigne() {
-        String ligne = null;
-        try {
-            ligne = s.nextLine();
-            // Nettoyage des séparateurs de fin et commentaires
-            int dernier = -1;
-            for (int i = 0; i < ligne.length(); i++) {
-                char c = ligne.charAt(i);
-                if (!Character.isWhitespace(c) && (c != ';')) {
-                    dernier = i;
-                }
-                if (c == ';') {
-                    i = ligne.length();
-                }
-            }
-            return ligne.substring(0, dernier + 1);
-        } catch (Exception e) {
-        }
-        return ligne;
-    }
+	String lireLigne() {
+		String ligne = null;
+		try {
+			ligne = s.nextLine();
+			// Nettoyage des séparateurs de fin et commentaires
+			int dernier = -1;
+			for (int i = 0; i < ligne.length(); i++) {
+				char c = ligne.charAt(i);
+				if (!Character.isWhitespace(c) && (c != ';')) {
+					dernier = i;
+				}
+				if (c == ';') {
+					i = ligne.length();
+				}
+			}
+			return ligne.substring(0, dernier + 1);
+		} catch (Exception e) {
+		}
+		return ligne;
+	}
 
-    Niveau lisProchainNiveau() {
-        String ligne = lireLigne();
-        while (ligne.length() == 0) {
-            ligne = lireLigne();
-            if (ligne == null) {
-                return null;
-            }
-        }
-        int i = 0;
-        int jMax = 0;
-        Sequence<String> seq = new SequenceTableau<>();
-        while (ligne.length() > 0) {
-            if (ligne.length() > jMax) {
-                jMax = ligne.length();
-            }
-            seq.insereQueue(ligne);
-            ligne = lireLigne();
-            i++;
-        }
-        return new Niveau(i, jMax, seq);
-    }
+	Niveau lisProchainNiveau() {
+		String ligne = lireLigne();
+		while (ligne.length() == 0) {
+			ligne = lireLigne();
+			if (ligne == null) {
+				return null;
+			}
+		}
+		int i = 0;
+		int jMax = 0;
+		Sequence<String> seq = new SequenceListe<>();
+		while (ligne.length() > 0) {
+			if (ligne.length() > jMax) {
+				jMax = ligne.length();
+			}
+			seq.insereQueue(ligne);
+			ligne = lireLigne();
+			i++;
+		}
+		return new Niveau(i, jMax, seq);
+	}
 }
