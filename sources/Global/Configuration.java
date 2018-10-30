@@ -51,37 +51,41 @@ public class Configuration {
 	}
 
 	static void chargerProprietes(Properties p, InputStream in, String nom) {
+
 		try {
 			p.load(in);
-			logger().info("Fichier de configuration " + nom + " lu.");
 		} catch (IOException e) {
-			logger().severe("Impossible de charger " + nom);
-			logger().severe(e.toString());
+			System.err.println("Impossible de charger " + nom);
+			System.err.println(e.toString());
 			System.exit(1);
 		}
 	}
 
 	static Properties proprietes() {
-		Properties p;
-		InputStream in = charge("defaut.cfg");
-		Properties defaut = new Properties();
-		chargerProprietes(defaut, in, "defaut.cfg");
-		String nom = System.getProperty("user.home") + "/.armoroides";
-		try {
-			in = new FileInputStream(nom);
-			p = new Properties(defaut);
-			chargerProprietes(p, in, nom);
-		} catch (FileNotFoundException e) {
-			p = defaut;
+		if (prop == null) {
+			InputStream in = charge("defaut.cfg");
+			Properties defaut = new Properties();
+			chargerProprietes(defaut, in, "defaut.cfg");
+			// Il faut attendre le dernier moment pour utiliser le logger
+			// car celui-ci s'initialise avec les propriétés
+			String message = "Fichier de propriétés defaut.cfg chargé";
+			String nom = System.getProperty("user.home") + "/.sokoban";
+			try {
+				in = new FileInputStream(nom);
+				prop = new Properties(defaut);
+				chargerProprietes(prop, in, nom);
+				logger().info(message);
+				logger().info("Fichier de propriétés " + nom + " chargé");
+			} catch (FileNotFoundException e) {
+				prop = defaut;
+				logger().info(message);
+			}
 		}
-		return p;
+		return prop;
 	}
 
 	public static String lis(String nom) {
-		if (prop == null) {
-			prop = proprietes();
-		}
-		String value = prop.getProperty(nom);
+		String value = proprietes().getProperty(nom);
 		if (value != null) {
 			return value;
 		} else {
