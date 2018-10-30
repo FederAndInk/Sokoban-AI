@@ -35,9 +35,10 @@ public class Sokoban {
 		// La méthode de chargement suivante ne dépend pas du système de fichier et sera
 		// donc utilisable pour un .jar
 		// Attention, par contre, le fichier doit se trouver dans le CLASSPATH
-		in = Configuration.charge("Niveaux/Original.txt");
+		String fichier = Configuration.lis("FichierNiveaux");
+		in = Configuration.charge(fichier);
 		if (in == null) {
-			System.err.println("ERREUR : impossible de trouver le fichier de niveaux");
+			System.err.println("ERREUR : impossible de trouver le fichier de niveaux nommé " + fichier);
 			System.exit(1);
 		}
 
