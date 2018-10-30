@@ -28,6 +28,7 @@
 
 import java.util.Random;
 
+import Global.Configuration;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -146,7 +147,7 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		});
 
 		// On affiche la première image dans la fenêtre
-		img = new Image(Global.Configuration.charge("Images/Pousseur.png"));
+		img = new Image(Configuration.charge("Images/Pousseur.png"));
 		x = (int) can.getWidth() / 2;
 		y = (int) can.getHeight() / 2;
 		trace();
