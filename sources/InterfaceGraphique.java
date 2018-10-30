@@ -27,6 +27,7 @@
  */
 
 import Global.Configuration;
+import Modele.Jeu;
 import Modele.LecteurNiveaux;
 import Modele.Niveau;
 import javafx.application.Application;
@@ -50,7 +51,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class InterfaceGraphique extends Application {
-	static LecteurNiveaux l = null;
+	static Jeu jeu = null;
 	Image pousseur, mur, sol, caisse, but, caisseSurBut;
 	Canvas can;
 	Niveau n;
@@ -74,7 +75,7 @@ public class InterfaceGraphique extends Application {
 		caisse = lisImage("Caisse");
 		but = lisImage("But");
 		caisseSurBut = lisImage("CaisseSurBut");
-		n = l.lisProchainNiveau();
+		n = jeu.niveau();
 	}
 
 	@Override
@@ -104,7 +105,8 @@ public class InterfaceGraphique extends Application {
 		prochain.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				n = l.lisProchainNiveau();
+				jeu.prochainNiveau();
+				n = jeu.niveau();
 				trace();
 			}
 		});
