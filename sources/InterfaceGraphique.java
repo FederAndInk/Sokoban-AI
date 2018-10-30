@@ -139,8 +139,10 @@ public class InterfaceGraphique extends Application {
 	}
 
 	void trace() {
-		if (n == null)
+		if (n == null) {
+			Configuration.logger().info("Dernier niveau lu, fin du jeu !");
 			System.exit(0);
+		}
 
 		width = can.getWidth();
 		height = can.getHeight();
