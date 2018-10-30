@@ -28,22 +28,10 @@
 import java.io.InputStream;
 
 import Global.Configuration;
+import Modele.LecteurNiveaux;
 
 public class Sokoban {
 	public static void main(String[] args) {
-		InputStream in;
-		// La méthode de chargement suivante ne dépend pas du système de fichier et sera
-		// donc utilisable pour un .jar
-		// Attention, par contre, le fichier doit se trouver dans le CLASSPATH
-		in = Configuration.charge("Niveaux/Original.txt");
-		if (in == null) {
-			System.err.println("ERREUR : impossible de trouver le fichier de niveaux");
-			System.exit(1);
-		}
-
-		Configuration.logger().info("Niveaux trouvés");
-
-		LecteurNiveaux l = new LecteurNiveaux(in);
 		InterfaceGraphique.l = l;
 		InterfaceGraphique.launch(InterfaceGraphique.class, args);
 	}

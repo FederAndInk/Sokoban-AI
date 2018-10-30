@@ -1,4 +1,3 @@
-
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -26,6 +25,8 @@
  *          38401 Saint Martin d'Hères
  */
 
+package Modele;
+
 import Global.Configuration;
 import Structures.Sequence;
 import java.io.InputStream;
@@ -34,7 +35,7 @@ import java.util.Scanner;
 public class LecteurNiveaux {
 	Scanner s;
 
-	LecteurNiveaux(InputStream in) {
+	public LecteurNiveaux(InputStream in) {
 		s = new Scanner(in);
 	}
 
@@ -59,7 +60,7 @@ public class LecteurNiveaux {
 		return ligne;
 	}
 
-	Niveau lisProchainNiveau() {
+	public Niveau lisProchainNiveau() {
 		String ligne = lireLigne();
 		while (ligne.length() == 0) {
 			ligne = lireLigne();
