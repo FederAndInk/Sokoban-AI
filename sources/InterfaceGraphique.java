@@ -26,6 +26,7 @@
  *          38401 Saint Martin d'Hères
  */
 
+import Global.Configuration;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -58,9 +59,9 @@ public class InterfaceGraphique extends Application {
 	double tileHeight;
 
 	private Image lisImage(String nom) {
-		String resource = Global.Configuration.lis(nom);
-		Global.Configuration.logger().info("Lecture de " + resource);
-		return new Image(Global.Configuration.charge(resource));
+		String resource = Configuration.lis(nom);
+		Configuration.logger().info("Lecture de " + resource);
+		return new Image(Configuration.charge(resource));
 	}
 
 	@Override
@@ -130,7 +131,7 @@ public class InterfaceGraphique extends Application {
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent we) {
-				Global.Configuration.logger().info("Fin du jeu");
+				Configuration.logger().info("Fin du jeu");
 			}
 		});
 

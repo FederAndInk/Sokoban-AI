@@ -1,4 +1,3 @@
-
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -28,19 +27,21 @@
 
 import java.io.InputStream;
 
+import Global.Configuration;
+
 public class Sokoban {
 	public static void main(String[] args) {
 		InputStream in;
 		// La méthode de chargement suivante ne dépend pas du système de fichier et sera
 		// donc utilisable pour un .jar
 		// Attention, par contre, le fichier doit se trouver dans le CLASSPATH
-		in = Global.Configuration.charge("Niveaux/Original.txt");
+		in = Configuration.charge("Niveaux/Original.txt");
 		if (in == null) {
 			System.err.println("ERREUR : impossible de trouver le fichier de niveaux");
 			System.exit(1);
 		}
 
-		Global.Configuration.logger().info("Niveaux trouvés");
+		Configuration.logger().info("Niveaux trouvés");
 
 		LecteurNiveaux l = new LecteurNiveaux(in);
 		InterfaceGraphique.l = l;
