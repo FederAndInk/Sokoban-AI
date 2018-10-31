@@ -58,5 +58,17 @@ public class Jeu extends Observable {
 	
 	public void prochainNiveau() {
 		n = l.lisProchainNiveau();
+		metAJour();
+	}
+	
+	public void jouer(int l, int c) {
+		int dL = l - n.lignePousseur();
+		int dC = c - n.colonnePousseur();
+		// Seulement une direction, -1 ou +1
+		if ((dL*dC == 0) && ((dL+dC)*(dL+dC) == 1)) {
+			if (n.jouer(dL, dC)) {
+				metAJour();
+			}
+		}
 	}
 }

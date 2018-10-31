@@ -25,11 +25,7 @@
  *          38401 Saint Martin d'Hères
  */
 
-import java.io.InputStream;
-
-import Global.Configuration;
 import Modele.Jeu;
-import Modele.LecteurNiveaux;
 
 public class Sokoban {
 	public static void main(String[] args) {

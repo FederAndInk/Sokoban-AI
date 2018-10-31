@@ -1,4 +1,3 @@
-
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -25,44 +24,33 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
+package Controleur;
 
-import Controleur.ControleurMediateur;
 import Modele.Jeu;
 import Vue.FenetreGraphique;
-import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
 
-public class InterfaceGraphique extends Application {
-	static Jeu jeu = null;
+public class ControleurMediateur {
+	Jeu jeu;
+	FenetreGraphique f;
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		FenetreGraphique f = new FenetreGraphique(jeu, primaryStage);
-		ControleurMediateur c = new ControleurMediateur(jeu, f);
-		f.ecouteurProchain(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				c.prochain();
-			}
-		});
-		f.ecouteurDeSouris(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent e) {
-				c.clicSouris(e);
-			}
-		});
-		f.ecouteurDeRedimensionnement(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				c.redimensionnement();
+	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
+		jeu = j;
+		f = fen;
+	}
 
-			}
-		});
-		jeu.ajouteObservateur(f);
+	public void redimensionnement() {
+		f.miseAJour();
+	}
+
+	public void clicSouris(MouseEvent e) {
+		int l = (int) (e.getY() / f.tileHeight());
+		int c = (int) (e.getX() / f.tileWidth());
+		System.out.println("Vous avez cliqué en ligne " + l + ", colonne " + c);
+		jeu.jouer(l, c);
+	}
+	
+	public void prochain() {
+		jeu.prochainNiveau();
 	}
 }

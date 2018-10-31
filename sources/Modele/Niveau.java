@@ -27,6 +27,7 @@
 
 package Modele;
 
+import Global.Configuration;
 import Structures.Sequence;
 
 public class Niveau {
@@ -36,7 +37,23 @@ public class Niveau {
 	static final int CAISSE = 4;
 	static final int BUT = 8;
 	int[][] cases;
+	int pousseurL, pousseurC;
+	int nbPousseurs;
 
+	void nouveauPousseur(int l, int c) {
+		pousseurL = l;
+		pousseurC = c;
+		nbPousseurs++;
+	}
+	
+	public int lignePousseur() {
+		return pousseurL;
+	}
+
+	public int colonnePousseur() {
+		return pousseurC;
+	}
+	
 	Niveau(int lignes, int colonnes, Sequence<String> s) {
 		cases = new int[lignes][colonnes];
 		for (int i = 0; i < lignes; i++) {
@@ -58,9 +75,11 @@ public class Niveau {
 					break;
 				case '@':
 					cases[i][j] = POUSSEUR;
+					nouveauPousseur(i, j);
 					break;
 				case '+':
 					cases[i][j] = POUSSEUR | BUT;
+					nouveauPousseur(i, j);
 					break;
 				case '$':
 					cases[i][j] = CAISSE;
@@ -76,6 +95,9 @@ public class Niveau {
 				}
 			}
 			i++;
+		}
+		if (nbPousseurs != 1) {
+			Configuration.logger().severe("Nombre de pouseurs invalide : " + nbPousseurs);
 		}
 	}
 
@@ -101,6 +123,29 @@ public class Niveau {
 
 	public boolean aCaisse(int l, int c) {
 		return (cases[l][c] & CAISSE) != 0;
+	}
+	
+	public boolean estOccupable(int l, int c) {
+		return (cases[l][c] & (CAISSE | MUR)) == 0;
+	}
+
+	public boolean jouer(int dL, int dC) {
+		int destL = pousseurL+dL;
+		int destC = pousseurC+dC;
+		int dest2L = destL+dL;
+		int dest2C = destC+dC;
+		if (aCaisse(destL, destC) && estOccupable(dest2L, dest2C)) {
+			cases[destL][destC] &= ~CAISSE;
+			cases[dest2L][dest2C] |= CAISSE;
+		}
+		if (estOccupable(destL, destC)) {
+			cases[pousseurL][pousseurC] &= ~POUSSEUR;
+			cases[destL][destC] |= POUSSEUR;
+			pousseurL = destL;
+			pousseurC = destC;
+			return true;
+		}
+		return false;
 	}
 
 	@Override
