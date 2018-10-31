@@ -39,6 +39,8 @@ public class Niveau {
 	int[][] cases;
 	int pousseurL, pousseurC;
 	int nbPousseurs;
+	int nbButs;
+	int nbCaissesSurBut;
 
 	void nouveauPousseur(int l, int c) {
 		pousseurL = l;
@@ -79,6 +81,7 @@ public class Niveau {
 					break;
 				case '+':
 					cases[i][j] = POUSSEUR | BUT;
+					nbButs++;
 					nouveauPousseur(i, j);
 					break;
 				case '$':
@@ -86,9 +89,12 @@ public class Niveau {
 					break;
 				case '*':
 					cases[i][j] = CAISSE | BUT;
+					nbButs++;
+					nbCaissesSurBut++;
 					break;
 				case '.':
 					cases[i][j] = BUT;
+					nbButs++;
 					break;
 				default:
 					System.err.println("Caractère inconnu : " + c);
@@ -136,7 +142,11 @@ public class Niveau {
 		int dest2C = destC+dC;
 		if (aCaisse(destL, destC) && estOccupable(dest2L, dest2C)) {
 			cases[destL][destC] &= ~CAISSE;
+			if (estBut(destL, destC))
+				nbCaissesSurBut--;
 			cases[dest2L][dest2C] |= CAISSE;
+			if (estBut(dest2L, dest2C))
+				nbCaissesSurBut++;
 		}
 		if (estOccupable(destL, destC)) {
 			cases[pousseurL][pousseurC] &= ~POUSSEUR;
@@ -146,6 +156,10 @@ public class Niveau {
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean estTermine() {
+		return nbCaissesSurBut == nbButs;
 	}
 
 	@Override

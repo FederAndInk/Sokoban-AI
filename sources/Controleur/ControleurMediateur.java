@@ -27,7 +27,9 @@
 package Controleur;
 
 import Modele.Jeu;
+import Modele.Niveau;
 import Vue.FenetreGraphique;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public class ControleurMediateur {
@@ -46,11 +48,40 @@ public class ControleurMediateur {
 	public void clicSouris(MouseEvent e) {
 		int l = (int) (e.getY() / f.tileHeight());
 		int c = (int) (e.getX() / f.tileWidth());
-		System.out.println("Vous avez cliqué en ligne " + l + ", colonne " + c);
-		jeu.jouer(l, c);
+
+		Niveau n = jeu.niveau();
+		int dL = l - n.lignePousseur();
+		int dC = c - n.colonnePousseur();
+		// Seulement une direction, -1 ou +1
+		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) == 1)) {
+			jeu.jouer(dL, dC);
+		}
 	}
-	
+
 	public void prochain() {
 		jeu.prochainNiveau();
+	}
+
+	public void pressionTouche(KeyEvent event) {
+		switch (event.getCode()) {
+		case LEFT:
+			jeu.jouer(0, -1);
+			break;
+		case RIGHT:
+			jeu.jouer(0, 1);
+			break;
+		case UP:
+			jeu.jouer(-1, 0);
+			break;
+		case DOWN:
+			jeu.jouer(1, 0);
+			break;
+		case Q:
+		case A:
+			System.exit(0);
+			break;
+		default:
+			break;
+		}
 	}
 }

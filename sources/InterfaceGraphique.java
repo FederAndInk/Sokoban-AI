@@ -34,6 +34,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -54,6 +55,12 @@ public class InterfaceGraphique extends Application {
 			@Override
 			public void handle(MouseEvent e) {
 				c.clicSouris(e);
+			}
+		});
+		f.ecouteurDeClavier(new EventHandler<KeyEvent>() {
+			@Override
+			public void handle(KeyEvent event) {
+				c.pressionTouche(event);
 			}
 		});
 		f.ecouteurDeRedimensionnement(new ChangeListener<Number>() {

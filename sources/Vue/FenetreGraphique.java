@@ -39,6 +39,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -51,6 +52,7 @@ import javafx.stage.WindowEvent;
 public class FenetreGraphique implements Observateur {
 	Jeu jeu;
 	Image pousseur, mur, sol, caisse, but, caisseSurBut;
+	Scene scene;
 	Canvas can;
 	Button prochain;
 
@@ -75,6 +77,7 @@ public class FenetreGraphique implements Observateur {
 
 		jeu = j;
 		primaryStage.setTitle("Sokoban");
+		primaryStage.setFullScreen(true);
 
 		can = new Canvas(600, 400);
 		Pane vue = new Pane(can);
@@ -92,8 +95,8 @@ public class FenetreGraphique implements Observateur {
 		boiteScene.getChildren().add(boiteTexte);
 		HBox.setHgrow(vue, Priority.ALWAYS);
 
-		Scene s = new Scene(boiteScene);
-		primaryStage.setScene(s);
+		scene = new Scene(boiteScene);
+		primaryStage.setScene(scene);
 		primaryStage.show();
 
 		can.widthProperty().bind(vue.widthProperty());
@@ -116,6 +119,10 @@ public class FenetreGraphique implements Observateur {
 	
 	public void ecouteurDeSouris(EventHandler<MouseEvent> h) {
 		can.setOnMouseClicked(h);
+	}
+	
+	public void ecouteurDeClavier(EventHandler<KeyEvent> h) {
+		scene.setOnKeyPressed(h);
 	}
 	
 	public void ecouteurProchain(EventHandler<ActionEvent> h) {
