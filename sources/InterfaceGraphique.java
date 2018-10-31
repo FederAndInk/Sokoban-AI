@@ -41,7 +41,7 @@ public class InterfaceGraphique extends Application {
 	static Jeu jeu = null;
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) {
 		FenetreGraphique f = new FenetreGraphique(jeu, primaryStage);
 		ControleurMediateur c = new ControleurMediateur(jeu, f);
 		f.ecouteurProchain(new EventHandler<ActionEvent>() {
