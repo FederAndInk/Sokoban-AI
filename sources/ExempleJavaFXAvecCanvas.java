@@ -56,7 +56,7 @@ public class ExempleJavaFXAvecCanvas extends Application {
 
 	// Methode permettant de démarrer une application JavaFX
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage primaryStage) {
 		final boolean fullScreen = false;
 		r = new Random();
 
