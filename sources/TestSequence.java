@@ -1,3 +1,4 @@
+
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -28,38 +29,38 @@
 import java.util.Random;
 
 public class TestSequence {
-	public static void main(String [] args) {
-        int min=0, max=0, count=0;
-        Random r = new Random();
-        @SuppressWarnings("unchecked")
-        Sequence<Integer> [] seq = new Sequence[2];
-        seq[0] = new SequenceListe<>();
-        seq[1] = new SequenceTableau<>();
-        
-        for (int k=0; k<seq.length; k++)
-            assert(seq[k].estVide());
-        for (int i=0; i<10000; i++) {
-            if (r.nextBoolean()) {
-                System.out.println("Insertion de " + max);
-                for (int k=0; k<seq.length; k++) {
-                    seq[k].insereQueue(max);
-                    assert(!seq[k].estVide());
-                }
-                max++;
-                count++;
-            } else {
-                if (count > 0) {
-                    Integer s = null;
-                    count--;
-                    for (int k=0; k<seq.length; k++) {
-                        s = seq[k].extraitTete();
-                        assert(s == min);
-                        assert((count == 0) == (seq[k].estVide()));
-                    }
-                    System.out.println("Extraction de " + s);
-                    min++;
-                }
-            }
-        }
-    }
+	public static void main(String[] args) {
+		int min = 0, max = 0, count = 0;
+		Random r = new Random();
+		@SuppressWarnings("unchecked")
+		Sequence<Integer>[] seq = new Sequence[2];
+		seq[0] = new SequenceListe<>();
+		seq[1] = new SequenceTableau<>();
+
+		for (int k = 0; k < seq.length; k++)
+			assert (seq[k].estVide());
+		for (int i = 0; i < 10000; i++) {
+			if (r.nextBoolean()) {
+				System.out.println("Insertion de " + max);
+				for (int k = 0; k < seq.length; k++) {
+					seq[k].insereQueue(max);
+					assert (!seq[k].estVide());
+				}
+				max++;
+				count++;
+			} else {
+				if (count > 0) {
+					Integer s = null;
+					count--;
+					for (int k = 0; k < seq.length; k++) {
+						s = seq[k].extraitTete();
+						assert (s == min);
+						assert ((count == 0) == (seq[k].estVide()));
+					}
+					System.out.println("Extraction de " + s);
+					min++;
+				}
+			}
+		}
+	}
 }

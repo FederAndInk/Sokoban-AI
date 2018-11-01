@@ -1,3 +1,4 @@
+
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -28,33 +29,33 @@
 import java.util.Random;
 
 public class TestSequenceChaines {
-    public static void main(String [] args) {
-        int min=0, max=0, count=0;
-        Random r = new Random();
-        SequenceChaines seq = new SequenceChainesListe();
-        // Changer les construction pour tester l'autre sequence
-        //SequenceChaines seq = new SequenceChainesTableau();
-        
-        assert(seq.estVide());
-        for (int i=0; i<100; i++) {
-            if (r.nextBoolean()) {
-                String s = String.format("%08d", max);
-                max++;
-                System.out.println("Insertion de " + s);
-                seq.insereQueue(s);
-                count++;
-                assert(!seq.estVide());
-            } else {
-                if (count > 0) {
-                    String s = seq.extraitTete();
-                    System.out.println("Extraction de " + s);
-                    int val = Integer.parseInt(s);
-                    assert(val == min);
-                    min++;
-                    count--;
-                    assert((count == 0) == (seq.estVide()));
-                }
-            }
-        }
-    }
+	public static void main(String[] args) {
+		int min = 0, max = 0, count = 0;
+		Random r = new Random();
+		SequenceChaines seq = new SequenceChainesListe();
+		// Changer les construction pour tester l'autre sequence
+		// SequenceChaines seq = new SequenceChainesTableau();
+
+		assert (seq.estVide());
+		for (int i = 0; i < 100; i++) {
+			if (r.nextBoolean()) {
+				String s = String.format("%08d", max);
+				max++;
+				System.out.println("Insertion de " + s);
+				seq.insereQueue(s);
+				count++;
+				assert (!seq.estVide());
+			} else {
+				if (count > 0) {
+					String s = seq.extraitTete();
+					System.out.println("Extraction de " + s);
+					int val = Integer.parseInt(s);
+					assert (val == min);
+					min++;
+					count--;
+					assert ((count == 0) == (seq.estVide()));
+				}
+			}
+		}
+	}
 }

@@ -26,9 +26,11 @@
  */
 
 interface Sequence<E> {
-    void insereQueue(E element);
+	void insereQueue(E element);
 
-    E extraitTete();
+	void insereTete(E element);
 
-    boolean estVide();
+	E extraitTete();
+
+	boolean estVide();
 }

@@ -26,49 +26,49 @@
  */
 
 class SequenceChainesTableau implements SequenceChaines {
-    String [] elements;
-    int taille, debut;
+	String[] elements;
+	int taille, debut;
 
-    public SequenceChainesTableau() {
-        // Taille par défaut
-        elements = new String[1];
-        debut = 0;
-        taille = 0;
-    }
+	public SequenceChainesTableau() {
+		// Taille par défaut
+		elements = new String[1];
+		debut = 0;
+		taille = 0;
+	}
 
-    private void redimensionne(int nouvelleCapacite) {
-        String [] nouveau;
-        
-        if (nouvelleCapacite > elements.length) {
-            nouveau = new String[nouvelleCapacite];
-            int aCopier = taille;
-            for (int i = 0; i<aCopier; i++)
-                nouveau[i] = extraitTete();
-            debut = 0;
-            taille = aCopier;
-            elements = nouveau;
-        }
-    }
-    
-    @Override
-    public void insereQueue(String element) {
-        if (taille == elements.length)
-            redimensionne(taille*2);
-        elements[(debut+taille)%elements.length] = element;
-        taille++;
-    }
+	private void redimensionne(int nouvelleCapacite) {
+		String[] nouveau;
 
-    @Override
-    public String extraitTete() {
-        // Resultat invalide si la sequence est vide
-        String resultat = elements[debut];
-        debut = (debut+1)%elements.length;
-        taille--;
-        return resultat;
-    }
+		if (nouvelleCapacite > elements.length) {
+			nouveau = new String[nouvelleCapacite];
+			int aCopier = taille;
+			for (int i = 0; i < aCopier; i++)
+				nouveau[i] = extraitTete();
+			debut = 0;
+			taille = aCopier;
+			elements = nouveau;
+		}
+	}
 
-    @Override
-    public boolean estVide() {
-        return taille == 0;
-    }
+	@Override
+	public void insereQueue(String element) {
+		if (taille == elements.length)
+			redimensionne(taille * 2);
+		elements[(debut + taille) % elements.length] = element;
+		taille++;
+	}
+
+	@Override
+	public String extraitTete() {
+		// Resultat invalide si la sequence est vide
+		String resultat = elements[debut];
+		debut = (debut + 1) % elements.length;
+		taille--;
+		return resultat;
+	}
+
+	@Override
+	public boolean estVide() {
+		return taille == 0;
+	}
 }

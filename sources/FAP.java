@@ -26,9 +26,9 @@
  */
 
 public interface FAP<E extends Comparable<E>> {
-    void insere(E element);
-    
-    E extrait();
-    
-    boolean estVide();
+	void insere(E element);
+
+	E extrait();
+
+	boolean estVide();
 }
