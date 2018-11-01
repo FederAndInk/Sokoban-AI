@@ -59,6 +59,17 @@ class SequenceTableau<E> implements Sequence<E> {
 	}
 
 	@Override
+	public void insereTete(E element) {
+		if (taille == elements.length)
+			redimensionne(taille * 2);
+		debut = debut - 1;
+		if (debut < 0)
+			debut = elements.length - 1;
+		elements[debut] = element;
+		taille++;
+	}
+
+	@Override
 	public E extraitTete() {
 		// Resultat invalide si la sequence est vide
 		@SuppressWarnings("unchecked")
