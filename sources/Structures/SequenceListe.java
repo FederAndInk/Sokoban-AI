@@ -44,6 +44,16 @@ public class SequenceListe<E> implements Sequence<E> {
 	}
 
 	@Override
+	public void insereTete(E element) {
+		Maillon<E> m = new Maillon<>(element, tete);
+		if (tete == null) {
+			tete = queue = m;
+		} else {
+			tete = m;
+		}
+	}
+
+	@Override
 	public E extraitTete() {
 		E resultat;
 		// Exception si tete == null (sequence vide)
