@@ -36,16 +36,15 @@ public class Niveau {
 	static final int POUSSEUR = 2;
 	static final int CAISSE = 4;
 	static final int BUT = 8;
+	static final int NBMAX = 9;
 	int[][] cases;
 	int pousseurL, pousseurC;
-	int nbPousseurs;
-	int nbButs;
-	int nbCaissesSurBut;
+	int [] nb;
+	int [] nbSurBut;
 
 	void nouveauPousseur(int l, int c) {
 		pousseurL = l;
 		pousseurC = c;
-		nbPousseurs++;
 	}
 	
 	public int lignePousseur() {
@@ -58,10 +57,16 @@ public class Niveau {
 	
 	Niveau(int lignes, int colonnes, Sequence<String> s) {
 		cases = new int[lignes][colonnes];
+		nb = new int[NBMAX];
+		nbSurBut = new int[NBMAX];
 		for (int i = 0; i < lignes; i++) {
 			for (int j = 0; j < colonnes; j++) {
 				cases[i][j] = VIDE;
 			}
+		}
+		for (int i = 0; i < NBMAX; i++) {
+			nb[i] = 0;
+			nbSurBut[i] = 0;
 		}
 		int i = 0;
 		while (!s.estVide()) {
@@ -71,6 +76,7 @@ public class Niveau {
 				switch (c) {
 				case ' ':
 					cases[i][j] = VIDE;
+					nb[VIDE]++;
 					break;
 				case '#':
 					cases[i][j] = MUR;
@@ -81,7 +87,6 @@ public class Niveau {
 					break;
 				case '+':
 					cases[i][j] = POUSSEUR | BUT;
-					nbButs++;
 					nouveauPousseur(i, j);
 					break;
 				case '$':
@@ -89,21 +94,28 @@ public class Niveau {
 					break;
 				case '*':
 					cases[i][j] = CAISSE | BUT;
-					nbButs++;
-					nbCaissesSurBut++;
 					break;
 				case '.':
 					cases[i][j] = BUT;
-					nbButs++;
 					break;
 				default:
 					System.err.println("Caractère inconnu : " + c);
 				}
+				int element = cases[i][j] & ~BUT;
+				if (element != 0) {
+					nb[element]++;
+					if (estBut(i, j)) {
+						nb[BUT]++;
+						nbSurBut[element]++;
+					}
+				} else {
+					nb[cases[i][j]]++;
+				}
 			}
 			i++;
 		}
-		if (nbPousseurs != 1) {
-			Configuration.logger().severe("Nombre de pouseurs invalide : " + nbPousseurs);
+		if (nb[POUSSEUR] != 1) {
+			Configuration.logger().severe("Nombre de pouseurs invalide : " + nb[POUSSEUR]);
 		}
 	}
 
@@ -135,22 +147,25 @@ public class Niveau {
 		return (cases[l][c] & (CAISSE | MUR)) == 0;
 	}
 
+	private void deplace(int element, int srcL, int srcC, int dstL, int dstC) {
+		cases[dstL][dstC] |= element;
+		cases[srcL][srcC] &= ~element;
+		if (estBut(dstL, dstC))
+			nbSurBut[element]++;
+		if (estBut(srcL, srcC))
+			nbSurBut[element]--;
+	}
+
 	public boolean jouer(int dL, int dC) {
 		int destL = pousseurL+dL;
 		int destC = pousseurC+dC;
 		int dest2L = destL+dL;
 		int dest2C = destC+dC;
 		if (aCaisse(destL, destC) && estOccupable(dest2L, dest2C)) {
-			cases[destL][destC] &= ~CAISSE;
-			if (estBut(destL, destC))
-				nbCaissesSurBut--;
-			cases[dest2L][dest2C] |= CAISSE;
-			if (estBut(dest2L, dest2C))
-				nbCaissesSurBut++;
+			deplace(CAISSE, destL, destC, dest2L, dest2C);
 		}
 		if (estOccupable(destL, destC)) {
-			cases[pousseurL][pousseurC] &= ~POUSSEUR;
-			cases[destL][destC] |= POUSSEUR;
+			deplace(POUSSEUR, pousseurL, pousseurC, destL, destC);
 			pousseurL = destL;
 			pousseurC = destC;
 			return true;
@@ -159,7 +174,7 @@ public class Niveau {
 	}
 	
 	public boolean estTermine() {
-		return nbCaissesSurBut == nbButs;
+		return nbSurBut[CAISSE] == nb[BUT];
 	}
 
 	@Override
