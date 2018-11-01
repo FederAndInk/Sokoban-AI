@@ -62,7 +62,7 @@ public class Jeu extends Observable {
 	}
 
 	public void jouer(int dL, int dC) {
-		if (n.jouer(dL, dC)) {
+		if (n.jouer(dL, dC) != null) {
 			if (n.estTermine())
 				prochainNiveau();
 			else

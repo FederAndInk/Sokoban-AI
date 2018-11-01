@@ -30,7 +30,7 @@ package Modele;
 import Global.Configuration;
 import Structures.Sequence;
 
-public class Niveau {
+public class Niveau extends Historique<Coup> {
 	static final int VIDE = 0;
 	static final int MUR = 1;
 	static final int POUSSEUR = 2;
@@ -155,22 +155,39 @@ public class Niveau {
 		if (estBut(srcL, srcC))
 			nbSurBut[element]--;
 	}
+	
+	public void appliquer(Coup c) {
+		int dstX = c.posX + c.dirX;
+		int dstY = c.posY + c.dirY;
+		if (c.caisse) {
+			deplace(CAISSE, dstX, dstY, dstX+c.dirX, dstY+c.dirY);
+		}
+		deplace(POUSSEUR, c.posX, c.posY, dstX, dstY);
+	}
 
-	public boolean jouer(int dL, int dC) {
+	@Override
+	public void faire(Coup c) {
+		appliquer(c);
+		super.faire(c);
+	}
+	
+	public Coup jouer(int dL, int dC) {
 		int destL = pousseurL+dL;
 		int destC = pousseurC+dC;
-		int dest2L = destL+dL;
-		int dest2C = destC+dC;
-		if (aCaisse(destL, destC) && estOccupable(dest2L, dest2C)) {
-			deplace(CAISSE, destL, destC, dest2L, dest2C);
+		Coup c = null;
+		
+		if (aCaisse(destL, destC) && estOccupable(destL+dL, destC+dC)) {
+			c = new Coup(pousseurL, pousseurC, dL, dC, true);
 		}
 		if (estOccupable(destL, destC)) {
-			deplace(POUSSEUR, pousseurL, pousseurC, destL, destC);
+			c = new Coup(pousseurL, pousseurC, dL, dC, false);
+		}
+		if (c != null) {
+			faire(c);
 			pousseurL = destL;
 			pousseurC = destC;
-			return true;
 		}
-		return false;
+		return c;
 	}
 	
 	public boolean estTermine() {
