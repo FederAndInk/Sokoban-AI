@@ -100,16 +100,6 @@ public class InterfaceGraphique extends Application {
 		boiteTexte.getChildren().add(copyright);
 		VBox.setVgrow(copyright, Priority.ALWAYS);
 
-/*
-		VBox boiteTexte = new VBox();
-		boiteTexte.getChildren().add(new Label("Sokoban"));
-		Button prochain = new Button("Prochain");
-		BorderPane conteneurProchain = new BorderPane(prochain);
-		boiteTexte.getChildren().add(conteneurProchain);
-		boiteTexte.getChildren().add(new Label("Copyright G. Huard, 2018"));
-		VBox.setVgrow(conteneurProchain, Priority.ALWAYS);
-		*/
-
 		HBox boiteScene = new HBox();
 		boiteScene.getChildren().add(vue);
 		boiteScene.getChildren().add(boiteTexte);
