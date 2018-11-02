@@ -24,17 +24,26 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
-package Modele;
+package Vue;
 
-public class Coup {
-	int dirL, dirC, posL, posC;
-	boolean caisse;
+import Modele.Jeu;
+import Patterns.Observateur;
+import javafx.scene.control.Button;
+
+public class BoutonRefaire extends Button implements Observateur {
+	Jeu jeu;
 	
-	Coup(int pL, int pC, int dL, int dC, boolean c) {
-		posL = pL;
-		posC = pC;
-		dirL = dL;
-		dirC = dC;
-		caisse = c;
+	BoutonRefaire(Jeu j) {
+		jeu = j;
+		setText(">");
+		jeu.ajouteObservateur(this);
+	}
+
+	@Override
+	public void miseAJour() {
+		if (jeu.niveau().peutRefaire())
+			this.setDisable(false);
+		else
+			this.setDisable(true);
 	}
 }

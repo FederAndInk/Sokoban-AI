@@ -51,6 +51,18 @@ public class InterfaceGraphique extends Application {
 				c.prochain();
 			}
 		});
+		f.ecouteurAnnuler(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				c.annuler();
+			}
+		});
+		f.ecouteurRefaire(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				c.refaire();
+			}
+		});
 		f.ecouteurDeSouris(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {

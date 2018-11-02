@@ -157,22 +157,45 @@ public class Niveau extends Historique<Coup> {
 	}
 	
 	public void jouer(Coup c) {
-		int dstX = c.posX + c.dirX;
-		int dstY = c.posY + c.dirY;
+		int dstL = c.posL + c.dirL;
+		int dstC = c.posC + c.dirC;
 		if (c.caisse) {
-			deplace(CAISSE, dstX, dstY, dstX+c.dirX, dstY+c.dirY);
+			deplace(CAISSE, dstL, dstC, dstL+c.dirL, dstC+c.dirC);
 		}
-		deplace(POUSSEUR, c.posX, c.posY, dstX, dstY);
+		deplace(POUSSEUR, c.posL, c.posC, dstL, dstC);
+		pousseurL = dstL;
+		pousseurC = dstC;
 	}
 	
 	public void dejouer(Coup c) {
-		
+		int dstL = c.posL + c.dirL;
+		int dstC = c.posC + c.dirC;
+		deplace(POUSSEUR, dstL, dstC, c.posL, c.posC);
+		pousseurL = c.posL;
+		pousseurC = c.posC;
+		if (c.caisse) {
+			deplace(CAISSE, dstL+c.dirL, dstC+c.dirC, dstL, dstC);
+		}
 	}
 
 	@Override
 	public void faire(Coup c) {
 		jouer(c);
 		super.faire(c);
+	}
+	
+	@Override
+	public Coup annuler() {
+		Coup c = super.annuler();
+		dejouer(c);
+		return c;
+	}
+	
+	@Override
+	public Coup refaire() {
+		Coup c = super.refaire();
+		jouer(c);
+		return c;
 	}
 	
 	public Coup jouer(int dL, int dC) {
@@ -188,8 +211,6 @@ public class Niveau extends Historique<Coup> {
 		}
 		if (c != null) {
 			faire(c);
-			pousseurL = destL;
-			pousseurC = destC;
 		}
 		return c;
 	}

@@ -61,6 +61,14 @@ public class ControleurMediateur {
 	public void prochain() {
 		jeu.prochainNiveau();
 	}
+	
+	public void annuler() {
+		jeu.annuler();
+	}
+	
+	public void refaire() {
+		jeu.refaire();
+	}
 
 	public void pressionTouche(KeyEvent event) {
 		switch (event.getCode()) {
@@ -75,6 +83,12 @@ public class ControleurMediateur {
 			break;
 		case DOWN:
 			jeu.jouer(1, 0);
+			break;
+		case U:
+			jeu.annuler();
+			break;
+		case R:
+			jeu.refaire();
 			break;
 		case Q:
 		case A:

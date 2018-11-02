@@ -60,6 +60,20 @@ public class Jeu extends Observable {
 		n = l.lisProchainNiveau();
 		metAJour();
 	}
+	
+	public void annuler() {
+		if (niveau().peutAnnuler()) {
+			niveau().annuler();
+			metAJour();
+		}
+	}
+
+	public void refaire() {
+		if (niveau().peutRefaire()) {
+			niveau().refaire();
+			metAJour();
+		}
+	}
 
 	public void jouer(int dL, int dC) {
 		if (n.jouer(dL, dC) != null) {
