@@ -125,8 +125,6 @@ public class FenetreGraphique implements Observateur {
 				Configuration.logger().info("Fin du jeu");
 			}
 		});
-
-		miseAJour();
 	}
 	
 	public void ecouteurDeRedimensionnement(ChangeListener<Number> l) {
