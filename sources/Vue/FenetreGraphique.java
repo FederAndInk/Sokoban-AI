@@ -33,6 +33,7 @@ import Patterns.Observateur;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -41,7 +42,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -83,12 +83,22 @@ public class FenetreGraphique implements Observateur {
 		Pane vue = new Pane(can);
 
 		VBox boiteTexte = new VBox();
-		boiteTexte.getChildren().add(new Label("Sokoban"));
+		boiteTexte.setAlignment(Pos.CENTER);
+
+		Label titre = new Label("Sokoban");
+		titre.setMaxHeight(Double.MAX_VALUE);
+		titre.setAlignment(Pos.TOP_CENTER);
+		boiteTexte.getChildren().add(titre);
+		VBox.setVgrow(titre, Priority.ALWAYS);
+
 		prochain = new Button("Prochain");
-		BorderPane conteneurProchain = new BorderPane(prochain);
-		boiteTexte.getChildren().add(conteneurProchain);
-		boiteTexte.getChildren().add(new Label("Copyright G. Huard, 2018"));
-		VBox.setVgrow(conteneurProchain, Priority.ALWAYS);
+		boiteTexte.getChildren().add(prochain);
+
+		Label copyright = new Label("Copyright G. Huard, 2018");
+		copyright.setMaxHeight(Double.MAX_VALUE);
+		copyright.setAlignment(Pos.BOTTOM_LEFT);
+		boiteTexte.getChildren().add(copyright);
+		VBox.setVgrow(copyright, Priority.ALWAYS);
 
 		HBox boiteScene = new HBox();
 		boiteScene.getChildren().add(vue);
@@ -108,8 +118,6 @@ public class FenetreGraphique implements Observateur {
 				Configuration.logger().info("Fin du jeu");
 			}
 		});
-
-		miseAJour();
 	}
 	
 	public void ecouteurDeRedimensionnement(ChangeListener<Number> l) {
