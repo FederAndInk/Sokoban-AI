@@ -71,5 +71,6 @@ public class InterfaceGraphique extends Application {
 			}
 		});
 		jeu.ajouteObservateur(f);
+		jeu.metAJour();
 	}
 }
