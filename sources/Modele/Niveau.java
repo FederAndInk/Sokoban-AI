@@ -156,7 +156,7 @@ public class Niveau extends Historique<Coup> {
 			nbSurBut[element]--;
 	}
 	
-	public void appliquer(Coup c) {
+	public void jouer(Coup c) {
 		int dstX = c.posX + c.dirX;
 		int dstY = c.posY + c.dirY;
 		if (c.caisse) {
@@ -164,10 +164,14 @@ public class Niveau extends Historique<Coup> {
 		}
 		deplace(POUSSEUR, c.posX, c.posY, dstX, dstY);
 	}
+	
+	public void dejouer(Coup c) {
+		
+	}
 
 	@Override
 	public void faire(Coup c) {
-		appliquer(c);
+		jouer(c);
 		super.faire(c);
 	}
 	
