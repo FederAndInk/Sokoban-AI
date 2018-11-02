@@ -60,6 +60,7 @@ public class FenetreGraphique implements Observateur {
 	double height;
 	double tileWidth;
 	double tileHeight;
+	GraphicsContext gc;
 
 	private Image lisImage(String nom) {
 		String resource = Configuration.lis(nom);
@@ -137,6 +138,29 @@ public class FenetreGraphique implements Observateur {
 		prochain.setOnAction(h);
 	}
 
+	void traceSol(int contenu, int l, int c) {
+		double x = c * tileWidth;
+		double y = l * tileHeight;
+		if (Niveau.estBut(contenu))
+			gc.drawImage(but, x, y, tileWidth, tileHeight);
+		else
+			gc.drawImage(sol, x, y, tileWidth, tileHeight);
+	}
+	
+	void traceObjet(int contenu, int l, int c) {
+		double x = c * tileWidth;
+		double y = l * tileHeight;
+		if (Niveau.estMur(contenu))
+			gc.drawImage(mur, x, y, tileWidth, tileHeight);
+		if (Niveau.aPousseur(contenu))
+			gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
+		if (Niveau.aCaisse(contenu))
+			if (Niveau.estBut(contenu))
+				gc.drawImage(caisseSurBut, x, y, tileWidth, tileHeight);
+			else
+				gc.drawImage(caisse, x, y, tileWidth, tileHeight);
+	}
+
 	@Override
 	public void miseAJour() {
 		Niveau n = jeu.niveau();
@@ -151,28 +175,14 @@ public class FenetreGraphique implements Observateur {
 		tileHeight = height / n.lignes();
 		tileWidth = Math.min(tileWidth, tileHeight);
 		tileHeight = Math.min(tileWidth, tileHeight);
+		gc = can.getGraphicsContext2D();
 
-		GraphicsContext gc = can.getGraphicsContext2D();
 		gc.clearRect(0, 0, width, height);
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
-				double x = colonne * tileWidth;
-				double y = ligne * tileHeight;
-				gc.drawImage(sol, x, y, tileWidth, tileHeight);
-				if (n.estMur(ligne, colonne)) {
-					gc.drawImage(mur, x, y, tileWidth, tileHeight);
-				} else {
-					if (n.estBut(ligne, colonne)) {
-						gc.drawImage(but, x, y, tileWidth, tileHeight);
-						if (n.aCaisse(ligne, colonne))
-							gc.drawImage(caisseSurBut, x, y, tileWidth, tileHeight);
-					} else {
-						if (n.aCaisse(ligne, colonne))
-							gc.drawImage(caisse, x, y, tileWidth, tileHeight);
-					}
-					if (n.aPousseur(ligne, colonne))
-						gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
-				}
+				int contenu = n.get(ligne, colonne);
+				traceSol(contenu, ligne, colonne);
+				traceObjet(contenu, ligne, colonne);
 			}
 	}
 	
