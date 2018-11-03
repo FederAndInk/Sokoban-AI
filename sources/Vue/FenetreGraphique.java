@@ -153,7 +153,7 @@ public class FenetreGraphique implements Observateur {
 		refaire.setOnAction(h);
 	}
 	
-	void traceSol(int contenu, int l, int c) {
+	public void traceSol(int contenu, int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
 		if (Niveau.estBut(contenu))
@@ -162,7 +162,7 @@ public class FenetreGraphique implements Observateur {
 			gc.drawImage(sol, x, y, tileWidth, tileHeight);
 	}
 	
-	void traceObjet(int contenu, int l, int c) {
+	public void traceObjet(int contenu, int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
 		if (Niveau.estMur(contenu))
@@ -195,7 +195,7 @@ public class FenetreGraphique implements Observateur {
 		gc.clearRect(0, 0, width, height);
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
-				int contenu = n.get(ligne, colonne);
+				int contenu = n.contenu(ligne, colonne);
 				traceSol(contenu, ligne, colonne);
 				traceObjet(contenu, ligne, colonne);
 			}

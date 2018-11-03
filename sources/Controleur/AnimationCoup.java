@@ -24,17 +24,34 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
-package Modele;
+package Controleur;
 
-public class Coup {
-	public int dirL, dirC, posL, posC;
-	public boolean caisse;
+import Global.Configuration;
+import Modele.Coup;
+import Modele.Niveau;
+import Vue.FenetreGraphique;
+
+public class AnimationCoup {
+	static final double speed = Double.parseDouble(Configuration.lis("VitesseAnimations"));
+	Niveau niv;
+	FenetreGraphique fen;
+	Coup cp;
+	double progres;
+	int sens;
 	
-	Coup(int pL, int pC, int dL, int dC, boolean c) {
-		posL = pL;
-		posC = pC;
-		dirL = dL;
-		dirC = dC;
-		caisse = c;
+	AnimationCoup(Niveau n, FenetreGraphique f, Coup c, int s) {
+		niv = n;
+		fen = f;
+		cp = c;
+		sens = s;
+		progres = (sens-1)/-2;
+	}
+	
+	void effaceZone() {
+		int l = cp.posL;
+		int c = cp.posC;
+		fen.traceSol(niv.contenu(l, c), l, c);
+		l += cp.dirL*sens;
+		fen.traceSol(niv.contenu(l, c), l, c);
 	}
 }

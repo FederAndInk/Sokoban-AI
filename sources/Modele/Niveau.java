@@ -127,7 +127,7 @@ public class Niveau extends Historique<Coup> {
 		return cases[0].length;
 	}
 	
-	public int get(int l, int c) {
+	public int contenu(int l, int c) {
 		return cases[l][c];
 	}
 
