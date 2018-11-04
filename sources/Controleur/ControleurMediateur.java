@@ -134,12 +134,15 @@ public class ControleurMediateur extends AnimationTimer {
 			refaire();
 			break;
 		case P:
-			if (avecAnimations) {
-				avecAnimations = false;
-				stop();
-			} else {
-				avecAnimations = true;
-				start();
+			if (!enMouvement) {
+				if (avecAnimations) {
+					avecAnimations = false;
+					stop();
+				} else {
+					avecAnimations = true;
+					animations = Configuration.fabriqueSequence().nouvelle();
+					start();
+				}
 			}
 			break;
 		case Q:
