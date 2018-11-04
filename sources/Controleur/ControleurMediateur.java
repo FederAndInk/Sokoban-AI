@@ -44,6 +44,7 @@ public class ControleurMediateur extends AnimationTimer {
 	boolean avecAnimations;
 	double vitesseAnimations;
 	boolean enMouvement;
+	int lenteurPas, decompte;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
@@ -51,6 +52,8 @@ public class ControleurMediateur extends AnimationTimer {
 		animations = Configuration.fabriqueSequence().nouvelle();
 		avecAnimations = Boolean.parseBoolean(Configuration.lis("Animations"));
 		vitesseAnimations = Double.parseDouble(Configuration.lis("VitesseAnimations"));
+		lenteurPas = Integer.parseInt(Configuration.lis("LenteurPas"));
+		decompte = lenteurPas;
 		if (avecAnimations)
 			start();
 	}
@@ -99,7 +102,7 @@ public class ControleurMediateur extends AnimationTimer {
 			if (avecAnimations) {
 				vitesse = vitesseAnimations;
 			} else {
-				vitesse=1;
+				vitesse = 1;
 			}
 			animations.insereQueue(new AnimationCoup(jeu.niveau(), f, cp, sens, vitesse));
 			if (avecAnimations) {
@@ -150,22 +153,31 @@ public class ControleurMediateur extends AnimationTimer {
 
 	@Override
 	public void handle(long now) {
-		Iterateur<AnimationCoup> it;
-		for (it = animations.iterateur(); it.aProchain();) {
-			AnimationCoup a = it.prochain();
-			a.effaceZone();
+		decompte--;
+		if (decompte == 0) {
+			f.changeEtape();
+			if (!enMouvement)
+				jeu.metAJour();
+			decompte = lenteurPas;
 		}
-		for (it = animations.iterateur(); it.aProchain();) {
-			AnimationCoup a = it.prochain();
-			a.progresse();
-			a.afficheObjets();
-			if (a.estTerminee())
-				it.supprime();
-		}
-		if (animations.estVide()) {
-			enMouvement = false;
-			if (jeu.niveau().estTermine())
-				jeu.prochainNiveau();
+		if (enMouvement) {
+			Iterateur<AnimationCoup> it;
+			for (it = animations.iterateur(); it.aProchain();) {
+				AnimationCoup a = it.prochain();
+				a.effaceZone();
+			}
+			for (it = animations.iterateur(); it.aProchain();) {
+				AnimationCoup a = it.prochain();
+				a.progresse();
+				a.afficheObjets();
+				if (a.estTerminee())
+					it.supprime();
+			}
+			if (animations.estVide()) {
+				enMouvement = false;
+				if (jeu.niveau().estTermine())
+					jeu.prochainNiveau();
+			}
 		}
 	}
 }

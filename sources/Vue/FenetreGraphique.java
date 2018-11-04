@@ -52,8 +52,8 @@ import javafx.stage.WindowEvent;
 public class FenetreGraphique implements Observateur {
 	Jeu jeu;
 	Image pousseur, mur, sol, caisse, but, caisseSurBut;
-	Image [][] pousseurs;
-	int etape;
+	Image[][] pousseurs;
+	int direction, etape;
 	Scene scene;
 	Canvas can;
 	Button prochain;
@@ -72,10 +72,15 @@ public class FenetreGraphique implements Observateur {
 		return new Image(Configuration.charge(resource));
 	}
 
+	public void changeEtape() {
+		etape = (etape + 1) % pousseurs[direction].length;
+		pousseur = pousseurs[direction][etape];
+	}
+
 	public FenetreGraphique(Jeu j, Stage primaryStage) {
 		pousseurs = new Image[4][4];
-		for (int d=0; d<pousseurs.length; d++)
-			for (int i=0; i<pousseurs[d].length; i++)
+		for (int d = 0; d < pousseurs.length; d++)
+			for (int i = 0; i < pousseurs[d].length; i++)
 				pousseurs[d][i] = lisImage("Pousseur_" + d + "_" + i);
 		mur = lisImage("Mur");
 		sol = lisImage("Sol");
@@ -135,20 +140,20 @@ public class FenetreGraphique implements Observateur {
 			}
 		});
 	}
-	
+
 	public void ecouteurDeRedimensionnement(ChangeListener<Number> l) {
 		can.widthProperty().addListener(l);
 		can.heightProperty().addListener(l);
 	}
-	
+
 	public void ecouteurDeSouris(EventHandler<MouseEvent> h) {
 		can.setOnMouseClicked(h);
 	}
-	
+
 	public void ecouteurDeClavier(EventHandler<KeyEvent> h) {
 		scene.setOnKeyPressed(h);
 	}
-	
+
 	public void ecouteurProchain(EventHandler<ActionEvent> h) {
 		prochain.setOnAction(h);
 	}
@@ -160,7 +165,7 @@ public class FenetreGraphique implements Observateur {
 	public void ecouteurRefaire(EventHandler<ActionEvent> h) {
 		refaire.setOnAction(h);
 	}
-	
+
 	public void traceSol(int contenu, int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
@@ -169,7 +174,7 @@ public class FenetreGraphique implements Observateur {
 		else
 			gc.drawImage(sol, x, y, tileWidth, tileHeight);
 	}
-	
+
 	public void traceObjet(int contenu, double l, double c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
@@ -191,8 +196,8 @@ public class FenetreGraphique implements Observateur {
 			Configuration.logger().info("Dernier niveau lu, fin du jeu !");
 			System.exit(0);
 		}
-		
-		int direction = jeu.direction();
+
+		direction = jeu.direction();
 		pousseur = pousseurs[direction][etape];
 
 		width = can.getWidth();
@@ -211,11 +216,11 @@ public class FenetreGraphique implements Observateur {
 				traceObjet(contenu, ligne, colonne);
 			}
 	}
-	
+
 	public double tileWidth() {
 		return tileWidth;
 	}
-	
+
 	public double tileHeight() {
 		return tileHeight;
 	}
