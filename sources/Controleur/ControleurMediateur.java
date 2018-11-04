@@ -30,36 +30,43 @@ import Global.Configuration;
 import Modele.Coup;
 import Modele.Jeu;
 import Modele.Niveau;
-import Structures.Iterateur;
-import Structures.Sequence;
+import Patterns.Observable;
+import Vue.AnimationCoup;
 import Vue.FenetreGraphique;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
-public class ControleurMediateur extends AnimationTimer {
+public class ControleurMediateur extends Observable {
 	Jeu jeu;
 	FenetreGraphique f;
-	Sequence<AnimationCoup> animations;
 	boolean avecAnimations;
 	double vitesseAnimations;
 	boolean enMouvement;
 	int lenteurPas, decompte;
+	AnimationTimer metronome;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
 		f = fen;
-		animations = Configuration.fabriqueSequence().nouvelle();
 		avecAnimations = Boolean.parseBoolean(Configuration.lis("Animations"));
 		vitesseAnimations = Double.parseDouble(Configuration.lis("VitesseAnimations"));
 		lenteurPas = Integer.parseInt(Configuration.lis("LenteurPas"));
 		decompte = lenteurPas;
+		metronome = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				tictac();
+			}
+
+		};
 		if (avecAnimations)
-			start();
+			metronome.start();
 	}
 
 	public void redimensionnement() {
-		f.miseAJour();
+		f.retracerNiveau();
+		f.miseAJourAnimations();
 	}
 
 	public void clicSouris(MouseEvent e) {
@@ -76,8 +83,11 @@ public class ControleurMediateur extends AnimationTimer {
 	}
 
 	public void prochain() {
-		if (!enMouvement)
+		if (!enMouvement) {
 			jeu.prochainNiveau();
+			f.retracerNiveau();
+			f.miseAJourAnimations();
+		}
 	}
 
 	public void annuler() {
@@ -96,6 +106,20 @@ public class ControleurMediateur extends AnimationTimer {
 		}
 	}
 
+	void basculeAnimations() {
+		if (!enMouvement) {
+			if (avecAnimations) {
+				avecAnimations = false;
+				metronome.stop();
+			} else {
+				avecAnimations = true;
+				if (f.animationsEnCours())
+					f.annuleAnimations();
+				metronome.start();
+			}
+		}
+	}
+
 	void animeCoup(Coup cp, int sens) {
 		if (cp != null) {
 			double vitesse;
@@ -104,11 +128,13 @@ public class ControleurMediateur extends AnimationTimer {
 			} else {
 				vitesse = 1;
 			}
-			animations.insereQueue(new AnimationCoup(jeu.niveau(), f, cp, sens, vitesse));
+			AnimationCoup a = new AnimationCoup(jeu.niveau(), f, cp, sens, vitesse);
+			ajouteObservateur(a);
+			f.ajouteAnimation(a);
 			if (avecAnimations) {
 				enMouvement = true;
 			} else {
-				handle(0);
+				tictac();
 			}
 		}
 	}
@@ -134,16 +160,7 @@ public class ControleurMediateur extends AnimationTimer {
 			refaire();
 			break;
 		case P:
-			if (!enMouvement) {
-				if (avecAnimations) {
-					avecAnimations = false;
-					stop();
-				} else {
-					avecAnimations = true;
-					animations = Configuration.fabriqueSequence().nouvelle();
-					start();
-				}
-			}
+			basculeAnimations();
 			break;
 		case Q:
 		case A:
@@ -154,32 +171,23 @@ public class ControleurMediateur extends AnimationTimer {
 		}
 	}
 
-	@Override
-	public void handle(long now) {
+	void tictac() {
 		decompte--;
 		if (decompte == 0) {
-			f.changeEtape();
+			f.changeEtapePousseur();
 			if (!enMouvement)
-				jeu.metAJour();
+				f.miseAJourAnimations();
 			decompte = lenteurPas;
 		}
 		if (enMouvement) {
-			Iterateur<AnimationCoup> it;
-			for (it = animations.iterateur(); it.aProchain();) {
-				AnimationCoup a = it.prochain();
-				a.effaceZone();
-			}
-			for (it = animations.iterateur(); it.aProchain();) {
-				AnimationCoup a = it.prochain();
-				a.progresse();
-				a.afficheObjets();
-				if (a.estTerminee())
-					it.supprime();
-			}
-			if (animations.estVide()) {
+			// Progression des animations
+			metAJour();
+			// Dessin des animations
+			f.miseAJourAnimations();
+			if (!f.animationsEnCours()) {
 				enMouvement = false;
 				if (jeu.niveau().estTermine())
-					jeu.prochainNiveau();
+					prochain();
 			}
 		}
 	}

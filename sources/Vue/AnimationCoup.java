@@ -24,13 +24,14 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
-package Controleur;
+package Vue;
 
 import Modele.Coup;
 import Modele.Niveau;
+import Patterns.Observateur;
 import Vue.FenetreGraphique;
 
-public class AnimationCoup {
+public class AnimationCoup implements Observateur {
 	double vitesse;
 	Niveau niv;
 	FenetreGraphique fen;
@@ -39,7 +40,7 @@ public class AnimationCoup {
 	int sens;
 	int nbTuiles, pousseur, caisse, offset;
 	
-	AnimationCoup(Niveau n, FenetreGraphique f, Coup cp, int s, double v) {
+	public AnimationCoup(Niveau n, FenetreGraphique f, Coup cp, int s, double v) {
 		niv = n;
 		fen = f;
 		coup = cp;
@@ -80,7 +81,8 @@ public class AnimationCoup {
 		}
 	}
 	
-	void progresse() {
+	@Override
+	public void miseAJour() {
 		progres += vitesse*sens;
 		if (progres < 0)
 			progres = 0;

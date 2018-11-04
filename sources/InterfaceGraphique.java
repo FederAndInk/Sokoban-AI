@@ -82,7 +82,7 @@ public class InterfaceGraphique extends Application {
 
 			}
 		});
-		jeu.ajouteObservateur(f);
+		f.retracerNiveau();
 		jeu.metAJour();
 	}
 }

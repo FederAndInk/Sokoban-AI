@@ -29,7 +29,8 @@ package Vue;
 import Global.Configuration;
 import Modele.Jeu;
 import Modele.Niveau;
-import Patterns.Observateur;
+import Structures.Iterateur;
+import Structures.Sequence;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -49,8 +50,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-public class FenetreGraphique implements Observateur {
+public class FenetreGraphique {
 	Jeu jeu;
+	Niveau n;
 	Image pousseur, mur, sol, caisse, but, caisseSurBut;
 	Image[][] pousseurs;
 	int direction, etape;
@@ -65,6 +67,7 @@ public class FenetreGraphique implements Observateur {
 	double tileWidth;
 	double tileHeight;
 	GraphicsContext gc;
+	Sequence<AnimationCoup> animations;
 
 	private Image lisImage(String nom) {
 		String resource = Configuration.lis(nom);
@@ -72,9 +75,21 @@ public class FenetreGraphique implements Observateur {
 		return new Image(Configuration.charge(resource));
 	}
 
-	public void changeEtape() {
+	public void changeEtapePousseur() {
 		etape = (etape + 1) % pousseurs[direction].length;
 		pousseur = pousseurs[direction][etape];
+	}
+
+	public void ajouteAnimation(AnimationCoup a) {
+		animations.insereQueue(a);
+	}
+
+	public boolean animationsEnCours() {
+		return !animations.estVide();
+	}
+
+	public void annuleAnimations() {
+		animations = Configuration.fabriqueSequence().nouvelle();
 	}
 
 	public FenetreGraphique(Jeu j, Stage primaryStage) {
@@ -92,6 +107,7 @@ public class FenetreGraphique implements Observateur {
 		int direction = jeu.direction();
 		etape = 0;
 		pousseur = pousseurs[direction][etape];
+		animations = Configuration.fabriqueSequence().nouvelle();
 		primaryStage.setTitle("Sokoban");
 		primaryStage.setFullScreen(true);
 
@@ -189,16 +205,42 @@ public class FenetreGraphique implements Observateur {
 				gc.drawImage(caisse, x, y, tileWidth, tileHeight);
 	}
 
-	@Override
-	public void miseAJour() {
-		Niveau n = jeu.niveau();
+	public void miseAJourAnimations() {
+		miseAJourPousseur();
+		if (animationsEnCours()) {
+			Iterateur<AnimationCoup> it;
+			for (it = animations.iterateur(); it.aProchain();) {
+				AnimationCoup a = it.prochain();
+				a.effaceZone();
+			}
+			for (it = animations.iterateur(); it.aProchain();) {
+				AnimationCoup a = it.prochain();
+				a.afficheObjets();
+				if (a.estTerminee())
+					it.supprime();
+			}
+		} else {
+			int ligne = n.lignePousseur();
+			int colonne = n.colonnePousseur();
+			int contenu = n.contenu(ligne, colonne);
+			traceSol(contenu, ligne, colonne);
+			traceObjet(contenu, ligne, colonne);
+		}
+	}
+
+	void miseAJourPousseur() {
+		direction = jeu.direction();
+		pousseur = pousseurs[direction][etape];
+	}
+
+	public void retracerNiveau() {
+		n = jeu.niveau();
 		if (n == null) {
 			Configuration.logger().info("Dernier niveau lu, fin du jeu !");
 			System.exit(0);
 		}
 
-		direction = jeu.direction();
-		pousseur = pousseurs[direction][etape];
+		miseAJourPousseur();
 
 		width = can.getWidth();
 		height = can.getHeight();
