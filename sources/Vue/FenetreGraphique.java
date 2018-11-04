@@ -52,6 +52,8 @@ import javafx.stage.WindowEvent;
 public class FenetreGraphique implements Observateur {
 	Jeu jeu;
 	Image pousseur, mur, sol, caisse, but, caisseSurBut;
+	Image [][] pousseurs;
+	int etape;
 	Scene scene;
 	Canvas can;
 	Button prochain;
@@ -71,7 +73,10 @@ public class FenetreGraphique implements Observateur {
 	}
 
 	public FenetreGraphique(Jeu j, Stage primaryStage) {
-		pousseur = lisImage("Pousseur");
+		pousseurs = new Image[4][4];
+		for (int d=0; d<pousseurs.length; d++)
+			for (int i=0; i<pousseurs[d].length; i++)
+				pousseurs[d][i] = lisImage("Pousseur_" + d + "_" + i);
 		mur = lisImage("Mur");
 		sol = lisImage("Sol");
 		caisse = lisImage("Caisse");
@@ -79,6 +84,9 @@ public class FenetreGraphique implements Observateur {
 		caisseSurBut = lisImage("CaisseSurBut");
 
 		jeu = j;
+		int direction = jeu.direction();
+		etape = 0;
+		pousseur = pousseurs[direction][etape];
 		primaryStage.setTitle("Sokoban");
 		primaryStage.setFullScreen(true);
 
@@ -162,7 +170,7 @@ public class FenetreGraphique implements Observateur {
 			gc.drawImage(sol, x, y, tileWidth, tileHeight);
 	}
 	
-	public void traceObjet(int contenu, int l, int c) {
+	public void traceObjet(int contenu, double l, double c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
 		if (Niveau.estMur(contenu))
@@ -183,6 +191,9 @@ public class FenetreGraphique implements Observateur {
 			Configuration.logger().info("Dernier niveau lu, fin du jeu !");
 			System.exit(0);
 		}
+		
+		int direction = jeu.direction();
+		pousseur = pousseurs[direction][etape];
 
 		width = can.getWidth();
 		height = can.getHeight();

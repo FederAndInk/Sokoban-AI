@@ -34,6 +34,7 @@ import Patterns.Observable;
 public class Jeu extends Observable {
 	LecteurNiveaux l;
 	Niveau n;
+	int direction;
 
 	public Jeu() {
 		InputStream in;
@@ -50,37 +51,65 @@ public class Jeu extends Observable {
 		Configuration.logger().info("Niveaux trouvés");
 		l = new LecteurNiveaux(in);
 		prochainNiveau();
+		direction = 2;
 	}
 
 	public Niveau niveau() {
 		return n;
 	}
 
+	public int direction() {
+		return direction;
+	}
+
+	void metAJour(int dL, int dC) {
+		switch (dL + 2 * dC) {
+		case -2:
+			direction = 1;
+			break;
+		case -1:
+			direction = 0;
+			break;
+		case 1:
+			direction = 2;
+			break;
+		case 2:
+			direction = 3;
+			break;
+		default:
+			Configuration.logger().severe("Bug interne, direction invalide");
+		}
+		super.metAJour();
+	}
+
 	public void prochainNiveau() {
 		n = l.lisProchainNiveau();
-		metAJour();
+		metAJour(1, 0);
 	}
-	
-	public void annuler() {
+
+	public Coup annuler() {
+		Coup cp = null;
 		if (niveau().peutAnnuler()) {
-			niveau().annuler();
-			metAJour();
+			cp = niveau().annuler();
+			metAJour(cp.dirL, cp.dirC);
 		}
+		return cp;
 	}
 
-	public void refaire() {
+	public Coup refaire() {
+		Coup cp = null;
 		if (niveau().peutRefaire()) {
-			niveau().refaire();
-			metAJour();
+			cp = niveau().refaire();
+			metAJour(cp.dirL, cp.dirC);
 		}
+		return cp;
 	}
 
-	public void jouer(int dL, int dC) {
-		if (n.jouer(dL, dC) != null) {
-			if (n.estTermine())
-				prochainNiveau();
-			else
-				metAJour();
+	public Coup jouer(int dL, int dC) {
+		Coup cp = n.jouer(dL, dC);
+		if (cp != null) {
+			metAJour(cp.dirL, cp.dirC);
 		}
+		return cp;
 	}
 }

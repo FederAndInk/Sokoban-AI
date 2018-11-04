@@ -26,19 +26,33 @@
  */
 package Controleur;
 
+import Global.Configuration;
+import Modele.Coup;
 import Modele.Jeu;
 import Modele.Niveau;
+import Structures.Iterateur;
+import Structures.Sequence;
 import Vue.FenetreGraphique;
+import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
-public class ControleurMediateur {
+public class ControleurMediateur extends AnimationTimer {
 	Jeu jeu;
 	FenetreGraphique f;
+	Sequence<AnimationCoup> animations;
+	boolean avecAnimations;
+	double vitesseAnimations;
+	boolean enMouvement;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
 		f = fen;
+		animations = Configuration.fabriqueSequence().nouvelle();
+		avecAnimations = Boolean.parseBoolean(Configuration.lis("Animations"));
+		vitesseAnimations = Double.parseDouble(Configuration.lis("VitesseAnimations"));
+		if (avecAnimations)
+			start();
 	}
 
 	public void redimensionnement() {
@@ -54,41 +68,76 @@ public class ControleurMediateur {
 		int dC = c - n.colonnePousseur();
 		// Seulement une direction, -1 ou +1
 		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) == 1)) {
-			jeu.jouer(dL, dC);
+			jouer(dL, dC);
 		}
 	}
 
 	public void prochain() {
-		jeu.prochainNiveau();
+		if (!enMouvement)
+			jeu.prochainNiveau();
 	}
-	
+
 	public void annuler() {
-		jeu.annuler();
+		if (!enMouvement)
+			animeCoup(jeu.annuler(), -1);
 	}
-	
+
 	public void refaire() {
-		jeu.refaire();
+		if (!enMouvement)
+			animeCoup(jeu.refaire(), 1);
+	}
+
+	public void jouer(int l, int c) {
+		if (!enMouvement) {
+			animeCoup(jeu.jouer(l, c), 1);
+		}
+	}
+
+	void animeCoup(Coup cp, int sens) {
+		if (cp != null) {
+			double vitesse;
+			if (avecAnimations) {
+				vitesse = vitesseAnimations;
+			} else {
+				vitesse=1;
+			}
+			animations.insereQueue(new AnimationCoup(jeu.niveau(), f, cp, sens, vitesse));
+			if (avecAnimations) {
+				enMouvement = true;
+			} else {
+				handle(0);
+			}
+		}
 	}
 
 	public void pressionTouche(KeyEvent event) {
 		switch (event.getCode()) {
 		case LEFT:
-			jeu.jouer(0, -1);
+			jouer(0, -1);
 			break;
 		case RIGHT:
-			jeu.jouer(0, 1);
+			jouer(0, 1);
 			break;
 		case UP:
-			jeu.jouer(-1, 0);
+			jouer(-1, 0);
 			break;
 		case DOWN:
-			jeu.jouer(1, 0);
+			jouer(1, 0);
 			break;
 		case U:
-			jeu.annuler();
+			annuler();
 			break;
 		case R:
-			jeu.refaire();
+			refaire();
+			break;
+		case P:
+			if (avecAnimations) {
+				avecAnimations = false;
+				stop();
+			} else {
+				avecAnimations = true;
+				start();
+			}
 			break;
 		case Q:
 		case A:
@@ -96,6 +145,27 @@ public class ControleurMediateur {
 			break;
 		default:
 			break;
+		}
+	}
+
+	@Override
+	public void handle(long now) {
+		Iterateur<AnimationCoup> it;
+		for (it = animations.iterateur(); it.aProchain();) {
+			AnimationCoup a = it.prochain();
+			a.effaceZone();
+		}
+		for (it = animations.iterateur(); it.aProchain();) {
+			AnimationCoup a = it.prochain();
+			a.progresse();
+			a.afficheObjets();
+			if (a.estTerminee())
+				it.supprime();
+		}
+		if (animations.estVide()) {
+			enMouvement = false;
+			if (jeu.niveau().estTermine())
+				jeu.prochainNiveau();
 		}
 	}
 }
