@@ -41,6 +41,7 @@ public class Niveau {
 	int pousseurL, pousseurC;
 	int [] nb;
 	int [] nbSurBut;
+	int nbPas, nbPoussees;
 
 	void nouveauPousseur(int l, int c) {
 		pousseurL = l;
@@ -167,16 +168,26 @@ public class Niveau {
 		int dest2C = destC+dC;
 		if (aCaisse(cases[destL][destC]) && estOccupable(dest2L, dest2C)) {
 			deplace(CAISSE, destL, destC, dest2L, dest2C);
+			nbPoussees++;
 		}
 		if (estOccupable(destL, destC)) {
 			deplace(POUSSEUR, pousseurL, pousseurC, destL, destC);
 			pousseurL = destL;
 			pousseurC = destC;
+			nbPas++;
 			return true;
 		}
 		return false;
 	}
 	
+	public int nbPas() {
+		return nbPas;
+	}
+	
+	public int nbPoussees() {
+		return nbPoussees;
+	}
+
 	public boolean estTermine() {
 		return nbSurBut[CAISSE] == nb[BUT];
 	}

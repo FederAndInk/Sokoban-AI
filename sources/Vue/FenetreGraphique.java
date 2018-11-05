@@ -28,18 +28,14 @@ package Vue;
 
 import Global.Configuration;
 import Modele.Jeu;
-import Modele.Niveau;
 import Patterns.Observateur;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -51,37 +47,18 @@ import javafx.stage.WindowEvent;
 
 public class FenetreGraphique implements Observateur {
 	Jeu jeu;
-	Image pousseur, mur, sol, caisse, but, caisseSurBut;
 	Scene scene;
-	Canvas can;
+	VueNiveau vueNiveau;
+	Label nbPas, nbPoussees;
 	Button prochain;
 
-	double width;
-	double height;
-	double tileWidth;
-	double tileHeight;
-	GraphicsContext gc;
-
-	private Image lisImage(String nom) {
-		String resource = Configuration.lis(nom);
-		Configuration.logger().info("Lecture de " + resource);
-		return new Image(Configuration.charge(resource));
-	}
-
 	public FenetreGraphique(Jeu j, Stage primaryStage) {
-		pousseur = lisImage("Pousseur");
-		mur = lisImage("Mur");
-		sol = lisImage("Sol");
-		caisse = lisImage("Caisse");
-		but = lisImage("But");
-		caisseSurBut = lisImage("CaisseSurBut");
-
 		jeu = j;
 		primaryStage.setTitle("Sokoban");
 		primaryStage.setFullScreen(true);
 
-		can = new Canvas(600, 400);
-		Pane vue = new Pane(can);
+		vueNiveau = new VueNiveau(jeu);
+		Pane vue = new Pane(vueNiveau);
 
 		VBox boiteTexte = new VBox();
 		boiteTexte.setAlignment(Pos.CENTER);
@@ -92,6 +69,10 @@ public class FenetreGraphique implements Observateur {
 		boiteTexte.getChildren().add(titre);
 		VBox.setVgrow(titre, Priority.ALWAYS);
 
+		nbPas = new Label("Pas :");
+		boiteTexte.getChildren().add(nbPas);
+		nbPoussees = new Label("Poussées :");
+		boiteTexte.getChildren().add(nbPoussees);
 		prochain = new Button("Prochain");
 		boiteTexte.getChildren().add(prochain);
 
@@ -110,8 +91,8 @@ public class FenetreGraphique implements Observateur {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-		can.widthProperty().bind(vue.widthProperty());
-		can.heightProperty().bind(vue.heightProperty());
+		vueNiveau.widthProperty().bind(vue.widthProperty());
+		vueNiveau.heightProperty().bind(vue.heightProperty());
 
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
@@ -122,12 +103,12 @@ public class FenetreGraphique implements Observateur {
 	}
 	
 	public void ecouteurDeRedimensionnement(ChangeListener<Number> l) {
-		can.widthProperty().addListener(l);
-		can.heightProperty().addListener(l);
+		vueNiveau.widthProperty().addListener(l);
+		vueNiveau.heightProperty().addListener(l);
 	}
 	
 	public void ecouteurDeSouris(EventHandler<MouseEvent> h) {
-		can.setOnMouseClicked(h);
+		vueNiveau.setOnMouseClicked(h);
 	}
 	
 	public void ecouteurDeClavier(EventHandler<KeyEvent> h) {
@@ -138,59 +119,18 @@ public class FenetreGraphique implements Observateur {
 		prochain.setOnAction(h);
 	}
 
-	void traceSol(int contenu, int l, int c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
-		if (Niveau.estBut(contenu))
-			gc.drawImage(but, x, y, tileWidth, tileHeight);
-		else
-			gc.drawImage(sol, x, y, tileWidth, tileHeight);
-	}
-	
-	void traceObjet(int contenu, int l, int c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
-		if (Niveau.estMur(contenu))
-			gc.drawImage(mur, x, y, tileWidth, tileHeight);
-		if (Niveau.aPousseur(contenu))
-			gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
-		if (Niveau.aCaisse(contenu))
-			if (Niveau.estBut(contenu))
-				gc.drawImage(caisseSurBut, x, y, tileWidth, tileHeight);
-			else
-				gc.drawImage(caisse, x, y, tileWidth, tileHeight);
-	}
-
 	@Override
 	public void miseAJour() {
-		Niveau n = jeu.niveau();
-		if (n == null) {
-			Configuration.logger().info("Dernier niveau lu, fin du jeu !");
-			System.exit(0);
-		}
-
-		width = can.getWidth();
-		height = can.getHeight();
-		tileWidth = width / n.colonnes();
-		tileHeight = height / n.lignes();
-		tileWidth = Math.min(tileWidth, tileHeight);
-		tileHeight = Math.min(tileWidth, tileHeight);
-		gc = can.getGraphicsContext2D();
-
-		gc.clearRect(0, 0, width, height);
-		for (int ligne = 0; ligne < n.lignes(); ligne++)
-			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
-				int contenu = n.get(ligne, colonne);
-				traceSol(contenu, ligne, colonne);
-				traceObjet(contenu, ligne, colonne);
-			}
+		vueNiveau.miseAJour();
+		nbPas.setText("Pas :" + jeu.niveau().nbPas());
+		nbPoussees.setText("Poussées :" + jeu.niveau().nbPoussees());
 	}
 	
 	public double tileWidth() {
-		return tileWidth;
+		return vueNiveau.tileWidth();
 	}
 	
 	public double tileHeight() {
-		return tileHeight;
+		return vueNiveau.tileHeight();
 	}
 }
