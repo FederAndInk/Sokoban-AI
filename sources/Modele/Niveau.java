@@ -41,6 +41,7 @@ public class Niveau extends Historique<Coup> {
 	int pousseurL, pousseurC;
 	int [] nb;
 	int [] nbSurBut;
+	int nbPas, nbPoussees;
 
 	void nouveauPousseur(int l, int c) {
 		pousseurL = l;
@@ -165,8 +166,10 @@ public class Niveau extends Historique<Coup> {
 		int dstC = c.posC + c.dirC;
 		if (c.caisse) {
 			deplace(CAISSE, dstL, dstC, dstL+c.dirL, dstC+c.dirC);
+			nbPoussees++;
 		}
 		deplace(POUSSEUR, c.posL, c.posC, dstL, dstC);
+		nbPas++;
 		pousseurL = dstL;
 		pousseurC = dstC;
 	}
@@ -175,10 +178,12 @@ public class Niveau extends Historique<Coup> {
 		int dstL = c.posL + c.dirL;
 		int dstC = c.posC + c.dirC;
 		deplace(POUSSEUR, dstL, dstC, c.posL, c.posC);
+		nbPas--;
 		pousseurL = c.posL;
 		pousseurC = c.posC;
 		if (c.caisse) {
 			deplace(CAISSE, dstL+c.dirL, dstC+c.dirC, dstL, dstC);
+			nbPoussees--;
 		}
 	}
 
@@ -219,6 +224,14 @@ public class Niveau extends Historique<Coup> {
 		return c;
 	}
 	
+	public int nbPas() {
+		return nbPas;
+	}
+	
+	public int nbPoussees() {
+		return nbPoussees;
+	}
+
 	public boolean estTermine() {
 		return nbSurBut[CAISSE] == nb[BUT];
 	}

@@ -34,7 +34,7 @@ import Vue.FenetreGraphique;
 public class AnimationCoup implements Observateur {
 	double vitesse;
 	Niveau niv;
-	FenetreGraphique fen;
+	VueNiveau vue;
 	Coup coup;
 	double progres;
 	int sens;
@@ -42,7 +42,7 @@ public class AnimationCoup implements Observateur {
 	
 	public AnimationCoup(Niveau n, FenetreGraphique f, Coup cp, int s, double v) {
 		niv = n;
-		fen = f;
+		vue = f.vueNiveau;
 		coup = cp;
 		sens = s;
 		vitesse = v;
@@ -64,7 +64,7 @@ public class AnimationCoup implements Observateur {
 		int l = coup.posL;
 		int c = coup.posC;
 		for (int i=0; i<nbTuiles; i++) {
-			fen.traceSol(niv.contenu(l, c), l, c);
+			vue.traceSol(niv.contenu(l, c), l, c);
 			l += coup.dirL;
 			c += coup.dirC;
 		}
@@ -73,11 +73,11 @@ public class AnimationCoup implements Observateur {
 	void afficheObjets() {
 		double l = coup.posL+coup.dirL*progres;
 		double c = coup.posC+coup.dirC*progres;
-		fen.traceObjet(pousseur, l, c);
+		vue.traceObjet(pousseur, l, c);
 		if (coup.caisse) {
 			l += coup.dirL;
 			c += coup.dirC;
-			fen.traceObjet(caisse, l, c);
+			vue.traceObjet(caisse, l, c);
 		}
 	}
 	

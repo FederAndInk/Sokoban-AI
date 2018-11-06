@@ -65,8 +65,7 @@ public class ControleurMediateur extends Observable {
 	}
 
 	public void redimensionnement() {
-		f.retracerNiveau();
-		f.miseAJourAnimations();
+		f.retraceNiveau();
 	}
 
 	public void clicSouris(MouseEvent e) {
@@ -85,8 +84,7 @@ public class ControleurMediateur extends Observable {
 	public void prochain() {
 		if (!enMouvement) {
 			jeu.prochainNiveau();
-			f.retracerNiveau();
-			f.miseAJourAnimations();
+			f.retraceNiveau();
 		}
 	}
 
@@ -131,9 +129,8 @@ public class ControleurMediateur extends Observable {
 			AnimationCoup a = new AnimationCoup(jeu.niveau(), f, cp, sens, vitesse);
 			ajouteObservateur(a);
 			f.ajouteAnimation(a);
-			if (avecAnimations) {
-				enMouvement = true;
-			} else {
+			enMouvement = true;
+			if (!avecAnimations) {
 				tictac();
 			}
 		}
@@ -172,18 +169,20 @@ public class ControleurMediateur extends Observable {
 	}
 
 	void tictac() {
-		decompte--;
-		if (decompte == 0) {
-			f.changeEtapePousseur();
-			if (!enMouvement)
-				f.miseAJourAnimations();
-			decompte = lenteurPas;
+		if (avecAnimations) {
+			decompte--;
+			if (decompte == 0) {
+				f.changeEtapePousseur();
+				if (!enMouvement)
+					f.miseAJour();
+				decompte = lenteurPas;
+			}
 		}
 		if (enMouvement) {
 			// Progression des animations
 			metAJour();
 			// Dessin des animations
-			f.miseAJourAnimations();
+			f.miseAJour();
 			if (!f.animationsEnCours()) {
 				enMouvement = false;
 				if (jeu.niveau().estTermine())
