@@ -61,6 +61,7 @@ public class FenetreGraphique implements Observateur {
 
 		vueNiveau = new VueNiveau(jeu);
 		Pane vue = new Pane(vueNiveau);
+		vue.setPrefSize(600, 400);
 
 		VBox boiteTexte = new VBox();
 		boiteTexte.setAlignment(Pos.CENTER);
