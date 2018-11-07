@@ -37,7 +37,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
-public class ControleurMediateur extends Observable {
+public class ControleurMediateur {
 	Jeu jeu;
 	FenetreGraphique f;
 	boolean avecAnimations;
@@ -45,6 +45,7 @@ public class ControleurMediateur extends Observable {
 	boolean enMouvement;
 	int lenteurPas, decompte;
 	AnimationTimer metronome;
+	Observable animations;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
@@ -60,12 +61,13 @@ public class ControleurMediateur extends Observable {
 			}
 
 		};
+		animations = new Observable();
 		if (avecAnimations)
 			metronome.start();
 	}
 
 	public void redimensionnement() {
-		f.retraceNiveau();
+		f.miseAJour();
 	}
 
 	public void clicSouris(MouseEvent e) {
@@ -84,7 +86,6 @@ public class ControleurMediateur extends Observable {
 	public void prochain() {
 		if (!enMouvement) {
 			jeu.prochainNiveau();
-			f.retraceNiveau();
 		}
 	}
 
@@ -127,7 +128,7 @@ public class ControleurMediateur extends Observable {
 				vitesse = 1;
 			}
 			AnimationCoup a = new AnimationCoup(jeu.niveau(), f, cp, sens, vitesse);
-			ajouteObservateur(a);
+			animations.ajouteObservateur(a);
 			f.ajouteAnimation(a);
 			enMouvement = true;
 			if (!avecAnimations) {
@@ -174,15 +175,15 @@ public class ControleurMediateur extends Observable {
 			if (decompte == 0) {
 				f.changeEtapePousseur();
 				if (!enMouvement)
-					f.miseAJour();
+					f.afficheAnimations();
 				decompte = lenteurPas;
 			}
 		}
 		if (enMouvement) {
 			// Progression des animations
-			metAJour();
+			animations.metAJour();
 			// Dessin des animations
-			f.miseAJour();
+			f.afficheAnimations();
 			if (!f.animationsEnCours()) {
 				enMouvement = false;
 				if (jeu.niveau().estTermine())
