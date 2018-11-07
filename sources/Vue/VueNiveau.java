@@ -29,14 +29,13 @@ package Vue;
 import Global.Configuration;
 import Modele.Jeu;
 import Modele.Niveau;
-import Patterns.Observateur;
 import Structures.Iterateur;
 import Structures.Sequence;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class VueNiveau extends Canvas implements Observateur {
+public class VueNiveau extends Canvas {
 	Jeu jeu;
 	Image pousseur, mur, sol, caisse, but, caisseSurBut;
 	Image[][] pousseurs;
@@ -113,13 +112,21 @@ public class VueNiveau extends Canvas implements Observateur {
 			else
 				gc.drawImage(caisse, x, y, tileWidth, tileHeight);
 	}
+	
+	void traceCase(int l, int c) {
+		int contenu = n.contenu(l, c);
+		traceSol(contenu, l, c);
+		traceObjet(contenu, l, c);
+	}
 
 	void miseAJourPousseur() {
 		direction = jeu.direction();
 		pousseur = pousseurs[direction][etape];
 	}
 
-	public void miseAJourAnimations() {
+	public void afficheAnimations() {
+		miseAJourPousseur();
+		traceCase(n.lignePousseur(), n.colonnePousseur());
 		if (animationsEnCours()) {
 			Iterateur<AnimationCoup> it;
 			for (it = animations.iterateur(); it.aProchain();) {
@@ -132,29 +139,15 @@ public class VueNiveau extends Canvas implements Observateur {
 				if (a.estTerminee())
 					it.supprime();
 			}
-		} else {
-			int ligne = n.lignePousseur();
-			int colonne = n.colonnePousseur();
-			int contenu = n.contenu(ligne, colonne);
-			traceSol(contenu, ligne, colonne);
-			traceObjet(contenu, ligne, colonne);
 		}
 	}
 
-	@Override
 	public void miseAJour() {
-		miseAJourPousseur();
-		miseAJourAnimations();
-	}
-	
-	public void retraceNiveau() {
 		n = jeu.niveau();
 		if (n == null) {
 			Configuration.logger().info("Dernier niveau lu, fin du jeu !");
 			System.exit(0);
 		}
-
-		miseAJourPousseur();
 
 		width = getWidth();
 		height = getHeight();
@@ -164,14 +157,14 @@ public class VueNiveau extends Canvas implements Observateur {
 		tileHeight = Math.min(tileWidth, tileHeight);
 		gc = getGraphicsContext2D();
 
+		miseAJourPousseur();
+
 		gc.clearRect(0, 0, width, height);
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
-				int contenu = n.contenu(ligne, colonne);
-				traceSol(contenu, ligne, colonne);
-				traceObjet(contenu, ligne, colonne);
+				traceCase(ligne, colonne);
 			}
-		miseAJourAnimations();
+		afficheAnimations();
 	}
 	
 	public double tileWidth() {

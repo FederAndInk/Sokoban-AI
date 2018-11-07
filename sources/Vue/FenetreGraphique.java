@@ -71,8 +71,8 @@ public class FenetreGraphique implements Observateur {
 		vueNiveau.annuleAnimations();
 	}
 	
-	public void retraceNiveau() {
-		vueNiveau.retraceNiveau();
+	public void afficheAnimations() {
+		vueNiveau.afficheAnimations();
 	}
 
 	public FenetreGraphique(Jeu j, Stage primaryStage) {
