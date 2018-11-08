@@ -43,9 +43,13 @@ public class ControleurMediateur {
 	boolean avecAnimations;
 	double vitesseAnimations;
 	boolean enMouvement;
-	int lenteurPas, decompte;
+	int lenteurPas, decomptePas;
 	AnimationTimer metronome;
 	Observable animations;
+	ControleurJeuAutomatique ctrlAuto;
+	boolean jeuAutomatique;
+	int lenteurJeuAutomatique, decompteJA;
+	IA joueurAutomatique;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
@@ -53,7 +57,7 @@ public class ControleurMediateur {
 		avecAnimations = Boolean.parseBoolean(Configuration.lis("Animations"));
 		vitesseAnimations = Double.parseDouble(Configuration.lis("VitesseAnimations"));
 		lenteurPas = Integer.parseInt(Configuration.lis("LenteurPas"));
-		decompte = lenteurPas;
+		decomptePas = lenteurPas;
 		metronome = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
@@ -64,10 +68,19 @@ public class ControleurMediateur {
 		animations = new Observable();
 		if (avecAnimations)
 			metronome.start();
+		ctrlAuto = new ControleurJeuAutomatique(this, jeu);
+		jeuAutomatique = true;
+		lenteurJeuAutomatique = Integer.parseInt(Configuration.lis("LenteurJeuAutomatique"));
+		decompteJA = lenteurJeuAutomatique;
+		joueurAutomatique = new IAAleatoire(ctrlAuto);
 	}
 
 	public void redimensionnement() {
 		f.miseAJour();
+	}
+
+	public static boolean estDeplacementValide(int dL, int dC) {
+		return (dL * dC == 0) && ((dL + dC) * (dL + dC) == 1);
 	}
 
 	public void clicSouris(MouseEvent e) {
@@ -78,7 +91,7 @@ public class ControleurMediateur {
 		int dL = l - n.lignePousseur();
 		int dC = c - n.colonnePousseur();
 		// Seulement une direction, -1 ou +1
-		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) == 1)) {
+		if (estDeplacementValide(dL, dC)) {
 			jouer(dL, dC);
 		}
 	}
@@ -170,13 +183,23 @@ public class ControleurMediateur {
 	}
 
 	void tictac() {
+		if (!enMouvement) {
+			decompteJA--;
+			if (jeuAutomatique && (decompteJA <= 0)) {
+				joueurAutomatique.joue();
+				Coup cp = ctrlAuto.recupereCoup();
+				jeu.jouer(cp);
+				animeCoup(cp, 1);
+				decompteJA = lenteurJeuAutomatique;
+			}
+		}
 		if (avecAnimations) {
-			decompte--;
-			if (decompte == 0) {
+			decomptePas--;
+			if (decomptePas <= 0) {
 				f.changeEtapePousseur();
 				if (!enMouvement)
 					f.afficheAnimations();
-				decompte = lenteurPas;
+				decomptePas = lenteurPas;
 			}
 		}
 		if (enMouvement) {

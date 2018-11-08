@@ -26,55 +26,11 @@
  */
 package Controleur;
 
-import Global.Configuration;
-import Modele.Coup;
-import Modele.Jeu;
-
-public class ControleurJeuAutomatique implements InterfaceJeu {
-	ControleurMediateur con;
-	Jeu jeu;
-	Coup cp;
-
-	public ControleurJeuAutomatique(ControleurMediateur c, Jeu j) {
-		con = c;
-		jeu = j;
-	}
-	
-	public int lignes() {
-		return jeu.niveau().lignes();
-	}
-	
-	public int colonnes() {
-		return jeu.niveau().colonnes();
-	}
-	
-	public int contenu(int l, int c) {
-		return jeu.niveau().contenu(l, c);
-	}
-	
-	public int lignePousseur() {
-		return jeu.niveau().lignePousseur();
-	}
-	
-	public int colonnePousseur() {
-		return jeu.niveau().colonnePousseur();
-	}
-	
-	public void jouer(int dL, int dC) {
-		if (cp != null) {
-			Configuration.logger().severe("Impossible de se déplacer deux fois dans la même tranche de temps");
-		} else {
-			if (ControleurMediateur.estDeplacementValide(dL, dC)) {
-				cp = jeu.niveau().construireCoup(dL, dC);
-			} else {
-				Configuration.logger().severe("Déplacement ("+ dL + ", " + dC + ") invalide pour le pousseur");
-			}
-		}
-	}
-	
-	Coup recupereCoup() {
-		Coup c = cp;
-		cp = null;
-		return c;
-	}
+interface InterfaceJeu {
+	int lignes();
+	int colonnes();
+	int contenu(int l, int c);
+	int lignePousseur();
+	int colonnePousseur();
+	void jouer(int dL, int dC);
 }

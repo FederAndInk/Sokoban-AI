@@ -26,55 +26,49 @@
  */
 package Controleur;
 
+import java.util.Random;
+
 import Global.Configuration;
-import Modele.Coup;
-import Modele.Jeu;
+import Modele.Niveau;
 
-public class ControleurJeuAutomatique implements InterfaceJeu {
-	ControleurMediateur con;
-	Jeu jeu;
-	Coup cp;
+class IAAleatoire implements IA {
+	InterfaceJeu in;
+	Random r;
 
-	public ControleurJeuAutomatique(ControleurMediateur c, Jeu j) {
-		con = c;
-		jeu = j;
+	public IAAleatoire(InterfaceJeu i) {
+		in = i;
+		r = new Random();
 	}
-	
-	public int lignes() {
-		return jeu.niveau().lignes();
+
+	@Override
+	public void initialise() {
+		Configuration.logger().info("Démarrage d'un nouveau niveau de taille " + in.lignes() + "x" + in.colonnes());
 	}
-	
-	public int colonnes() {
-		return jeu.niveau().colonnes();
-	}
-	
-	public int contenu(int l, int c) {
-		return jeu.niveau().contenu(l, c);
-	}
-	
-	public int lignePousseur() {
-		return jeu.niveau().lignePousseur();
-	}
-	
-	public int colonnePousseur() {
-		return jeu.niveau().colonnePousseur();
-	}
-	
-	public void jouer(int dL, int dC) {
-		if (cp != null) {
-			Configuration.logger().severe("Impossible de se déplacer deux fois dans la même tranche de temps");
-		} else {
-			if (ControleurMediateur.estDeplacementValide(dL, dC)) {
-				cp = jeu.niveau().construireCoup(dL, dC);
+
+	@Override
+	public void joue() {
+		boolean mur = true;
+		int dL = 0, dC = 0;
+
+		while (mur) {
+			int direction = r.nextInt(2) * 2 - 1;
+			if (r.nextBoolean()) {
+				dL = direction;
 			} else {
-				Configuration.logger().severe("Déplacement ("+ dL + ", " + dC + ") invalide pour le pousseur");
+				dC = direction;
 			}
+			int contenu = in.contenu(in.lignePousseur() + dL, in.colonnePousseur() + dC);
+			if (Niveau.estMur(contenu)) {
+				Configuration.logger().info("Tentative de déplacement (" + dL + ", " + dC + ") heurte un mur");
+				dL = dC = 0;
+			} else
+				mur = false;
 		}
+		in.jouer(dL, dC);
 	}
-	
-	Coup recupereCoup() {
-		Coup c = cp;
-		cp = null;
-		return c;
+
+	@Override
+	public void finalise() {
+		Configuration.logger().info("Niveau terminé !");
 	}
 }

@@ -112,4 +112,11 @@ public class Jeu extends Observable {
 		}
 		return cp;
 	}
+	
+	public void jouer(Coup cp) {
+		if (cp != null) {
+			n.faire(cp);
+			metAJour(cp.dirL, cp.dirC);
+		}
+	}
 }
