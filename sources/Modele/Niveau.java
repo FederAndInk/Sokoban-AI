@@ -130,7 +130,7 @@ public class Niveau extends Historique<Coup> {
 	}
 
 	public int contenu(int l, int c) {
-		return cases[l][c] & 0xFF;
+		return cases[l][c];
 	}
 
 	public int marque(int l, int c) {

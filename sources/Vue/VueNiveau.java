@@ -37,7 +37,8 @@ import javafx.scene.image.Image;
 
 public class VueNiveau extends Canvas {
 	Jeu jeu;
-	Image pousseur, mur, sol, caisse, but, caisseSurBut;
+	Image pousseur, mur;
+	Image[] sol, caisse, but, caisseSurBut;
 	Image[][] pousseurs;
 	int direction, etape;
 
@@ -71,6 +72,13 @@ public class VueNiveau extends Canvas {
 	public void annuleAnimations() {
 		animations = Configuration.fabriqueSequence().nouvelle();
 	}
+	
+	Image[] lisImages(String nom) {
+		Image[] resultat = new Image[2];
+		for (int i=0; i<resultat.length; i++)
+			resultat[i] = lisImage(nom + "_" + i);
+		return resultat;
+	}
 
 	public VueNiveau(Jeu j) {
 		pousseurs = new Image[4][4];
@@ -78,10 +86,10 @@ public class VueNiveau extends Canvas {
 			for (int i = 0; i < pousseurs[d].length; i++)
 				pousseurs[d][i] = lisImage("Pousseur_" + d + "_" + i);
 		mur = lisImage("Mur");
-		sol = lisImage("Sol");
-		caisse = lisImage("Caisse");
-		but = lisImage("But");
-		caisseSurBut = lisImage("CaisseSurBut");
+		sol = lisImages("Sol");
+		caisse = lisImages("Caisse");
+		but = lisImages("But");
+		caisseSurBut = lisImages("CaisseSurBut");
 
 		jeu = j;
 		direction = jeu.direction();
