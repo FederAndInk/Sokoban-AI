@@ -72,7 +72,7 @@ public class ControleurMediateur {
 		f.changeBoutonIA(jeuAutomatique);
 		lenteurJeuAutomatique = Integer.parseInt(Configuration.lis("LenteurJeuAutomatique"));
 		decompteJA = lenteurJeuAutomatique;
-		joueurAutomatique = new IAAleatoire(ctrlAuto);
+		joueurAutomatique = IA.nouvelle(ctrlAuto, jeu.niveau());
 		if (jeuAutomatique)
 			joueurAutomatique.initialise();
 	}

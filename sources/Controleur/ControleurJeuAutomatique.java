@@ -30,7 +30,7 @@ import Global.Configuration;
 import Modele.Coup;
 import Modele.Jeu;
 
-public class ControleurJeuAutomatique implements InterfaceJeu {
+public class ControleurJeuAutomatique {
 	ControleurMediateur con;
 	Jeu jeu;
 	Coup cp;
@@ -38,26 +38,6 @@ public class ControleurJeuAutomatique implements InterfaceJeu {
 	public ControleurJeuAutomatique(ControleurMediateur c, Jeu j) {
 		con = c;
 		jeu = j;
-	}
-	
-	public int lignes() {
-		return jeu.niveau().lignes();
-	}
-	
-	public int colonnes() {
-		return jeu.niveau().colonnes();
-	}
-	
-	public int contenu(int l, int c) {
-		return jeu.niveau().contenu(l, c);
-	}
-	
-	public int lignePousseur() {
-		return jeu.niveau().lignePousseur();
-	}
-	
-	public int colonnePousseur() {
-		return jeu.niveau().colonnePousseur();
 	}
 	
 	public void jouer(int dL, int dC) {
@@ -76,15 +56,5 @@ public class ControleurJeuAutomatique implements InterfaceJeu {
 		Coup c = cp;
 		cp = null;
 		return c;
-	}
-
-	@Override
-	public int nbPas() {
-		return jeu.niveau().nbPas();
-	}
-
-	@Override
-	public int nbPoussees() {
-		return jeu.niveau().nbPoussees();
 	}
 }

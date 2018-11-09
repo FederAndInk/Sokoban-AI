@@ -56,6 +56,13 @@ public class VueNiveau extends Canvas {
 		return new Image(Configuration.charge(resource));
 	}
 
+	private Image[] lisImages(String nom) {
+		Image[] resultat = new Image[3];
+		for (int i=0; i<resultat.length; i++)
+			resultat[i] = lisImage(nom + "_" + i);
+		return resultat;
+	}
+
 	public void changeEtapePousseur() {
 		etape = (etape + 1) % pousseurs[direction].length;
 		pousseur = pousseurs[direction][etape];
@@ -73,13 +80,6 @@ public class VueNiveau extends Canvas {
 		animations = Configuration.fabriqueSequence().nouvelle();
 	}
 	
-	Image[] lisImages(String nom) {
-		Image[] resultat = new Image[2];
-		for (int i=0; i<resultat.length; i++)
-			resultat[i] = lisImage(nom + "_" + i);
-		return resultat;
-	}
-
 	public VueNiveau(Jeu j) {
 		pousseurs = new Image[4][4];
 		for (int d = 0; d < pousseurs.length; d++)

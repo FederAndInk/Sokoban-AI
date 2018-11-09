@@ -26,13 +26,32 @@
  */
 package Controleur;
 
+import Global.Configuration;
+import Modele.NiveauConsultable;
+
 abstract class IA {
+	ControleurJeuAutomatique controle;
+	NiveauConsultable niveau;
+
+	static IA nouvelle(ControleurJeuAutomatique ctrl, NiveauConsultable niv) {
+		IA instance = null;
+		String name = Configuration.lis("IA");
+		try {
+			instance = (IA) ClassLoader.getSystemClassLoader().loadClass(name).newInstance();
+			instance.controle = ctrl;
+			instance.niveau = niv;
+		} catch (Exception e) {
+			Configuration.logger().severe("Impossible de trouver l'IA : " + name);
+		}
+		return instance;
+	}
+
 	void initialise() {
 	}
-		
+
 	void joue() {
 	}
-		
+
 	void finalise() {
 	}
 }

@@ -29,20 +29,17 @@ package Controleur;
 import java.util.Random;
 
 import Global.Configuration;
-import Modele.Niveau;
 
 class IAAleatoire extends IA {
-	InterfaceJeu in;
 	Random r;
 
-	public IAAleatoire(InterfaceJeu i) {
-		in = i;
+	public IAAleatoire() {
 		r = new Random();
 	}
 
 	@Override
 	public void initialise() {
-		Configuration.logger().info("Démarrage d'un nouveau niveau de taille " + in.lignes() + "x" + in.colonnes());
+		Configuration.logger().info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
 	}
 
 	@Override
@@ -57,18 +54,19 @@ class IAAleatoire extends IA {
 			} else {
 				dC = direction;
 			}
-			int contenu = in.contenu(in.lignePousseur() + dL, in.colonnePousseur() + dC);
-			if (Niveau.estMur(contenu)) {
+			int l = niveau.lignePousseur()+dL;
+			int c = niveau.colonnePousseur()+dC;
+			if (niveau.estMur(l, c)) {
 				Configuration.logger().info("Tentative de déplacement (" + dL + ", " + dC + ") heurte un mur");
 				dL = dC = 0;
 			} else
 				mur = false;
 		}
-		in.jouer(dL, dC);
+		controle.jouer(dL, dC);
 	}
 
 	@Override
 	public void finalise() {
-		Configuration.logger().info("Niveau terminé en " + in.nbPas() + " pas, et " + in.nbPoussees() + " Poussees !");
+		Configuration.logger().info("Niveau terminé en " + niveau.nbPas() + " pas, et " + niveau.nbPoussees() + " Poussees !");
 	}
 }
