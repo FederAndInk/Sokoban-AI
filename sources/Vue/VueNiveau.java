@@ -101,10 +101,11 @@ public class VueNiveau extends Canvas {
 	void traceSol(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
+		int marque = n.marque(l, c);
 		if (n.estBut(l, c))
-			gc.drawImage(but, x, y, tileWidth, tileHeight);
+			gc.drawImage(but[marque], x, y, tileWidth, tileHeight);
 		else
-			gc.drawImage(sol, x, y, tileWidth, tileHeight);
+			gc.drawImage(sol[marque], x, y, tileWidth, tileHeight);
 	}
 	
 	void traceObjet(int l, int c) {
@@ -114,15 +115,16 @@ public class VueNiveau extends Canvas {
 	void traceObjet(int contenu, double l, double c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
+		int marque = Niveau.marque(contenu);
 		if (Niveau.estMur(contenu))
 			gc.drawImage(mur, x, y, tileWidth, tileHeight);
 		if (Niveau.aPousseur(contenu))
 			gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
 		if (Niveau.aCaisse(contenu))
 			if (Niveau.estBut(contenu))
-				gc.drawImage(caisseSurBut, x, y, tileWidth, tileHeight);
+				gc.drawImage(caisseSurBut[marque], x, y, tileWidth, tileHeight);
 			else
-				gc.drawImage(caisse, x, y, tileWidth, tileHeight);
+				gc.drawImage(caisse[marque], x, y, tileWidth, tileHeight);
 	}
 	
 	void traceCase(int l, int c) {

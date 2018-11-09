@@ -133,14 +133,18 @@ public class Niveau extends Historique<Coup> {
 		return cases[l][c];
 	}
 
-	public int marque(int l, int c) {
-		return cases[l][c] >> 8;
-	}
-
 	void marquer(int l, int c, int m) {
 		cases[l][c] = contenu(l, c) | (m << 8);
 	}
 	
+	public int marque(int l, int c) {
+		return marque(cases[l][c]);
+	}
+
+	public static int marque(int contenu) {
+		return contenu >> 8;
+	}
+
 	public boolean estMur(int l, int c) {
 		return estMur(cases[l][c]);
 	}
