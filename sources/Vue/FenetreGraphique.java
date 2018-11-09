@@ -75,6 +75,8 @@ public class FenetreGraphique implements Observateur {
 		nbPoussees = new Label("Poussées :");
 		boiteTexte.getChildren().add(nbPoussees);
 		prochain = new Button("Prochain");
+		// Pour éviter que les flèches du clavier naviguent entre les boutons
+		prochain.setFocusTraversable(false);
 		boiteTexte.getChildren().add(prochain);
 
 		Label copyright = new Label("Copyright G. Huard, 2018");
