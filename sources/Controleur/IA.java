@@ -26,8 +26,13 @@
  */
 package Controleur;
 
-interface IA {
-	void initialise();
-	void joue();
-	void finalise();
+abstract class IA {
+	void initialise() {
+	}
+		
+	void joue() {
+	}
+		
+	void finalise() {
+	}
 }

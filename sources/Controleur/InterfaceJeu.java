@@ -32,5 +32,7 @@ interface InterfaceJeu {
 	int contenu(int l, int c);
 	int lignePousseur();
 	int colonnePousseur();
+	int nbPas();
+	int nbPoussees();
 	void jouer(int dL, int dC);
 }

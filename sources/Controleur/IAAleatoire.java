@@ -31,7 +31,7 @@ import java.util.Random;
 import Global.Configuration;
 import Modele.Niveau;
 
-class IAAleatoire implements IA {
+class IAAleatoire extends IA {
 	InterfaceJeu in;
 	Random r;
 
@@ -69,6 +69,6 @@ class IAAleatoire implements IA {
 
 	@Override
 	public void finalise() {
-		Configuration.logger().info("Niveau terminé !");
+		Configuration.logger().info("Niveau terminé en " + in.nbPas() + " pas, et " + in.nbPoussees() + " Poussees !");
 	}
 }

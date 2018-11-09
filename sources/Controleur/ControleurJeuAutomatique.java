@@ -77,4 +77,14 @@ public class ControleurJeuAutomatique implements InterfaceJeu {
 		cp = null;
 		return c;
 	}
+
+	@Override
+	public int nbPas() {
+		return jeu.niveau().nbPas();
+	}
+
+	@Override
+	public int nbPoussees() {
+		return jeu.niveau().nbPoussees();
+	}
 }
