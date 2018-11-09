@@ -29,6 +29,8 @@ package Controleur;
 import Global.Configuration;
 import Modele.Coup;
 import Modele.Jeu;
+import Modele.Marque;
+import Structures.Sequence;
 
 public class ControleurJeuAutomatique {
 	ControleurMediateur con;
@@ -39,19 +41,34 @@ public class ControleurJeuAutomatique {
 		con = c;
 		jeu = j;
 	}
-	
+
 	public void jouer(int dL, int dC) {
+		Sequence<Marque> s = null;
 		if (cp != null) {
-			Configuration.logger().severe("Impossible de se déplacer deux fois dans la même tranche de temps");
+			s = cp.marques;
+		}
+		if (ControleurMediateur.estDeplacementValide(dL, dC)) {
+			cp = jeu.niveau().construireCoup(dL, dC);
+			cp.marques = s;
 		} else {
-			if (ControleurMediateur.estDeplacementValide(dL, dC)) {
-				cp = jeu.niveau().construireCoup(dL, dC);
-			} else {
-				Configuration.logger().severe("Déplacement ("+ dL + ", " + dC + ") invalide pour le pousseur");
-			}
+			Configuration.logger().severe("Déplacement (" + dL + ", " + dC + ") invalide pour le pousseur");
 		}
 	}
-	
+
+	public void marquer(int l, int c, int m) {
+		if (cp == null) {
+			int lP, cP;
+			lP = jeu.niveau().lignePousseur();
+			cP = jeu.niveau().colonnePousseur();
+			cp = new Coup(lP, cP, 0, 0, false);
+		}
+		if (cp.marques == null)
+			cp.marques = Configuration.fabriqueSequence().nouvelle();
+		int existant = jeu.niveau().marque(l, c);
+		Marque nouvelle = new Marque(l, c, m - existant);
+		cp.marques.insereQueue(nouvelle);
+	}
+
 	Coup recupereCoup() {
 		Coup c = cp;
 		cp = null;

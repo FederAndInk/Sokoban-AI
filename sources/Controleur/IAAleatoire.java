@@ -46,6 +46,7 @@ class IAAleatoire extends IA {
 	public void joue() {
 		boolean mur = true;
 		int dL = 0, dC = 0;
+		int l = 0, c = 0;
 
 		while (mur) {
 			int direction = r.nextInt(2) * 2 - 1;
@@ -54,13 +55,18 @@ class IAAleatoire extends IA {
 			} else {
 				dC = direction;
 			}
-			int l = niveau.lignePousseur()+dL;
-			int c = niveau.colonnePousseur()+dC;
+			l = niveau.lignePousseur()+dL;
+			c = niveau.colonnePousseur()+dC;
 			if (niveau.estMur(l, c)) {
 				Configuration.logger().info("Tentative de déplacement (" + dL + ", " + dC + ") heurte un mur");
 				dL = dC = 0;
 			} else
 				mur = false;
+		}
+		int marque = niveau.marque(l, c);
+		if (marque < 2) {
+			marque++;
+			controle.marquer(l, c, marque);
 		}
 		controle.jouer(dL, dC);
 	}

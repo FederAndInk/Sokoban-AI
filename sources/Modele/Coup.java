@@ -31,9 +31,9 @@ import Structures.Sequence;
 public class Coup {
 	public int dirL, dirC, posL, posC;
 	public boolean caisse;
-	Sequence<Marque> marques;
+	public Sequence<Marque> marques;
 	
-	Coup(int pL, int pC, int dL, int dC, boolean c) {
+	public Coup(int pL, int pC, int dL, int dC, boolean c) {
 		posL = pL;
 		posC = pC;
 		dirL = dL;
