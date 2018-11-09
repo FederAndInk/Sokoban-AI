@@ -86,24 +86,24 @@ public class Niveau {
 		return cases[0].length;
 	}
 	
-	public int get(int l, int c) {
+	public int contenu(int l, int c) {
 		return cases[l][c];
 	}
 
-	public static boolean estMur(int contenu) {
-		return (contenu & MUR) != 0;
+	public boolean estMur(int l, int c) {
+		return (cases[l][c] & MUR) != 0;
 	}
 
-	public static boolean estBut(int contenu) {
-		return (contenu & BUT) != 0;
+	public boolean estBut(int l, int c) {
+		return (cases[l][c] & BUT) != 0;
 	}
 
-	public static boolean aPousseur(int contenu) {
-		return (contenu & POUSSEUR) != 0;
+	public boolean aPousseur(int l, int c) {
+		return (cases[l][c] & POUSSEUR) != 0;
 	}
 
-	public static boolean aCaisse(int contenu) {
-		return (contenu & CAISSE) != 0;
+	public boolean aCaisse(int l, int c) {
+		return (cases[l][c] & CAISSE) != 0;
 	}
 
 	@Override

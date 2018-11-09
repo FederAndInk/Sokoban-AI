@@ -149,24 +149,24 @@ public class InterfaceGraphique extends Application {
 		trace();
 	}
 	
-	void traceSol(int contenu, int l, int c) {
+	void traceSol(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (Niveau.estBut(contenu))
+		if (n.estBut(l, c))
 			gc.drawImage(but, x, y, tileWidth, tileHeight);
 		else
 			gc.drawImage(sol, x, y, tileWidth, tileHeight);
 	}
 	
-	void traceObjet(int contenu, int l, int c) {
+	void traceObjet(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (Niveau.estMur(contenu))
+		if (n.estMur(l, c))
 			gc.drawImage(mur, x, y, tileWidth, tileHeight);
-		if (Niveau.aPousseur(contenu))
+		if (n.aPousseur(l, c))
 			gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
-		if (Niveau.aCaisse(contenu))
-			if (Niveau.estBut(contenu))
+		if (n.aCaisse(l, c))
+			if (n.estBut(l, c))
 				gc.drawImage(caisseSurBut, x, y, tileWidth, tileHeight);
 			else
 				gc.drawImage(caisse, x, y, tileWidth, tileHeight);
@@ -189,9 +189,8 @@ public class InterfaceGraphique extends Application {
 		gc.clearRect(0, 0, width, height);
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
-				int contenu = n.get(ligne, colonne);
-				traceSol(contenu, ligne, colonne);
-				traceObjet(contenu, ligne, colonne);
+				traceSol(ligne, colonne);
+				traceObjet(ligne, colonne);
 			}
 	}
 }
