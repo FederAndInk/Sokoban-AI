@@ -64,7 +64,7 @@ public class AnimationCoup implements Observateur {
 		int l = coup.posL;
 		int c = coup.posC;
 		for (int i=0; i<nbTuiles; i++) {
-			vue.traceSol(niv.contenu(l, c), l, c);
+			vue.traceSol(l, c);
 			l += coup.dirL;
 			c += coup.dirC;
 		}

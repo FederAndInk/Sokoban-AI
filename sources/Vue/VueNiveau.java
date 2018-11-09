@@ -41,12 +41,12 @@ public class VueNiveau extends Canvas {
 	Image[][] pousseurs;
 	int direction, etape;
 
+	Niveau n;
 	double width;
 	double height;
 	double tileWidth;
 	double tileHeight;
 	GraphicsContext gc;
-	Niveau n;
 	Sequence<AnimationCoup> animations;
 
 	private Image lisImage(String nom) {
@@ -90,15 +90,19 @@ public class VueNiveau extends Canvas {
 		animations = Configuration.fabriqueSequence().nouvelle();
 	}
 	
-	void traceSol(int contenu, int l, int c) {
+	void traceSol(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (Niveau.estBut(contenu))
+		if (n.estBut(l, c))
 			gc.drawImage(but, x, y, tileWidth, tileHeight);
 		else
 			gc.drawImage(sol, x, y, tileWidth, tileHeight);
 	}
 	
+	void traceObjet(int l, int c) {
+		traceObjet(n.contenu(l, c), l, c);
+	}
+
 	void traceObjet(int contenu, double l, double c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
@@ -114,11 +118,10 @@ public class VueNiveau extends Canvas {
 	}
 	
 	void traceCase(int l, int c) {
-		int contenu = n.contenu(l, c);
-		traceSol(contenu, l, c);
-		traceObjet(contenu, l, c);
+		traceSol(l, c);
+		traceObjet(l, c);
 	}
-
+	
 	void miseAJourPousseur() {
 		direction = jeu.direction();
 		pousseur = pousseurs[direction][etape];
