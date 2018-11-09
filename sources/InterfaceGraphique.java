@@ -87,7 +87,6 @@ public class InterfaceGraphique extends Application {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				c.redimensionnement();
-
 			}
 		});
 		jeu.ajouteObservateur(f);
