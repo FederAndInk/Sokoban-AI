@@ -105,7 +105,7 @@ public class Niveau extends Historique<Coup> {
 				int element = cases[i][j] & ~BUT;
 				if (element != 0) {
 					nb[element]++;
-					if (estBut(cases[i][j])) {
+					if (estBut(i, j)) {
 						nb[BUT]++;
 						nbSurBut[element]++;
 					}
@@ -128,24 +128,24 @@ public class Niveau extends Historique<Coup> {
 		return cases[0].length;
 	}
 	
-	public int get(int l, int c) {
+	public int contenu(int l, int c) {
 		return cases[l][c];
 	}
 
-	public static boolean estMur(int contenu) {
-		return (contenu & MUR) != 0;
+	public boolean estMur(int l, int c) {
+		return (cases[l][c] & MUR) != 0;
 	}
 
-	public static boolean estBut(int contenu) {
-		return (contenu & BUT) != 0;
+	public boolean estBut(int l, int c) {
+		return (cases[l][c] & BUT) != 0;
 	}
 
-	public static boolean aPousseur(int contenu) {
-		return (contenu & POUSSEUR) != 0;
+	public boolean aPousseur(int l, int c) {
+		return (cases[l][c] & POUSSEUR) != 0;
 	}
 
-	public static boolean aCaisse(int contenu) {
-		return (contenu & CAISSE) != 0;
+	public boolean aCaisse(int l, int c) {
+		return (cases[l][c] & CAISSE) != 0;
 	}
 	
 	public boolean estOccupable(int l, int c) {
@@ -155,9 +155,9 @@ public class Niveau extends Historique<Coup> {
 	private void deplace(int element, int srcL, int srcC, int dstL, int dstC) {
 		cases[dstL][dstC] |= element;
 		cases[srcL][srcC] &= ~element;
-		if (estBut(cases[dstL][dstC]))
+		if (estBut(dstL, dstC))
 			nbSurBut[element]++;
-		if (estBut(cases[srcL][srcC]))
+		if (estBut(srcL, srcC))
 			nbSurBut[element]--;
 	}
 	
@@ -212,7 +212,7 @@ public class Niveau extends Historique<Coup> {
 		int destC = pousseurC+dC;
 		Coup c = null;
 		
-		if (aCaisse(cases[destL][destC]) && estOccupable(destL+dL, destC+dC)) {
+		if (aCaisse(destL, destC) && estOccupable(destL+dL, destC+dC)) {
 			c = new Coup(pousseurL, pousseurC, dL, dC, true);
 		}
 		if (estOccupable(destL, destC)) {
