@@ -43,7 +43,7 @@ public class ControleurMediateur {
 	boolean avecAnimations;
 	double vitesseAnimations;
 	boolean enMouvement;
-	int lenteurPas, decompte;
+	int lenteurPas, decomptePas;
 	AnimationTimer metronome;
 	Observable animations;
 
@@ -53,7 +53,7 @@ public class ControleurMediateur {
 		avecAnimations = Boolean.parseBoolean(Configuration.lis("Animations"));
 		vitesseAnimations = Double.parseDouble(Configuration.lis("VitesseAnimations"));
 		lenteurPas = Integer.parseInt(Configuration.lis("LenteurPas"));
-		decompte = lenteurPas;
+		decomptePas = lenteurPas;
 		metronome = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
@@ -62,8 +62,7 @@ public class ControleurMediateur {
 
 		};
 		animations = new Observable();
-		if (avecAnimations)
-			metronome.start();
+		metronome.start();
 	}
 
 	public void redimensionnement() {
@@ -109,12 +108,10 @@ public class ControleurMediateur {
 		if (!enMouvement) {
 			if (avecAnimations) {
 				avecAnimations = false;
-				metronome.stop();
 			} else {
 				avecAnimations = true;
 				if (f.animationsEnCours())
 					f.annuleAnimations();
-				metronome.start();
 			}
 		}
 	}
@@ -171,12 +168,12 @@ public class ControleurMediateur {
 
 	void tictac() {
 		if (avecAnimations) {
-			decompte--;
-			if (decompte == 0) {
+			decomptePas--;
+			if (decomptePas == 0) {
 				f.changeEtapePousseur();
 				if (!enMouvement)
 					f.afficheAnimations();
-				decompte = lenteurPas;
+				decomptePas = lenteurPas;
 			}
 		}
 		if (enMouvement) {
