@@ -26,9 +26,12 @@
  */
 package Modele;
 
+import Structures.Sequence;
+
 public class Coup {
 	public int dirL, dirC, posL, posC;
 	public boolean caisse;
+	Sequence<Marque> marques;
 	
 	Coup(int pL, int pC, int dL, int dC, boolean c) {
 		posL = pL;
@@ -36,5 +39,6 @@ public class Coup {
 		dirL = dL;
 		dirC = dC;
 		caisse = c;
+		marques = null;
 	}
 }

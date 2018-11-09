@@ -28,6 +28,7 @@
 package Modele;
 
 import Global.Configuration;
+import Structures.Iterateur;
 import Structures.Sequence;
 
 public class Niveau extends Historique<Coup> {
@@ -39,15 +40,15 @@ public class Niveau extends Historique<Coup> {
 	static final int NBMAX = 9;
 	int[][] cases;
 	int pousseurL, pousseurC;
-	int [] nb;
-	int [] nbSurBut;
+	int[] nb;
+	int[] nbSurBut;
 	int nbPas, nbPoussees;
 
 	void nouveauPousseur(int l, int c) {
 		pousseurL = l;
 		pousseurC = c;
 	}
-	
+
 	public int lignePousseur() {
 		return pousseurL;
 	}
@@ -55,7 +56,7 @@ public class Niveau extends Historique<Coup> {
 	public int colonnePousseur() {
 		return pousseurC;
 	}
-	
+
 	Niveau(int lignes, int colonnes, Sequence<String> s) {
 		cases = new int[lignes][colonnes];
 		nb = new int[NBMAX];
@@ -127,9 +128,17 @@ public class Niveau extends Historique<Coup> {
 	public int colonnes() {
 		return cases[0].length;
 	}
-	
+
 	public int contenu(int l, int c) {
-		return cases[l][c];
+		return cases[l][c] & 0xFF;
+	}
+
+	public int marque(int l, int c) {
+		return cases[l][c] >> 8;
+	}
+
+	void marquer(int l, int c, int m) {
+		cases[l][c] = contenu(l, c) | (m << 8);
 	}
 
 	public static boolean estMur(int contenu) {
@@ -147,7 +156,7 @@ public class Niveau extends Historique<Coup> {
 	public static boolean aCaisse(int contenu) {
 		return (contenu & CAISSE) != 0;
 	}
-	
+
 	public boolean estOccupable(int l, int c) {
 		return (cases[l][c] & (CAISSE | MUR)) == 0;
 	}
@@ -160,20 +169,28 @@ public class Niveau extends Historique<Coup> {
 		if (estBut(cases[srcL][srcC]))
 			nbSurBut[element]--;
 	}
-	
+
 	public void jouer(Coup c) {
 		int dstL = c.posL + c.dirL;
 		int dstC = c.posC + c.dirC;
 		if (c.caisse) {
-			deplace(CAISSE, dstL, dstC, dstL+c.dirL, dstC+c.dirC);
+			deplace(CAISSE, dstL, dstC, dstL + c.dirL, dstC + c.dirC);
 			nbPoussees++;
 		}
 		deplace(POUSSEUR, c.posL, c.posC, dstL, dstC);
 		nbPas++;
 		pousseurL = dstL;
 		pousseurC = dstC;
+		if (c.marques != null) {
+			Iterateur<Marque> it = c.marques.iterateur();
+			while (it.aProchain()) {
+				Marque m = it.prochain();
+				int actuelle = marque(m.ligne, m.colonne);
+				marquer(m.ligne, m.colonne, actuelle + m.modif);
+			}
+		}
 	}
-	
+
 	public void dejouer(Coup c) {
 		int dstL = c.posL + c.dirL;
 		int dstC = c.posC + c.dirC;
@@ -182,8 +199,16 @@ public class Niveau extends Historique<Coup> {
 		pousseurL = c.posL;
 		pousseurC = c.posC;
 		if (c.caisse) {
-			deplace(CAISSE, dstL+c.dirL, dstC+c.dirC, dstL, dstC);
+			deplace(CAISSE, dstL + c.dirL, dstC + c.dirC, dstL, dstC);
 			nbPoussees--;
+		}
+		if (c.marques != null) {
+			Iterateur<Marque> it = c.marques.iterateur();
+			while (it.aProchain()) {
+				Marque m = it.prochain();
+				int actuelle = marque(m.ligne, m.colonne);
+				marquer(m.ligne, m.colonne, actuelle - m.modif);
+			}
 		}
 	}
 
@@ -192,35 +217,35 @@ public class Niveau extends Historique<Coup> {
 		jouer(c);
 		super.faire(c);
 	}
-	
+
 	@Override
 	public Coup annuler() {
 		Coup c = super.annuler();
 		dejouer(c);
 		return c;
 	}
-	
+
 	@Override
 	public Coup refaire() {
 		Coup c = super.refaire();
 		jouer(c);
 		return c;
 	}
-	
+
 	public Coup jouer(int dL, int dC) {
 		Coup cp = construireCoup(dL, dC);
 		if (cp != null)
 			faire(cp);
 		return cp;
-		
+
 	}
 
 	public Coup construireCoup(int dL, int dC) {
-		int destL = pousseurL+dL;
-		int destC = pousseurC+dC;
+		int destL = pousseurL + dL;
+		int destC = pousseurC + dC;
 		Coup c = null;
-		
-		if (aCaisse(cases[destL][destC]) && estOccupable(destL+dL, destC+dC)) {
+
+		if (aCaisse(cases[destL][destC]) && estOccupable(destL + dL, destC + dC)) {
 			c = new Coup(pousseurL, pousseurC, dL, dC, true);
 		}
 		if (estOccupable(destL, destC)) {
@@ -228,11 +253,11 @@ public class Niveau extends Historique<Coup> {
 		}
 		return c;
 	}
-	
+
 	public int nbPas() {
 		return nbPas;
 	}
-	
+
 	public int nbPoussees() {
 		return nbPoussees;
 	}

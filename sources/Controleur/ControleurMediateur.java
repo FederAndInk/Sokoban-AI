@@ -66,13 +66,15 @@ public class ControleurMediateur {
 
 		};
 		animations = new Observable();
-		if (avecAnimations)
-			metronome.start();
+		metronome.start();
 		ctrlAuto = new ControleurJeuAutomatique(this, jeu);
-		jeuAutomatique = true;
+		jeuAutomatique = false;
+		f.changeBoutonIA(jeuAutomatique);
 		lenteurJeuAutomatique = Integer.parseInt(Configuration.lis("LenteurJeuAutomatique"));
 		decompteJA = lenteurJeuAutomatique;
 		joueurAutomatique = new IAAleatoire(ctrlAuto);
+		if (jeuAutomatique)
+			joueurAutomatique.initialise();
 	}
 
 	public void redimensionnement() {
@@ -98,7 +100,11 @@ public class ControleurMediateur {
 
 	public void prochain() {
 		if (!enMouvement) {
+			if (jeuAutomatique)
+				joueurAutomatique.finalise();
 			jeu.prochainNiveau();
+			if (jeuAutomatique)
+				joueurAutomatique.initialise();
 		}
 	}
 
@@ -122,14 +128,21 @@ public class ControleurMediateur {
 		if (!enMouvement) {
 			if (avecAnimations) {
 				avecAnimations = false;
-				metronome.stop();
 			} else {
 				avecAnimations = true;
 				if (f.animationsEnCours())
 					f.annuleAnimations();
-				metronome.start();
 			}
 		}
+	}
+
+	public void basculeIA(boolean value) {
+		jeuAutomatique = value;
+		f.changeBoutonIA(value);
+	}
+
+	public boolean IAEnCours() {
+		return jeuAutomatique;
 	}
 
 	void animeCoup(Coup cp, int sens) {
@@ -163,6 +176,9 @@ public class ControleurMediateur {
 			break;
 		case DOWN:
 			jouer(1, 0);
+			break;
+		case I:
+			basculeIA(!jeuAutomatique);
 			break;
 		case U:
 			annuler();

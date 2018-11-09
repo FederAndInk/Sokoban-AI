@@ -36,6 +36,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -50,6 +51,7 @@ public class FenetreGraphique implements Observateur {
 	Scene scene;
 	VueNiveau vueNiveau;
 	Label nbPas, nbPoussees;
+	ToggleButton IA;
 	Button prochain;
 	BoutonAnnuler annuler;
 	BoutonRefaire refaire;
@@ -97,12 +99,14 @@ public class FenetreGraphique implements Observateur {
 		boiteTexte.getChildren().add(nbPas);
 		nbPoussees = new Label("Poussées :");
 		boiteTexte.getChildren().add(nbPoussees);
+		IA = new ToggleButton("IA");
+		boiteTexte.getChildren().add(IA);
 		prochain = new Button("Prochain");
+		boiteTexte.getChildren().add(prochain);
 		annuler = new BoutonAnnuler(jeu);
 		refaire = new BoutonRefaire(jeu);
 		HBox annulerRefaire = new HBox(annuler, refaire);
 		annulerRefaire.setAlignment(Pos.CENTER);
-		boiteTexte.getChildren().add(prochain);
 		boiteTexte.getChildren().add(annulerRefaire);
 
 		Label copyright = new Label("Copyright G. Huard, 2018");
@@ -144,6 +148,10 @@ public class FenetreGraphique implements Observateur {
 		scene.setOnKeyPressed(h);
 	}
 
+	public void ecouteurIA(EventHandler<ActionEvent> h) {
+		IA.setOnAction(h);
+	}
+
 	public void ecouteurProchain(EventHandler<ActionEvent> h) {
 		prochain.setOnAction(h);
 	}
@@ -154,6 +162,10 @@ public class FenetreGraphique implements Observateur {
 
 	public void ecouteurRefaire(EventHandler<ActionEvent> h) {
 		refaire.setOnAction(h);
+	}
+	
+	public void changeBoutonIA(boolean value) {
+		IA.setSelected(value);
 	}
 	
 	@Override
