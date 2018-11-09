@@ -100,11 +100,15 @@ public class FenetreGraphique implements Observateur {
 		nbPoussees = new Label("Poussées :");
 		boiteTexte.getChildren().add(nbPoussees);
 		IA = new ToggleButton("IA");
+		IA.setFocusTraversable(false);
 		boiteTexte.getChildren().add(IA);
 		prochain = new Button("Prochain");
+		prochain.setFocusTraversable(false);
 		boiteTexte.getChildren().add(prochain);
 		annuler = new BoutonAnnuler(jeu);
+		annuler.setFocusTraversable(false);
 		refaire = new BoutonRefaire(jeu);
+		refaire.setFocusTraversable(false);
 		HBox annulerRefaire = new HBox(annuler, refaire);
 		annulerRefaire.setAlignment(Pos.CENTER);
 		boiteTexte.getChildren().add(annulerRefaire);
