@@ -39,15 +39,15 @@ public class Niveau extends Historique<Coup> {
 	static final int NBMAX = 9;
 	int[][] cases;
 	int pousseurL, pousseurC;
-	int [] nb;
-	int [] nbSurBut;
+	int[] nb;
+	int[] nbSurBut;
 	int nbPas, nbPoussees;
 
 	void nouveauPousseur(int l, int c) {
 		pousseurL = l;
 		pousseurC = c;
 	}
-	
+
 	public int lignePousseur() {
 		return pousseurL;
 	}
@@ -55,7 +55,7 @@ public class Niveau extends Historique<Coup> {
 	public int colonnePousseur() {
 		return pousseurC;
 	}
-	
+
 	Niveau(int lignes, int colonnes, Sequence<String> s) {
 		cases = new int[lignes][colonnes];
 		nb = new int[NBMAX];
@@ -127,7 +127,7 @@ public class Niveau extends Historique<Coup> {
 	public int colonnes() {
 		return cases[0].length;
 	}
-	
+
 	public int contenu(int l, int c) {
 		return cases[l][c];
 	}
@@ -147,7 +147,7 @@ public class Niveau extends Historique<Coup> {
 	public boolean aCaisse(int l, int c) {
 		return (cases[l][c] & CAISSE) != 0;
 	}
-	
+
 	public boolean estOccupable(int l, int c) {
 		return (cases[l][c] & (CAISSE | MUR)) == 0;
 	}
@@ -160,12 +160,12 @@ public class Niveau extends Historique<Coup> {
 		if (estBut(srcL, srcC))
 			nbSurBut[element]--;
 	}
-	
+
 	public void jouer(Coup c) {
 		int dstL = c.posL + c.dirL;
 		int dstC = c.posC + c.dirC;
 		if (c.caisse) {
-			deplace(CAISSE, dstL, dstC, dstL+c.dirL, dstC+c.dirC);
+			deplace(CAISSE, dstL, dstC, dstL + c.dirL, dstC + c.dirC);
 			nbPoussees++;
 		}
 		deplace(POUSSEUR, c.posL, c.posC, dstL, dstC);
@@ -173,7 +173,7 @@ public class Niveau extends Historique<Coup> {
 		pousseurL = dstL;
 		pousseurC = dstC;
 	}
-	
+
 	public void dejouer(Coup c) {
 		int dstL = c.posL + c.dirL;
 		int dstC = c.posC + c.dirC;
@@ -182,7 +182,7 @@ public class Niveau extends Historique<Coup> {
 		pousseurL = c.posL;
 		pousseurC = c.posC;
 		if (c.caisse) {
-			deplace(CAISSE, dstL+c.dirL, dstC+c.dirC, dstL, dstC);
+			deplace(CAISSE, dstL + c.dirL, dstC + c.dirC, dstL, dstC);
 			nbPoussees--;
 		}
 	}
@@ -192,42 +192,45 @@ public class Niveau extends Historique<Coup> {
 		jouer(c);
 		super.faire(c);
 	}
-	
+
 	@Override
 	public Coup annuler() {
 		Coup c = super.annuler();
 		dejouer(c);
 		return c;
 	}
-	
+
 	@Override
 	public Coup refaire() {
 		Coup c = super.refaire();
 		jouer(c);
 		return c;
 	}
-	
+
 	public Coup jouer(int dL, int dC) {
-		int destL = pousseurL+dL;
-		int destC = pousseurC+dC;
 		Coup c = null;
-		
-		if (aCaisse(destL, destC) && estOccupable(destL+dL, destC+dC)) {
-			c = new Coup(pousseurL, pousseurC, dL, dC, true);
-		}
-		if (estOccupable(destL, destC)) {
-			c = new Coup(pousseurL, pousseurC, dL, dC, false);
-		}
-		if (c != null) {
-			faire(c);
+		// Seulement une direction, -1 ou +1
+		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) <= 1)) {
+			int destL = pousseurL + dL;
+			int destC = pousseurC + dC;
+
+			if (aCaisse(destL, destC) && estOccupable(destL + dL, destC + dC)) {
+				c = new Coup(pousseurL, pousseurC, dL, dC, true);
+			}
+			if (estOccupable(destL, destC)) {
+				c = new Coup(pousseurL, pousseurC, dL, dC, false);
+			}
+			if (c != null) {
+				faire(c);
+			}
 		}
 		return c;
 	}
-	
+
 	public int nbPas() {
 		return nbPas;
 	}
-	
+
 	public int nbPoussees() {
 		return nbPoussees;
 	}
