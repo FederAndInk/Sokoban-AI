@@ -41,9 +41,6 @@ class IAAleatoire extends IA {
 	public void initialise() {
 		Configuration.logger()
 				.info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
-		int l = niveau.lignePousseur();
-		int c = niveau.colonnePousseur();
-		controle.marquer(l, c, 2);
 	}
 
 	@Override
@@ -52,12 +49,18 @@ class IAAleatoire extends IA {
 		int dL = 0, dC = 0;
 		int l = 0, c = 0;
 
+		// Suppression des marques sur le champ de vision du pousseur
+		// ATTENTION, la mise à jour des marques ne se fait qu'à la sortie de la fonction 'joue'
 		for (l = 0; l < niveau.lignes(); l++)
 			for (c = 0; c < niveau.colonnes(); c++) {
 				int marque = niveau.marque(l, c);
 				if (marque == 1)
 					controle.marquer(l, c, 0);
 			}
+
+		l = niveau.lignePousseur();
+		c = niveau.colonnePousseur();
+		controle.marquer(l, c, 2);
 		while (mur) {
 			int direction = r.nextInt(2) * 2 - 1;
 			if (r.nextBoolean()) {
@@ -73,11 +76,9 @@ class IAAleatoire extends IA {
 			} else
 				mur = false;
 		}
-		controle.marquer(l, c, 2);
-		l += dL;
-		c += dC;
 		while (niveau.estOccupable(l, c)) {
 			int marque = niveau.marque(l, c);
+			// 0 ou 1 car la remise à 0 des marques à 1 faite juste avant n'est effective qu'en sortant de 'joue'
 			if (marque < 2)
 				controle.marquer(l, c, 1);
 			l += dL;
