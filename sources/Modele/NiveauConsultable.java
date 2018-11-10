@@ -167,7 +167,7 @@ public class NiveauConsultable extends Historique<Coup> {
 	public boolean aCaisse(int l, int c) {
 		return aCaisse(cases[l][c]);
 	}
-	
+
 	public static boolean aCaisse(int contenu) {
 		return (contenu & CAISSE) != 0;
 	}
@@ -177,15 +177,17 @@ public class NiveauConsultable extends Historique<Coup> {
 	}
 
 	public Coup construireCoup(int dL, int dC) {
-		int destL = pousseurL + dL;
-		int destC = pousseurC + dC;
 		Coup c = null;
-		
-		if (aCaisse(destL, destC) && estOccupable(destL+dL, destC+dC)) {
-			c = new Coup(pousseurL, pousseurC, dL, dC, true);
-		}
-		if (estOccupable(destL, destC)) {
-			c = new Coup(pousseurL, pousseurC, dL, dC, false);
+		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) <= 1)) {
+			int destL = pousseurL + dL;
+			int destC = pousseurC + dC;
+
+			if (aCaisse(destL, destC) && estOccupable(destL + dL, destC + dC)) {
+				c = new Coup(pousseurL, pousseurC, dL, dC, true);
+			}
+			if (estOccupable(destL, destC)) {
+				c = new Coup(pousseurL, pousseurC, dL, dC, false);
+			}
 		}
 		return c;
 	}
