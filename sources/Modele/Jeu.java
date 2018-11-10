@@ -70,6 +70,8 @@ public class Jeu extends Observable {
 		case -1:
 			direction = 0;
 			break;
+		case 0:
+			break;
 		case 1:
 			direction = 2;
 			break;

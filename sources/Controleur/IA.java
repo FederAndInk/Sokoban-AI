@@ -33,17 +33,25 @@ abstract class IA {
 	ControleurJeuAutomatique controle;
 	NiveauConsultable niveau;
 
-	static IA nouvelle(ControleurJeuAutomatique ctrl, NiveauConsultable niv) {
+	static IA nouvelle(ControleurJeuAutomatique ctrl) {
 		IA instance = null;
 		String name = Configuration.lis("IA");
 		try {
 			instance = (IA) ClassLoader.getSystemClassLoader().loadClass(name).newInstance();
 			instance.controle = ctrl;
-			instance.niveau = niv;
 		} catch (Exception e) {
 			Configuration.logger().severe("Impossible de trouver l'IA : " + name);
 		}
 		return instance;
+	}
+	
+	final void nouveauNiveau(NiveauConsultable niv) {
+		if (niveau != niv) {
+			if (niveau != null)
+				finalise();
+			niveau = niv;
+			initialise();
+		}
 	}
 
 	void initialise() {

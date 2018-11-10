@@ -39,7 +39,11 @@ class IAAleatoire extends IA {
 
 	@Override
 	public void initialise() {
-		Configuration.logger().info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
+		Configuration.logger()
+				.info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
+		int l = niveau.lignePousseur();
+		int c = niveau.colonnePousseur();
+		controle.marquer(l, c, 2);
 	}
 
 	@Override
@@ -48,6 +52,12 @@ class IAAleatoire extends IA {
 		int dL = 0, dC = 0;
 		int l = 0, c = 0;
 
+		for (l = 0; l < niveau.lignes(); l++)
+			for (c = 0; c < niveau.colonnes(); c++) {
+				int marque = niveau.marque(l, c);
+				if (marque == 1)
+					controle.marquer(l, c, 0);
+			}
 		while (mur) {
 			int direction = r.nextInt(2) * 2 - 1;
 			if (r.nextBoolean()) {
@@ -55,24 +65,30 @@ class IAAleatoire extends IA {
 			} else {
 				dC = direction;
 			}
-			l = niveau.lignePousseur()+dL;
-			c = niveau.colonnePousseur()+dC;
+			l = niveau.lignePousseur() + dL;
+			c = niveau.colonnePousseur() + dC;
 			if (niveau.estMur(l, c)) {
 				Configuration.logger().info("Tentative de déplacement (" + dL + ", " + dC + ") heurte un mur");
 				dL = dC = 0;
 			} else
 				mur = false;
 		}
-		int marque = niveau.marque(l, c);
-		if (marque < 2) {
-			marque++;
-			controle.marquer(l, c, marque);
+		controle.marquer(l, c, 2);
+		l += dL;
+		c += dC;
+		while (niveau.estOccupable(l, c)) {
+			int marque = niveau.marque(l, c);
+			if (marque < 2)
+				controle.marquer(l, c, 1);
+			l += dL;
+			c += dC;
 		}
 		controle.jouer(dL, dC);
 	}
 
 	@Override
 	public void finalise() {
-		Configuration.logger().info("Niveau terminé en " + niveau.nbPas() + " pas, et " + niveau.nbPoussees() + " Poussees !");
+		Configuration.logger()
+				.info("Niveau terminé en " + niveau.nbPas() + " pas, et " + niveau.nbPoussees() + " Poussees !");
 	}
 }

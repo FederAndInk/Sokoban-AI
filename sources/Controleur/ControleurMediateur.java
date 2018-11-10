@@ -50,6 +50,7 @@ public class ControleurMediateur {
 	boolean jeuAutomatique;
 	int lenteurJeuAutomatique, decompteJA;
 	IA joueurAutomatique;
+	boolean JAInitialise;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
@@ -70,11 +71,7 @@ public class ControleurMediateur {
 		ctrlAuto = new ControleurJeuAutomatique(this, jeu);
 		jeuAutomatique = false;
 		f.changeBoutonIA(jeuAutomatique);
-		lenteurJeuAutomatique = Integer.parseInt(Configuration.lis("LenteurJeuAutomatique"));
-		decompteJA = lenteurJeuAutomatique;
-		joueurAutomatique = IA.nouvelle(ctrlAuto, jeu.niveau());
-		if (jeuAutomatique)
-			joueurAutomatique.initialise();
+		initialiseIA();
 	}
 
 	public void redimensionnement() {
@@ -100,11 +97,8 @@ public class ControleurMediateur {
 
 	public void prochain() {
 		if (!enMouvement) {
-			if (jeuAutomatique)
-				joueurAutomatique.finalise();
 			jeu.prochainNiveau();
-			if (jeuAutomatique)
-				joueurAutomatique.initialise();
+			initialiseIA();
 		}
 	}
 
@@ -136,9 +130,30 @@ public class ControleurMediateur {
 		}
 	}
 
+	void jeuIA() {
+		Coup cp = ctrlAuto.recupereCoup();
+		if (cp != null) {
+			jeu.jouer(cp);
+			animeCoup(cp, 1);
+		}
+	}
+
 	public void basculeIA(boolean value) {
 		jeuAutomatique = value;
+		initialiseIA();
 		f.changeBoutonIA(value);
+	}
+
+	void initialiseIA() {
+		if (jeuAutomatique) {
+			if (joueurAutomatique == null) {
+				lenteurJeuAutomatique = Integer.parseInt(Configuration.lis("LenteurJeuAutomatique"));
+				decompteJA = lenteurJeuAutomatique;
+				joueurAutomatique = IA.nouvelle(ctrlAuto);
+			}
+			joueurAutomatique.nouveauNiveau(jeu.niveau());
+			jeuIA();
+		}
 	}
 
 	public boolean IAEnCours() {
@@ -157,9 +172,6 @@ public class ControleurMediateur {
 			animations.ajouteObservateur(a);
 			f.ajouteAnimation(a);
 			enMouvement = true;
-			if (!avecAnimations) {
-				tictac();
-			}
 		}
 	}
 
@@ -203,9 +215,7 @@ public class ControleurMediateur {
 			decompteJA--;
 			if (jeuAutomatique && (decompteJA <= 0)) {
 				joueurAutomatique.joue();
-				Coup cp = ctrlAuto.recupereCoup();
-				jeu.jouer(cp);
-				animeCoup(cp, 1);
+				jeuIA();
 				decompteJA = lenteurJeuAutomatique;
 			}
 		}

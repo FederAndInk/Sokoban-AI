@@ -27,11 +27,12 @@
 package Modele;
 
 public class Marque {
-	int ligne, colonne, modif;
+	int ligne, colonne, ancienne, nouvelle;
 
-	public Marque(int l, int c, int m) {
+	public Marque(int l, int c, int a, int n) {
 		ligne = l;
 		colonne = c;
-		modif = m;
+		ancienne = a;
+		nouvelle = n;
 	}
 }

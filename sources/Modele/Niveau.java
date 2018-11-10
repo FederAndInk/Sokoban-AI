@@ -27,6 +27,7 @@
 
 package Modele;
 
+import Global.Configuration;
 import Structures.Iterateur;
 import Structures.Sequence;
 
@@ -35,14 +36,14 @@ public class Niveau extends NiveauConsultable {
 	Niveau(int lignes, int colonnes, Sequence<String> s) {
 		super(lignes, colonnes, s);
 	}
-	
+
 	void marquer(int l, int c, int m) {
-		cases[l][c] = contenu(l, c) | (m << 8);
+		cases[l][c] = (contenu(l, c) & 0xFF) | (m << 8);
 	}
-	
+
 	private void deplace(int element, int srcL, int srcC, int dstL, int dstC) {
-		cases[dstL][dstC] |= element;
 		cases[srcL][srcC] &= ~element;
+		cases[dstL][dstC] |= element;
 		if (estBut(dstL, dstC))
 			nbSurBut[element]++;
 		if (estBut(srcL, srcC))
@@ -64,8 +65,7 @@ public class Niveau extends NiveauConsultable {
 			Iterateur<Marque> it = c.marques.iterateur();
 			while (it.aProchain()) {
 				Marque m = it.prochain();
-				int actuelle = marque(m.ligne, m.colonne);
-				marquer(m.ligne, m.colonne, actuelle + m.modif);
+				marquer(m.ligne, m.colonne, m.nouvelle);
 			}
 		}
 	}
@@ -82,11 +82,18 @@ public class Niveau extends NiveauConsultable {
 			nbPoussees--;
 		}
 		if (c.marques != null) {
-			Iterateur<Marque> it = c.marques.iterateur();
+			if (c.inverses == null) {
+				c.inverses = Configuration.fabriqueSequence().nouvelle();
+				Iterateur<Marque> it = c.marques.iterateur();
+				while (it.aProchain()) {
+					Marque m = it.prochain();
+					c.inverses.insereTete(m);
+				}
+			}
+			Iterateur<Marque> it = c.inverses.iterateur();
 			while (it.aProchain()) {
 				Marque m = it.prochain();
-				int actuelle = marque(m.ligne, m.colonne);
-				marquer(m.ligne, m.colonne, actuelle - m.modif);
+				marquer(m.ligne, m.colonne, m.ancienne);
 			}
 		}
 	}

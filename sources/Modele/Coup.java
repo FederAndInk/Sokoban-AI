@@ -32,6 +32,7 @@ public class Coup {
 	public int dirL, dirC, posL, posC;
 	public boolean caisse;
 	public Sequence<Marque> marques;
+	public Sequence<Marque> inverses;
 	
 	public Coup(int pL, int pC, int dL, int dC, boolean c) {
 		posL = pL;
@@ -40,5 +41,6 @@ public class Coup {
 		dirC = dC;
 		caisse = c;
 		marques = null;
+		inverses = null;
 	}
 }
