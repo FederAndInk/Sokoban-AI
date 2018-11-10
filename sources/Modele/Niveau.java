@@ -39,15 +39,15 @@ public class Niveau {
 	static final int NBMAX = 9;
 	int[][] cases;
 	int pousseurL, pousseurC;
-	int [] nb;
-	int [] nbSurBut;
+	int[] nb;
+	int[] nbSurBut;
 	int nbPas, nbPoussees;
 
 	void nouveauPousseur(int l, int c) {
 		pousseurL = l;
 		pousseurC = c;
 	}
-	
+
 	public int lignePousseur() {
 		return pousseurL;
 	}
@@ -55,7 +55,7 @@ public class Niveau {
 	public int colonnePousseur() {
 		return pousseurC;
 	}
-	
+
 	Niveau(int lignes, int colonnes, Sequence<String> s) {
 		cases = new int[lignes][colonnes];
 		nb = new int[NBMAX];
@@ -127,7 +127,7 @@ public class Niveau {
 	public int colonnes() {
 		return cases[0].length;
 	}
-	
+
 	public int contenu(int l, int c) {
 		return cases[l][c];
 	}
@@ -147,7 +147,7 @@ public class Niveau {
 	public boolean aCaisse(int l, int c) {
 		return (cases[l][c] & CAISSE) != 0;
 	}
-	
+
 	public boolean estOccupable(int l, int c) {
 		return (cases[l][c] & (CAISSE | MUR)) == 0;
 	}
@@ -162,28 +162,31 @@ public class Niveau {
 	}
 
 	public boolean jouer(int dL, int dC) {
-		int destL = pousseurL+dL;
-		int destC = pousseurC+dC;
-		int dest2L = destL+dL;
-		int dest2C = destC+dC;
-		if (aCaisse(destL, destC) && estOccupable(dest2L, dest2C)) {
-			deplace(CAISSE, destL, destC, dest2L, dest2C);
-			nbPoussees++;
-		}
-		if (estOccupable(destL, destC)) {
-			deplace(POUSSEUR, pousseurL, pousseurC, destL, destC);
-			pousseurL = destL;
-			pousseurC = destC;
-			nbPas++;
-			return true;
+		// Seulement une direction, -1 ou +1
+		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) <= 1)) {
+			int destL = pousseurL + dL;
+			int destC = pousseurC + dC;
+			int dest2L = destL + dL;
+			int dest2C = destC + dC;
+			if (aCaisse(destL, destC) && estOccupable(dest2L, dest2C)) {
+				deplace(CAISSE, destL, destC, dest2L, dest2C);
+				nbPoussees++;
+			}
+			if (estOccupable(destL, destC)) {
+				deplace(POUSSEUR, pousseurL, pousseurC, destL, destC);
+				pousseurL = destL;
+				pousseurC = destC;
+				nbPas++;
+				return true;
+			}
 		}
 		return false;
 	}
-	
+
 	public int nbPas() {
 		return nbPas;
 	}
-	
+
 	public int nbPoussees() {
 		return nbPoussees;
 	}

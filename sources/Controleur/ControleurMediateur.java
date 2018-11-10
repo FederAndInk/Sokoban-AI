@@ -52,10 +52,7 @@ public class ControleurMediateur {
 		Niveau n = jeu.niveau();
 		int dL = l - n.lignePousseur();
 		int dC = c - n.colonnePousseur();
-		// Seulement une direction, -1 ou +1
-		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) == 1)) {
-			jeu.jouer(dL, dC);
-		}
+		jeu.jouer(dL, dC);
 	}
 
 	public void prochain() {
