@@ -130,7 +130,8 @@ public class ControleurMediateur {
 	void jeuIA() {
 		Coup cp = ctrlAuto.recupereCoup();
 		if (cp != null) {
-			jeu.jouer(cp);
+			// coup déjà appliqué par l'IA, il ne reste qu'à l'animer
+			//jeu.jouer(cp);
 			animeCoup(cp, 1);
 		}
 	}

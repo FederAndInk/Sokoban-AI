@@ -37,7 +37,7 @@ public class Niveau extends NiveauConsultable {
 		super(lignes, colonnes, s);
 	}
 
-	void marquer(int l, int c, int m) {
+	public void marquer(int l, int c, int m) {
 		cases[l][c] = (contenu(l, c) & 0xFF) | (m << 8);
 	}
 

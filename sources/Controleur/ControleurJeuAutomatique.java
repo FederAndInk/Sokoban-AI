@@ -36,10 +36,12 @@ public class ControleurJeuAutomatique {
 	ControleurMediateur con;
 	Jeu jeu;
 	Coup cp;
+	Sequence<Marque> s;
 
 	public ControleurJeuAutomatique(ControleurMediateur c, Jeu j) {
 		con = c;
 		jeu = j;
+		s = Configuration.fabriqueSequence().nouvelle();
 	}
 	
 	void creerCoupSiBesoin() {
@@ -52,29 +54,25 @@ public class ControleurJeuAutomatique {
 	}
 
 	public void jouer(int dL, int dC) {
-		Sequence<Marque> s = null;
-		if (cp != null) {
-			s = cp.marques;
-		}
-		if (ControleurMediateur.estDeplacementValide(dL, dC)) {
-			cp = jeu.niveau().construireCoup(dL, dC);
-			creerCoupSiBesoin();
-			cp.marques = s;
-		} else {
-			Configuration.logger().severe("Déplacement (" + dL + ", " + dC + ") invalide pour le pousseur");
+		cp = jeu.jouer(dL, dC);
+		if (cp == null) {
+			Configuration.logger().severe("Déplacement (" + dL + ", " + dC + ") impossible pour le pousseur");
 		}
 	}
 
 	public void marquer(int l, int c, int m) {
-		creerCoupSiBesoin();
-		if (cp.marques == null)
-			cp.marques = Configuration.fabriqueSequence().nouvelle();
 		int existant = jeu.niveau().marque(l, c);
+		jeu.niveau().marquer(l, c, m);
 		Marque nouvelle = new Marque(l, c, existant, m);
-		cp.marques.insereQueue(nouvelle);
+		s.insereQueue(nouvelle);
 	}
 
 	Coup recupereCoup() {
+		if (!s.estVide()) {
+			creerCoupSiBesoin();
+			cp.marques = s;
+			s = Configuration.fabriqueSequence().nouvelle();
+		}
 		Coup c = cp;
 		cp = null;
 		return c;
