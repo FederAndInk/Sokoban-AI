@@ -78,10 +78,6 @@ public class ControleurMediateur {
 		f.miseAJour();
 	}
 
-	public static boolean estDeplacementValide(int dL, int dC) {
-		return (dL * dC == 0) && ((dL + dC) * (dL + dC) == 1);
-	}
-
 	public void clicSouris(MouseEvent e) {
 		int l = (int) (e.getY() / f.tileHeight());
 		int c = (int) (e.getX() / f.tileWidth());
@@ -131,7 +127,6 @@ public class ControleurMediateur {
 		Coup cp = ctrlAuto.recupereCoup();
 		if (cp != null) {
 			// coup déjà appliqué par l'IA, il ne reste qu'à l'animer
-			//jeu.jouer(cp);
 			animeCoup(cp, 1);
 		}
 	}

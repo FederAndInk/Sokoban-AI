@@ -176,22 +176,6 @@ public class NiveauConsultable extends Historique<Coup> {
 		return (cases[l][c] & (CAISSE | MUR)) == 0;
 	}
 
-	public Coup construireCoup(int dL, int dC) {
-		Coup c = null;
-		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) <= 1)) {
-			int destL = pousseurL + dL;
-			int destC = pousseurC + dC;
-
-			if (aCaisse(destL, destC) && estOccupable(destL + dL, destC + dC)) {
-				c = new Coup(pousseurL, pousseurC, dL, dC, true);
-			}
-			if (estOccupable(destL, destC)) {
-				c = new Coup(pousseurL, pousseurC, dL, dC, false);
-			}
-		}
-		return c;
-	}
-
 	public int nbPas() {
 		return nbPas;
 	}

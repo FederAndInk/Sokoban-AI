@@ -86,7 +86,6 @@ class IAAleatoire extends IA {
 
 	@Override
 	public void finalise() {
-		Configuration.logger()
-				.info("Niveau terminé en " + niveau.nbPas() + " pas, et " + niveau.nbPoussees() + " Poussees !");
+		Configuration.logger().info("Niveau terminé en " + niveau.nbPas() + " pas, et " + niveau.nbPoussees() + " Poussees !");
 	}
 }

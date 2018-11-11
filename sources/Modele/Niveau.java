@@ -118,11 +118,28 @@ public class Niveau extends NiveauConsultable {
 		return c;
 	}
 
-	public Coup jouer(int dL, int dC) {
+	public Coup jouer(int dL, int dC) {/*
 		Coup cp = construireCoup(dL, dC);
 		if (cp != null)
 			faire(cp);
 		return cp;
+	}
 
+	public Coup construireCoup(int dL, int dC) {*/
+		Coup c = null;
+		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) <= 1)) {
+			int destL = pousseurL + dL;
+			int destC = pousseurC + dC;
+
+			if (aCaisse(destL, destC) && estOccupable(destL + dL, destC + dC)) {
+				c = new Coup(pousseurL, pousseurC, dL, dC, true);
+			}
+			if (estOccupable(destL, destC)) {
+				c = new Coup(pousseurL, pousseurC, dL, dC, false);
+			}
+			if (c != null)
+				faire(c);
+		}
+		return c;
 	}
 }

@@ -56,7 +56,7 @@ public class ControleurJeuAutomatique {
 	public void jouer(int dL, int dC) {
 		cp = jeu.jouer(dL, dC);
 		if (cp == null) {
-			Configuration.logger().severe("Déplacement (" + dL + ", " + dC + ") impossible pour le pousseur");
+			Configuration.logger().info("Déplacement (" + dL + ", " + dC + ") impossible pour le pousseur");
 		}
 	}
 
