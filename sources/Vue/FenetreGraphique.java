@@ -53,6 +53,7 @@ public class FenetreGraphique implements Observateur {
 	Label nbPas, nbPoussees;
 	ToggleButton IA;
 	Button prochain;
+	ToggleButton animation;
 	BoutonAnnuler annuler;
 	BoutonRefaire refaire;
 
@@ -102,6 +103,9 @@ public class FenetreGraphique implements Observateur {
 		IA = new ToggleButton("IA");
 		IA.setFocusTraversable(false);
 		boiteTexte.getChildren().add(IA);
+		animation = new ToggleButton("Animation");
+		animation.setFocusTraversable(false);
+		boiteTexte.getChildren().add(animation);
 		prochain = new Button("Prochain");
 		prochain.setFocusTraversable(false);
 		boiteTexte.getChildren().add(prochain);
@@ -155,6 +159,10 @@ public class FenetreGraphique implements Observateur {
 	public void ecouteurIA(EventHandler<ActionEvent> h) {
 		IA.setOnAction(h);
 	}
+	
+	public void ecouteurAnimation(EventHandler<ActionEvent> h) {
+		animation.setOnAction(h);
+	}
 
 	public void ecouteurProchain(EventHandler<ActionEvent> h) {
 		prochain.setOnAction(h);
@@ -170,6 +178,10 @@ public class FenetreGraphique implements Observateur {
 	
 	public void changeBoutonIA(boolean value) {
 		IA.setSelected(value);
+	}
+	
+	public void changeBoutonAnimation(boolean valeur) {
+		animation.setSelected(valeur);
 	}
 	
 	@Override

@@ -59,6 +59,13 @@ public class InterfaceGraphique extends Application {
 				c.prochain();
 			}
 		});
+		f.ecouteurAnimation(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				ToggleButton b = (ToggleButton) event.getSource();
+				c.basculeAnimations(b.isSelected());
+			}
+		});
 		f.ecouteurAnnuler(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
