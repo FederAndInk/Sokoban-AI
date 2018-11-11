@@ -34,6 +34,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
@@ -49,6 +50,13 @@ public class InterfaceGraphique extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				c.prochain();
+			}
+		});
+		f.ecouteurAnimation(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				ToggleButton b = (ToggleButton) event.getSource();
+				c.basculeAnimations(b.isSelected());
 			}
 		});
 		f.ecouteurAnnuler(new EventHandler<ActionEvent>() {

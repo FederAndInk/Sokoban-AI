@@ -168,6 +168,10 @@ public class FenetreGraphique implements Observateur {
 		refaire.setOnAction(h);
 	}
 	
+	public void changeBoutonAnimation(boolean valeur) {
+		animation.setSelected(valeur);
+	}
+	
 	@Override
 	public void miseAJour() {
 		vueNiveau.miseAJour();

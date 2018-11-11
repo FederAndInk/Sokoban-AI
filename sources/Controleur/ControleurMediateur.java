@@ -51,6 +51,7 @@ public class ControleurMediateur {
 		jeu = j;
 		f = fen;
 		avecAnimations = Boolean.parseBoolean(Configuration.lis("Animations"));
+		fen.changeBoutonAnimation(avecAnimations);
 		vitesseAnimations = Double.parseDouble(Configuration.lis("VitesseAnimations"));
 		lenteurPas = Integer.parseInt(Configuration.lis("LenteurPas"));
 		decomptePas = lenteurPas;
@@ -101,13 +102,14 @@ public class ControleurMediateur {
 		}
 	}
 
-	void basculeAnimations(boolean valeur) {
+	public void basculeAnimations(boolean valeur) {
 		if (!enMouvement) {
 			if (!avecAnimations && valeur) {
 				if (f.animationsEnCours())
 					f.annuleAnimations();
 			}
 			avecAnimations = valeur;
+			f.changeBoutonAnimation(valeur);
 		}
 	}
 
