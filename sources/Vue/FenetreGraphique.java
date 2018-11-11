@@ -36,6 +36,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -51,6 +52,7 @@ public class FenetreGraphique implements Observateur {
 	VueNiveau vueNiveau;
 	Label nbPas, nbPoussees;
 	Button prochain;
+	ToggleButton animation;
 	BoutonAnnuler annuler;
 	BoutonRefaire refaire;
 
@@ -97,6 +99,8 @@ public class FenetreGraphique implements Observateur {
 		boiteTexte.getChildren().add(nbPas);
 		nbPoussees = new Label("Poussées :");
 		boiteTexte.getChildren().add(nbPoussees);
+		animation = new ToggleButton("Animation");
+		animation.setFocusTraversable(false);
 		prochain = new Button("Prochain");
 		prochain.setFocusTraversable(false);
 		annuler = new BoutonAnnuler(jeu);
@@ -105,6 +109,7 @@ public class FenetreGraphique implements Observateur {
 		refaire.setFocusTraversable(false);
 		HBox annulerRefaire = new HBox(annuler, refaire);
 		annulerRefaire.setAlignment(Pos.CENTER);
+		boiteTexte.getChildren().add(animation);
 		boiteTexte.getChildren().add(prochain);
 		boiteTexte.getChildren().add(annulerRefaire);
 
@@ -145,6 +150,10 @@ public class FenetreGraphique implements Observateur {
 
 	public void ecouteurDeClavier(EventHandler<KeyEvent> h) {
 		scene.setOnKeyPressed(h);
+	}
+
+	public void ecouteurAnimation(EventHandler<ActionEvent> h) {
+		animation.setOnAction(h);
 	}
 
 	public void ecouteurProchain(EventHandler<ActionEvent> h) {

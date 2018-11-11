@@ -101,15 +101,13 @@ public class ControleurMediateur {
 		}
 	}
 
-	void basculeAnimations() {
+	void basculeAnimations(boolean valeur) {
 		if (!enMouvement) {
-			if (avecAnimations) {
-				avecAnimations = false;
-			} else {
-				avecAnimations = true;
+			if (!avecAnimations && valeur) {
 				if (f.animationsEnCours())
 					f.annuleAnimations();
 			}
+			avecAnimations = valeur;
 		}
 	}
 
@@ -152,7 +150,7 @@ public class ControleurMediateur {
 			refaire();
 			break;
 		case P:
-			basculeAnimations();
+			basculeAnimations(!avecAnimations);
 			break;
 		case Q:
 		case A:
