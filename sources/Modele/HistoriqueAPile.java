@@ -27,20 +27,14 @@
 package Modele;
 
 import Global.Configuration;
-import Patterns.Observable;
 import Structures.Sequence;
 
-public class HistoriqueAPile<E> extends Observable {
+public class HistoriqueAPile<E> implements EtatHistorique {
 	Sequence<E> passe, futur;
 	
 	HistoriqueAPile() {
-		videHistorique();
-	}
-	
-	void videHistorique() {
 		passe = Configuration.fabriqueSequence().nouvelle();
 		futur = Configuration.fabriqueSequence().nouvelle();
-		metAJour();
 	}
 	
 	public boolean peutAnnuler() {
@@ -54,7 +48,6 @@ public class HistoriqueAPile<E> extends Observable {
 	private E transfert(Sequence<E> source, Sequence<E> destination) {
 		E resultat = source.extraitTete();
 		destination.insereTete(resultat);
-		metAJour();
 		return resultat;
 	}
 	
@@ -71,6 +64,5 @@ public class HistoriqueAPile<E> extends Observable {
 		while (!futur.estVide()) {
 			futur.extraitTete();
 		}
-		metAJour();
 	}
 }

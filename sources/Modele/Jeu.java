@@ -31,7 +31,7 @@ import java.io.InputStream;
 import Global.Configuration;
 import Patterns.Observable;
 
-public class Jeu extends Observable {
+public class Jeu extends Observable implements EtatHistorique {
 	LecteurNiveaux l;
 	Niveau n;
 
@@ -66,6 +66,25 @@ public class Jeu extends Observable {
 			return false;
 		}
 	}
+
+	public void jouer(int dL, int dC) {
+		if (n.jouer(dL, dC) != null) {
+			if (n.estTermine())
+				prochainNiveau();
+			else
+				metAJour();
+		}
+	}
+	
+	@Override
+	public boolean peutAnnuler() {
+		return niveau().peutAnnuler();
+	}
+	
+	@Override
+	public boolean peutRefaire() {
+		return niveau().peutRefaire();
+	}
 	
 	public void annuler() {
 		if (niveau().peutAnnuler()) {
@@ -78,15 +97,6 @@ public class Jeu extends Observable {
 		if (niveau().peutRefaire()) {
 			niveau().refaire();
 			metAJour();
-		}
-	}
-
-	public void jouer(int dL, int dC) {
-		if (n.jouer(dL, dC) != null) {
-			if (n.estTermine())
-				prochainNiveau();
-			else
-				metAJour();
 		}
 	}
 }
