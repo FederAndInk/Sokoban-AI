@@ -56,7 +56,8 @@ public class ControleurMediateur {
 	}
 
 	public void prochain() {
-		jeu.prochainNiveau();
+		if (!jeu.prochainNiveau())
+			System.exit(0);
 	}
 	
 	public void annuler() {

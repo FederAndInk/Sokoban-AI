@@ -39,10 +39,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 public class InterfaceGraphique extends Application {
-	static Jeu jeu = null;
+	Jeu jeu;
 
 	@Override
 	public void start(Stage primaryStage) {
+		jeu = new Jeu();
 		FenetreGraphique f = new FenetreGraphique(jeu, primaryStage);
 		ControleurMediateur c = new ControleurMediateur(jeu, f);
 		f.ecouteurProchain(new EventHandler<ActionEvent>() {
