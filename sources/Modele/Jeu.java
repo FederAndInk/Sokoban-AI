@@ -56,9 +56,15 @@ public class Jeu extends Observable {
 		return n;
 	}
 
-	public void prochainNiveau() {
-		n = l.lisProchainNiveau();
-		metAJour();
+	public boolean prochainNiveau() {
+		Niveau nouveau = l.lisProchainNiveau();
+		if (nouveau != null) {
+			n = nouveau;
+			metAJour();
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public void jouer(int dL, int dC) {
