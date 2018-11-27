@@ -114,6 +114,8 @@ public class InterfaceGraphique extends Application {
 			@Override
 			public void handle(ActionEvent event) {
 				n = l.lisProchainNiveau();
+				if (n == null)
+					System.exit(0);
 				trace();
 			}
 		});
