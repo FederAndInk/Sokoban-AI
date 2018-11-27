@@ -32,7 +32,6 @@ import Structures.Iterateur;
 import Structures.Sequence;
 
 public class Niveau extends NiveauConsultable {
-
 	Niveau(int lignes, int colonnes, Sequence<String> s) {
 		super(lignes, colonnes, s);
 	}

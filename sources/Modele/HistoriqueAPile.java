@@ -29,10 +29,10 @@ package Modele;
 import Global.Configuration;
 import Structures.Sequence;
 
-public class Historique<E> {
+public class HistoriqueAPile<E> implements EtatHistorique {
 	Sequence<E> passe, futur;
 	
-	Historique() {
+	HistoriqueAPile() {
 		passe = Configuration.fabriqueSequence().nouvelle();
 		futur = Configuration.fabriqueSequence().nouvelle();
 	}

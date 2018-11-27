@@ -26,22 +26,23 @@
  */
 package Vue;
 
-import Modele.Jeu;
+import Modele.EtatHistorique;
+import Patterns.Observable;
 import Patterns.Observateur;
 import javafx.scene.control.Button;
 
 public class BoutonRefaire extends Button implements Observateur {
-	Jeu jeu;
+	EtatHistorique histo;
 	
-	BoutonRefaire(Jeu j) {
-		jeu = j;
+	BoutonRefaire(Observable o, EtatHistorique h) {
+		histo = h;
 		setText(">");
-		jeu.ajouteObservateur(this);
+		o.ajouteObservateur(this);
 	}
 
 	@Override
 	public void miseAJour() {
-		if (jeu.niveau().peutRefaire())
+		if (histo.peutRefaire())
 			this.setDisable(false);
 		else
 			this.setDisable(true);
