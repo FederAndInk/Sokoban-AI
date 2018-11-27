@@ -24,27 +24,9 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
-package Vue;
+package Modele;
 
-import Modele.EtatHistorique;
-import Patterns.Observable;
-import Patterns.Observateur;
-import javafx.scene.control.Button;
-
-public class BoutonAnnuler extends Button implements Observateur {
-	EtatHistorique histo;
-	
-	BoutonAnnuler(Observable o, EtatHistorique h) {
-		histo = h;
-		setText("<");
-		o.ajouteObservateur(this);
-	}
-
-	@Override
-	public void miseAJour() {
-		if (histo.peutAnnuler())
-			this.setDisable(false);
-		else
-			this.setDisable(true);
-	}
+public interface EtatHistorique {
+	boolean peutAnnuler();
+	boolean peutRefaire();
 }

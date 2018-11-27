@@ -31,7 +31,7 @@ import java.io.InputStream;
 import Global.Configuration;
 import Patterns.Observable;
 
-public class Jeu extends Observable {
+public class Jeu extends Observable implements EtatHistorique {
 	LecteurNiveaux l;
 	Niveau n;
 	int direction;
@@ -93,6 +93,24 @@ public class Jeu extends Observable {
 		}
 	}
 
+	public Coup jouer(int dL, int dC) {
+		Coup cp = n.jouer(dL, dC);
+		if (cp != null) {
+			metAJour(cp.dirL, cp.dirC);
+		}
+		return cp;
+	}
+
+	@Override
+	public boolean peutAnnuler() {
+		return niveau().peutAnnuler();
+	}
+	
+	@Override
+	public boolean peutRefaire() {
+		return niveau().peutRefaire();
+	}
+	
 	public Coup annuler() {
 		Coup cp = null;
 		if (niveau().peutAnnuler()) {
@@ -106,14 +124,6 @@ public class Jeu extends Observable {
 		Coup cp = null;
 		if (niveau().peutRefaire()) {
 			cp = niveau().refaire();
-			metAJour(cp.dirL, cp.dirC);
-		}
-		return cp;
-	}
-
-	public Coup jouer(int dL, int dC) {
-		Coup cp = n.jouer(dL, dC);
-		if (cp != null) {
 			metAJour(cp.dirL, cp.dirC);
 		}
 		return cp;
