@@ -82,7 +82,8 @@ public class ControleurMediateur {
 
 	public void prochain() {
 		if (!enMouvement) {
-			jeu.prochainNiveau();
+			if (!jeu.prochainNiveau())
+				System.exit(0);
 		}
 	}
 

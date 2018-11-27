@@ -25,12 +25,8 @@
  *          38401 Saint Martin d'Hères
  */
 
-import Modele.Jeu;
-
 public class Sokoban {
 	public static void main(String[] args) {
-		Jeu j = new Jeu();
-		InterfaceGraphique.jeu = j;
 		InterfaceGraphique.launch(InterfaceGraphique.class, args);
 	}
 }
