@@ -91,8 +91,10 @@ public class ControleurMediateur {
 
 	public void prochain() {
 		if (!enMouvement) {
-			jeu.prochainNiveau();
-			initialiseIA();
+			if (!jeu.prochainNiveau())
+				System.exit(0);
+			else
+				initialiseIA();
 		}
 	}
 

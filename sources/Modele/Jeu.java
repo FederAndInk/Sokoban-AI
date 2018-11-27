@@ -84,9 +84,15 @@ public class Jeu extends Observable {
 		super.metAJour();
 	}
 
-	public void prochainNiveau() {
-		n = l.lisProchainNiveau();
-		metAJour(1, 0);
+	public boolean prochainNiveau() {
+		Niveau nouveau = l.lisProchainNiveau();
+		if (nouveau != null) {
+			n = nouveau;
+			metAJour(1, 0);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public Coup annuler() {
