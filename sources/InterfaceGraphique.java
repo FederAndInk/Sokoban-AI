@@ -112,6 +112,9 @@ public class InterfaceGraphique extends Application {
 				case P:
 					touche = 'P';
 					break;
+				case I:
+					touche = 'I';
+					break;
 				case Q:
 				case A:
 					touche = 'Q';
