@@ -33,9 +33,6 @@ import Modele.Niveau;
 import Patterns.Observable;
 import Vue.AnimationCoup;
 import Vue.FenetreGraphique;
-import javafx.animation.AnimationTimer;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 
 public class ControleurMediateur {
 	Jeu jeu;
@@ -44,7 +41,6 @@ public class ControleurMediateur {
 	double vitesseAnimations;
 	boolean enMouvement;
 	int lenteurPas, decomptePas;
-	AnimationTimer metronome;
 	Observable animations;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
@@ -55,24 +51,16 @@ public class ControleurMediateur {
 		vitesseAnimations = Double.parseDouble(Configuration.lis("VitesseAnimations"));
 		lenteurPas = Integer.parseInt(Configuration.lis("LenteurPas"));
 		decomptePas = lenteurPas;
-		metronome = new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-				tictac();
-			}
-
-		};
 		animations = new Observable();
-		metronome.start();
 	}
 
 	public void redimensionnement() {
 		f.miseAJour();
 	}
 
-	public void clicSouris(MouseEvent e) {
-		int l = (int) (e.getY() / f.tileHeight());
-		int c = (int) (e.getX() / f.tileWidth());
+	public void clicSouris(double x, double y) {
+		int l = (int) (y / f.tileHeight());
+		int c = (int) (x / f.tileWidth());
 
 		Niveau n = jeu.niveau();
 		int dL = l - n.lignePousseur();
@@ -132,31 +120,30 @@ public class ControleurMediateur {
 		}
 	}
 
-	public void pressionTouche(KeyEvent event) {
-		switch (event.getCode()) {
-		case LEFT:
+	public void pressionTouche(char touche) {
+		switch (touche) {
+		case 'l':
 			jouer(0, -1);
 			break;
-		case RIGHT:
+		case 'r':
 			jouer(0, 1);
 			break;
-		case UP:
+		case 'u':
 			jouer(-1, 0);
 			break;
-		case DOWN:
+		case 'd':
 			jouer(1, 0);
 			break;
-		case U:
+		case 'U':
 			annuler();
 			break;
-		case R:
+		case 'R':
 			refaire();
 			break;
-		case P:
+		case 'P':
 			basculeAnimations(!avecAnimations);
 			break;
-		case Q:
-		case A:
+		case 'Q':
 			System.exit(0);
 			break;
 		default:
@@ -164,7 +151,7 @@ public class ControleurMediateur {
 		}
 	}
 
-	void tictac() {
+	public void tictac() {
 		if (avecAnimations) {
 			decomptePas--;
 			if (decomptePas == 0) {

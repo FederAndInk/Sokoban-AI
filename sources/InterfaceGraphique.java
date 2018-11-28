@@ -29,6 +29,7 @@
 import Controleur.ControleurMediateur;
 import Modele.Jeu;
 import Vue.FenetreGraphique;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -75,13 +76,43 @@ public class InterfaceGraphique extends Application {
 		f.ecouteurDeSouris(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				c.clicSouris(e);
+				c.clicSouris(e.getX(), e.getY());
 			}
 		});
 		f.ecouteurDeClavier(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
-				c.pressionTouche(event);
+				char touche = 0;
+				switch (event.getCode()) {
+				case LEFT:
+					touche = 'l';
+					break;
+				case RIGHT:
+					touche = 'r';
+					break;
+				case UP:
+					touche = 'u';
+					break;
+				case DOWN:
+					touche = 'd';
+					break;
+				case U:
+					touche = 'U';
+					break;
+				case R:
+					touche = 'R';
+					break;
+				case P:
+					touche = 'P';
+					break;
+				case Q:
+				case A:
+					touche = 'Q';
+					break;
+				default:
+					break;
+				}
+				c.pressionTouche(touche);
 			}
 		});
 		f.ecouteurDeRedimensionnement(new ChangeListener<Number>() {
@@ -90,7 +121,11 @@ public class InterfaceGraphique extends Application {
 				c.redimensionnement();
 			}
 		});
-		jeu.ajouteObservateur(f);
-		jeu.metAJour();
+		new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				c.tictac();
+			}
+		}.start();
 	}
 }
