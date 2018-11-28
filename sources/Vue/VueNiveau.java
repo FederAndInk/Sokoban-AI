@@ -31,15 +31,13 @@ import Modele.Jeu;
 import Modele.Niveau;
 import Structures.Iterateur;
 import Structures.Sequence;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
-public class VueNiveau extends Canvas {
+public class VueNiveau {
 	Jeu jeu;
-	Image pousseur, mur;
-	Image[] sol, caisse, but, caisseSurBut;
-	Image[][] pousseurs;
+	FenetreGraphique fenetre;
+	Representation pousseur, mur;
+	Representation[] sol, caisse, but, caisseSurBut;
+	Representation[][] pousseurs;
 	int direction, etape;
 
 	Niveau n;
@@ -47,17 +45,16 @@ public class VueNiveau extends Canvas {
 	double height;
 	double tileWidth;
 	double tileHeight;
-	GraphicsContext gc;
 	Sequence<AnimationCoup> animations;
 
-	private Image lisImage(String nom) {
+	private Representation lisImage(String nom) {
 		String resource = Configuration.lis(nom);
 		Configuration.logger().info("Lecture de " + resource);
-		return new Image(Configuration.charge(resource));
+		return new Representation(Configuration.charge(resource));
 	}
 
-	private Image[] lisImages(String nom) {
-		Image[] resultat = new Image[3];
+	private Representation[] lisImages(String nom) {
+		Representation[] resultat = new Representation[3];
 		for (int i=0; i<resultat.length; i++)
 			resultat[i] = lisImage(nom + "_" + i);
 		return resultat;
@@ -79,9 +76,9 @@ public class VueNiveau extends Canvas {
 	public void annuleAnimations() {
 		animations = Configuration.fabriqueSequence().nouvelle();
 	}
-	
-	public VueNiveau(Jeu j) {
-		pousseurs = new Image[4][4];
+
+	public VueNiveau(Jeu j, FenetreGraphique f) {
+		pousseurs = new Representation[4][4];
 		for (int d = 0; d < pousseurs.length; d++)
 			for (int i = 0; i < pousseurs[d].length; i++)
 				pousseurs[d][i] = lisImage("Pousseur_" + d + "_" + i);
@@ -92,6 +89,7 @@ public class VueNiveau extends Canvas {
 		caisseSurBut = lisImages("CaisseSurBut");
 
 		jeu = j;
+		fenetre = f;
 		direction = jeu.direction();
 		etape = 0;
 		pousseur = pousseurs[direction][etape];
@@ -103,9 +101,9 @@ public class VueNiveau extends Canvas {
 		double y = l * tileHeight;
 		int marque = n.marque(l, c);
 		if (n.estBut(l, c))
-			gc.drawImage(but[marque], x, y, tileWidth, tileHeight);
+			fenetre.tracer(but[marque], x, y, tileWidth, tileHeight);
 		else
-			gc.drawImage(sol[marque], x, y, tileWidth, tileHeight);
+			fenetre.tracer(sol[marque], x, y, tileWidth, tileHeight);
 	}
 	
 	void traceObjet(int l, int c) {
@@ -117,14 +115,14 @@ public class VueNiveau extends Canvas {
 		double y = l * tileHeight;
 		int marque = Niveau.marque(contenu);
 		if (Niveau.estMur(contenu))
-			gc.drawImage(mur, x, y, tileWidth, tileHeight);
+			fenetre.tracer(mur, x, y, tileWidth, tileHeight);
 		if (Niveau.aPousseur(contenu))
-			gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
+			fenetre.tracer(pousseur, x, y, tileWidth, tileHeight);
 		if (Niveau.aCaisse(contenu))
 			if (Niveau.estBut(contenu))
-				gc.drawImage(caisseSurBut[marque], x, y, tileWidth, tileHeight);
+				fenetre.tracer(caisseSurBut[marque], x, y, tileWidth, tileHeight);
 			else
-				gc.drawImage(caisse[marque], x, y, tileWidth, tileHeight);
+				fenetre.tracer(caisse[marque], x, y, tileWidth, tileHeight);
 	}
 	
 	void traceCase(int l, int c) {
@@ -162,17 +160,16 @@ public class VueNiveau extends Canvas {
 			System.exit(0);
 		}
 
-		width = getWidth();
-		height = getHeight();
+		width = fenetre.largeur();
+		height = fenetre.hauteur();
 		tileWidth = width / n.colonnes();
 		tileHeight = height / n.lignes();
 		tileWidth = Math.min(tileWidth, tileHeight);
 		tileHeight = Math.min(tileWidth, tileHeight);
-		gc = getGraphicsContext2D();
 
 		miseAJourPousseur();
 
-		gc.clearRect(0, 0, width, height);
+		fenetre.effacer();
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
 				traceCase(ligne, colonne);

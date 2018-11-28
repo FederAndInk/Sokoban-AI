@@ -34,6 +34,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
@@ -50,6 +52,8 @@ public class FenetreGraphique implements Observateur {
 	Jeu jeu;
 	Scene scene;
 	VueNiveau vueNiveau;
+	Canvas canvas;
+	GraphicsContext gc;
 	Label nbPas, nbPoussees;
 	ToggleButton IA;
 	Button prochain;
@@ -83,8 +87,9 @@ public class FenetreGraphique implements Observateur {
 		primaryStage.setTitle("Sokoban");
 		primaryStage.setFullScreen(true);
 
-		vueNiveau = new VueNiveau(jeu);
-		Pane vue = new Pane(vueNiveau);
+		vueNiveau = new VueNiveau(jeu, this);
+		canvas = new Canvas();
+		Pane vue = new Pane(canvas);
 		vue.setPrefSize(600, 400);
 
 		VBox boiteTexte = new VBox();
@@ -132,8 +137,8 @@ public class FenetreGraphique implements Observateur {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
-		vueNiveau.widthProperty().bind(vue.widthProperty());
-		vueNiveau.heightProperty().bind(vue.heightProperty());
+		canvas.widthProperty().bind(vue.widthProperty());
+		canvas.heightProperty().bind(vue.heightProperty());
 
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
@@ -141,15 +146,18 @@ public class FenetreGraphique implements Observateur {
 				Configuration.logger().info("Fin du jeu");
 			}
 		});
+
+		jeu.ajouteObservateur(this);
+		miseAJour();
 	}
 
 	public void ecouteurDeRedimensionnement(ChangeListener<Number> l) {
-		vueNiveau.widthProperty().addListener(l);
-		vueNiveau.heightProperty().addListener(l);
+		canvas.widthProperty().addListener(l);
+		canvas.heightProperty().addListener(l);
 	}
 
 	public void ecouteurDeSouris(EventHandler<MouseEvent> h) {
-		vueNiveau.setOnMouseClicked(h);
+		canvas.setOnMouseClicked(h);
 	}
 
 	public void ecouteurDeClavier(EventHandler<KeyEvent> h) {
@@ -186,9 +194,26 @@ public class FenetreGraphique implements Observateur {
 	
 	@Override
 	public void miseAJour() {
+		gc = canvas.getGraphicsContext2D();
 		vueNiveau.miseAJour();
 		nbPas.setText("Pas :" + jeu.niveau().nbPas());
 		nbPoussees.setText("Poussées :" + jeu.niveau().nbPoussees());
+	}
+
+	double largeur() {
+		return canvas.getWidth();
+	}
+	
+	double hauteur() {
+		return canvas.getHeight();
+	}
+	
+	void tracer(Representation r, double x, double y, double l, double h) {
+		gc.drawImage(r, x, y, l, h);
+	}
+	
+	void effacer() {
+		gc.clearRect(0, 0, largeur(), hauteur());
 	}
 
 	public double tileWidth() {
