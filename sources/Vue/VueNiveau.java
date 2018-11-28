@@ -29,9 +29,8 @@ package Vue;
 import Global.Configuration;
 import Modele.Jeu;
 import Modele.Niveau;
-import Patterns.Observateur;
 
-public class VueNiveau implements Observateur {
+public class VueNiveau {
 	Jeu jeu;
 	FenetreGraphique fenetre;
 	Representation pousseur, mur, sol, caisse, but, caisseSurBut;
@@ -83,7 +82,6 @@ public class VueNiveau implements Observateur {
 				fenetre.tracer(caisse, x, y, tileWidth, tileHeight);
 	}
 
-	@Override
 	public void miseAJour() {
 		n = jeu.niveau();
 		if (n == null) {
