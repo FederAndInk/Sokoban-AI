@@ -30,28 +30,25 @@ import Global.Configuration;
 import Modele.Jeu;
 import Modele.Niveau;
 import Patterns.Observateur;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
-public class VueNiveau extends Canvas implements Observateur {
+public class VueNiveau implements Observateur {
 	Jeu jeu;
-	Image pousseur, mur, sol, caisse, but, caisseSurBut;
+	FenetreGraphique fenetre;
+	Representation pousseur, mur, sol, caisse, but, caisseSurBut;
 
 	Niveau n;
 	double width;
 	double height;
 	double tileWidth;
 	double tileHeight;
-	GraphicsContext gc;
 
-	private Image lisImage(String nom) {
+	private Representation lisImage(String nom) {
 		String resource = Configuration.lis(nom);
 		Configuration.logger().info("Lecture de " + resource);
-		return new Image(Configuration.charge(resource));
+		return new Representation(Configuration.charge(resource));
 	}
 
-	public VueNiveau(Jeu j) {
+	public VueNiveau(Jeu j, FenetreGraphique f) {
 		pousseur = lisImage("Pousseur");
 		mur = lisImage("Mur");
 		sol = lisImage("Sol");
@@ -60,29 +57,30 @@ public class VueNiveau extends Canvas implements Observateur {
 		caisseSurBut = lisImage("CaisseSurBut");
 
 		jeu = j;
+		fenetre = f;
 	}
 	
 	void traceSol(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
 		if (n.estBut(l, c))
-			gc.drawImage(but, x, y, tileWidth, tileHeight);
+			fenetre.tracer(but, x, y, tileWidth, tileHeight);
 		else
-			gc.drawImage(sol, x, y, tileWidth, tileHeight);
+			fenetre.tracer(sol, x, y, tileWidth, tileHeight);
 	}
 	
 	void traceObjet(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
 		if (n.estMur(l, c))
-			gc.drawImage(mur, x, y, tileWidth, tileHeight);
+			fenetre.tracer(mur, x, y, tileWidth, tileHeight);
 		if (n.aPousseur(l, c))
-			gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
+			fenetre.tracer(pousseur, x, y, tileWidth, tileHeight);
 		if (n.aCaisse(l, c))
 			if (n.estBut(l, c))
-				gc.drawImage(caisseSurBut, x, y, tileWidth, tileHeight);
+				fenetre.tracer(caisseSurBut, x, y, tileWidth, tileHeight);
 			else
-				gc.drawImage(caisse, x, y, tileWidth, tileHeight);
+				fenetre.tracer(caisse, x, y, tileWidth, tileHeight);
 	}
 
 	@Override
@@ -93,15 +91,14 @@ public class VueNiveau extends Canvas implements Observateur {
 			System.exit(0);
 		}
 
-		width = getWidth();
-		height = getHeight();
+		width = fenetre.largeur();
+		height = fenetre.hauteur();
 		tileWidth = width / n.colonnes();
 		tileHeight = height / n.lignes();
 		tileWidth = Math.min(tileWidth, tileHeight);
 		tileHeight = Math.min(tileWidth, tileHeight);
-		gc = getGraphicsContext2D();
 
-		gc.clearRect(0, 0, width, height);
+		fenetre.effacer();
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
 				traceSol(ligne, colonne);
