@@ -35,8 +35,8 @@ import Structures.Sequence;
 public class VueNiveau {
 	Jeu jeu;
 	FenetreGraphique fenetre;
-	Representation pousseur, mur, sol, caisse, but, caisseSurBut;
-	Representation[][] pousseurs;
+	ImageGraphique pousseur, mur, sol, caisse, but, caisseSurBut;
+	ImageGraphique[][] pousseurs;
 	int direction, etape;
 
 	Niveau n;
@@ -46,10 +46,10 @@ public class VueNiveau {
 	double tileHeight;
 	Sequence<AnimationCoup> animations;
 
-	private Representation lisImage(String nom) {
+	private ImageGraphique lisImage(String nom) {
 		String resource = Configuration.lis(nom);
 		Configuration.logger().info("Lecture de " + resource);
-		return new Representation(Configuration.charge(resource));
+		return fenetre.charger(Configuration.charge(resource));
 	}
 
 	public void changeEtapePousseur() {
@@ -70,7 +70,10 @@ public class VueNiveau {
 	}
 
 	public VueNiveau(Jeu j, FenetreGraphique f) {
-		pousseurs = new Representation[4][4];
+		jeu = j;
+		fenetre = f;
+
+		pousseurs = new ImageGraphique[4][4];
 		for (int d = 0; d < pousseurs.length; d++)
 			for (int i = 0; i < pousseurs[d].length; i++)
 				pousseurs[d][i] = lisImage("Pousseur_" + d + "_" + i);
@@ -80,8 +83,6 @@ public class VueNiveau {
 		but = lisImage("But");
 		caisseSurBut = lisImage("CaisseSurBut");
 
-		jeu = j;
-		fenetre = f;
 		direction = jeu.direction();
 		etape = 0;
 		pousseur = pousseurs[direction][etape];
