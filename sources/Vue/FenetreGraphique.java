@@ -26,6 +26,8 @@
  */
 package Vue;
 
+import java.io.InputStream;
+
 import Global.Configuration;
 import Modele.Jeu;
 import Patterns.Observateur;
@@ -38,6 +40,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -162,8 +165,14 @@ public class FenetreGraphique implements Observateur {
 		return canvas.getHeight();
 	}
 	
-	void tracer(Representation r, double x, double y, double l, double h) {
-		gc.drawImage(r, x, y, l, h);
+	ImageGraphique charger(InputStream in) {
+		ImageGraphique resultat = new ImageGraphique();
+		resultat.setImage(new Image(in));
+		return resultat;
+	}
+	
+	void tracer(ImageGraphique r, double x, double y, double l, double h) {
+		gc.drawImage(r.getImage(), x, y, l, h);
 	}
 	
 	void effacer() {

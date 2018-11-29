@@ -33,7 +33,7 @@ import Modele.Niveau;
 public class VueNiveau {
 	Jeu jeu;
 	FenetreGraphique fenetre;
-	Representation pousseur, mur, sol, caisse, but, caisseSurBut;
+	ImageGraphique pousseur, mur, sol, caisse, but, caisseSurBut;
 
 	Niveau n;
 	double width;
@@ -41,22 +41,22 @@ public class VueNiveau {
 	double tileWidth;
 	double tileHeight;
 
-	private Representation lisImage(String nom) {
+	private ImageGraphique lisImage(String nom) {
 		String resource = Configuration.lis(nom);
 		Configuration.logger().info("Lecture de " + resource);
-		return new Representation(Configuration.charge(resource));
+		return fenetre.charger(Configuration.charge(resource));
 	}
 
 	public VueNiveau(Jeu j, FenetreGraphique f) {
+		jeu = j;
+		fenetre = f;
+
 		pousseur = lisImage("Pousseur");
 		mur = lisImage("Mur");
 		sol = lisImage("Sol");
 		caisse = lisImage("Caisse");
 		but = lisImage("But");
 		caisseSurBut = lisImage("CaisseSurBut");
-
-		jeu = j;
-		fenetre = f;
 	}
 	
 	void traceSol(int l, int c) {
