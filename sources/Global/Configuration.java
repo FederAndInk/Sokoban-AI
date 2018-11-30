@@ -39,9 +39,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Configuration {
-	static Properties prop;
-	static FabriqueSequence fab;
-	static Logger logger;
+	static Configuration instance = null;
+	Properties prop;
+	FabriqueSequence fab;
+	Logger logger;
+
+	public static Configuration instance() {
+		if (instance == null)
+			instance = new Configuration();
+		return instance;
+	}
 
 	public static InputStream charge(String nom) {
 		// La méthode de chargement suivante ne dépend pas du système de fichier et sera
@@ -61,31 +68,42 @@ public class Configuration {
 		}
 	}
 
-	static Properties proprietes() {
-		if (prop == null) {
-			InputStream in = charge("defaut.cfg");
-			Properties defaut = new Properties();
-			chargerProprietes(defaut, in, "defaut.cfg");
-			// Il faut attendre le dernier moment pour utiliser le logger
-			// car celui-ci s'initialise avec les propriétés
-			String message = "Fichier de propriétés defaut.cfg chargé";
-			String nom = System.getProperty("user.home") + "/.sokoban";
-			try {
-				in = new FileInputStream(nom);
-				prop = new Properties(defaut);
-				chargerProprietes(prop, in, nom);
-				logger().info(message);
-				logger().info("Fichier de propriétés " + nom + " chargé");
-			} catch (FileNotFoundException e) {
-				prop = defaut;
-				logger().info(message);
-			}
+	protected Configuration() {
+		// On charge les propriétés
+		InputStream in = charge("defaut.cfg");
+		Properties defaut = new Properties();
+		chargerProprietes(defaut, in, "defaut.cfg");
+		// Il faut attendre le dernier moment pour utiliser le logger
+		// car celui-ci s'initialise avec les propriétés
+		String message = "Fichier de propriétés defaut.cfg chargé";
+		String nom = System.getProperty("user.home") + "/.sokoban";
+		try {
+			in = new FileInputStream(nom);
+			prop = new Properties(defaut);
+			chargerProprietes(prop, in, nom);
+			logger().info(message);
+			logger().info("Fichier de propriétés " + nom + " chargé");
+		} catch (FileNotFoundException e) {
+			prop = defaut;
+			logger().info(message);
 		}
-		return prop;
+
+		// On crée la fabrique de séquences
+		String type = lis("Sequence");
+		switch (type) {
+		case "Liste":
+			fab = new FabriqueSequenceListe();
+			break;
+		case "Tableau":
+			fab = new FabriqueSequenceTableau();
+			break;
+		default:
+			throw new NoSuchElementException("Sequences de type " + type + " non supportées");
+		}
 	}
 
-	public static String lis(String nom) {
-		String value = proprietes().getProperty(nom);
+	public String lis(String nom) {
+		String value = prop.getProperty(nom);
 		if (value != null) {
 			return value;
 		} else {
@@ -93,24 +111,11 @@ public class Configuration {
 		}
 	}
 
-	public static FabriqueSequence fabriqueSequence() {
-		if (fab == null) {
-			String type = lis("Sequence");
-			switch (type) {
-			case "Liste":
-				fab = new FabriqueSequenceListe();
-				break;
-			case "Tableau":
-				fab = new FabriqueSequenceTableau();
-				break;
-			default:
-				throw new NoSuchElementException("Sequences de type " + type + " non supportées");
-			}
-		}
+	public FabriqueSequence fabriqueSequence() {
 		return fab;
 	}
 
-	public static Logger logger() {
+	public Logger logger() {
 		if (logger == null) {
 			System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s : %5$s%n");
 			logger = Logger.getLogger("Sokoban.Logger");
