@@ -35,12 +35,12 @@ abstract class IA {
 
 	static IA nouvelle(ControleurJeuAutomatique ctrl) {
 		IA instance = null;
-		String name = Configuration.lis("IA");
+		String name = Configuration.instance().lis("IA");
 		try {
 			instance = (IA) ClassLoader.getSystemClassLoader().loadClass(name).newInstance();
 			instance.controle = ctrl;
 		} catch (Exception e) {
-			Configuration.logger().severe("Impossible de trouver l'IA : " + name);
+			Configuration.instance().logger().severe("Impossible de trouver l'IA : " + name);
 		}
 		return instance;
 	}

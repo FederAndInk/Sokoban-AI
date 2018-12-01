@@ -82,7 +82,7 @@ public class Niveau extends NiveauConsultable {
 		}
 		if (c.marques != null) {
 			if (c.inverses == null) {
-				c.inverses = Configuration.fabriqueSequence().nouvelle();
+				c.inverses = Configuration.instance().fabriqueSequence().nouvelle();
 				Iterateur<Marque> it = c.marques.iterateur();
 				while (it.aProchain()) {
 					Marque m = it.prochain();

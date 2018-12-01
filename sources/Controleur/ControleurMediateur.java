@@ -51,10 +51,10 @@ public class ControleurMediateur {
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
 		f = fen;
-		avecAnimations = Boolean.parseBoolean(Configuration.lis("Animations"));
+		avecAnimations = Boolean.parseBoolean(Configuration.instance().lis("Animations"));
 		fen.changeBoutonAnimation(avecAnimations);
-		vitesseAnimations = Double.parseDouble(Configuration.lis("VitesseAnimations"));
-		lenteurPas = Integer.parseInt(Configuration.lis("LenteurPas"));
+		vitesseAnimations = Double.parseDouble(Configuration.instance().lis("VitesseAnimations"));
+		lenteurPas = Integer.parseInt(Configuration.instance().lis("LenteurPas"));
 		decomptePas = lenteurPas;
 		animations = new Observable();
 		ctrlAuto = new ControleurJeuAutomatique(this, jeu);
@@ -130,7 +130,7 @@ public class ControleurMediateur {
 	void initialiseIA() {
 		if (jeuAutomatique) {
 			if (joueurAutomatique == null) {
-				lenteurJeuAutomatique = Integer.parseInt(Configuration.lis("LenteurJeuAutomatique"));
+				lenteurJeuAutomatique = Integer.parseInt(Configuration.instance().lis("LenteurJeuAutomatique"));
 				decompteJA = lenteurJeuAutomatique;
 				joueurAutomatique = IA.nouvelle(ctrlAuto);
 			}

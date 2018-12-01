@@ -41,7 +41,7 @@ public class ControleurJeuAutomatique {
 	public ControleurJeuAutomatique(ControleurMediateur c, Jeu j) {
 		con = c;
 		jeu = j;
-		s = Configuration.fabriqueSequence().nouvelle();
+		s = Configuration.instance().fabriqueSequence().nouvelle();
 	}
 	
 	void creerCoupSiBesoin() {
@@ -56,7 +56,7 @@ public class ControleurJeuAutomatique {
 	public void jouer(int dL, int dC) {
 		cp = jeu.jouer(dL, dC);
 		if (cp == null) {
-			Configuration.logger().info("Déplacement (" + dL + ", " + dC + ") impossible pour le pousseur");
+			Configuration.instance().logger().info("Déplacement (" + dL + ", " + dC + ") impossible pour le pousseur");
 		}
 	}
 
@@ -71,7 +71,7 @@ public class ControleurJeuAutomatique {
 		if (!s.estVide()) {
 			creerCoupSiBesoin();
 			cp.marques = s;
-			s = Configuration.fabriqueSequence().nouvelle();
+			s = Configuration.instance().fabriqueSequence().nouvelle();
 		}
 		Coup c = cp;
 		cp = null;

@@ -27,11 +27,13 @@
 package Controleur;
 
 import java.util.Random;
+import java.util.logging.Logger;
 
 import Global.Configuration;
 
 class IAAleatoire extends IA {
 	Random r;
+	Logger logger;
 
 	public IAAleatoire() {
 		r = new Random();
@@ -39,8 +41,8 @@ class IAAleatoire extends IA {
 
 	@Override
 	public void initialise() {
-		Configuration.logger()
-				.info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
+		logger = Configuration.instance().logger();
+		logger.info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
 	}
 
 	@Override
@@ -69,7 +71,7 @@ class IAAleatoire extends IA {
 			l = niveau.lignePousseur() + dL;
 			c = niveau.colonnePousseur() + dC;
 			if (niveau.estMur(l, c)) {
-				Configuration.logger().info("Tentative de déplacement (" + dL + ", " + dC + ") heurte un mur");
+				logger.info("Tentative de déplacement (" + dL + ", " + dC + ") heurte un mur");
 				dL = dC = 0;
 			} else
 				mur = false;
@@ -86,6 +88,6 @@ class IAAleatoire extends IA {
 
 	@Override
 	public void finalise() {
-		Configuration.logger().info("Niveau terminé en " + niveau.nbPas() + " pas, et " + niveau.nbPoussees() + " Poussees !");
+		logger.info("Niveau terminé en " + niveau.nbPas() + " pas, et " + niveau.nbPoussees() + " Poussees !");
 	}
 }

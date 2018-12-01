@@ -41,14 +41,14 @@ public class Jeu extends Observable implements EtatHistorique {
 		// La méthode de chargement suivante ne dépend pas du système de fichier et sera
 		// donc utilisable pour un .jar
 		// Attention, par contre, le fichier doit se trouver dans le CLASSPATH
-		String fichier = Configuration.lis("FichierNiveaux");
+		String fichier = Configuration.instance().lis("FichierNiveaux");
 		in = Configuration.charge(fichier);
 		if (in == null) {
 			System.err.println("ERREUR : impossible de trouver le fichier de niveaux nommé " + fichier);
 			System.exit(1);
 		}
 
-		Configuration.logger().info("Niveaux trouvés");
+		Configuration.instance().logger().info("Niveaux trouvés");
 		l = new LecteurNiveaux(in);
 		prochainNiveau();
 		direction = 2;
@@ -79,7 +79,7 @@ public class Jeu extends Observable implements EtatHistorique {
 			direction = 3;
 			break;
 		default:
-			Configuration.logger().severe("Bug interne, direction invalide");
+			Configuration.instance().logger().severe("Bug interne, direction invalide");
 		}
 		super.metAJour();
 	}

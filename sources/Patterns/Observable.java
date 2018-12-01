@@ -39,7 +39,7 @@ public class Observable {
 	Sequence<Observateur> observateurs;
 
 	public Observable() {
-		observateurs = Configuration.fabriqueSequence().nouvelle();
+		observateurs = Configuration.instance().fabriqueSequence().nouvelle();
 	}
 
 	public void ajouteObservateur(Observateur o) {

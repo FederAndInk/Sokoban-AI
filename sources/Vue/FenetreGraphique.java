@@ -146,7 +146,7 @@ public class FenetreGraphique implements Observateur {
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent we) {
-				Configuration.logger().info("Fin du jeu");
+				Configuration.instance().logger().info("Fin du jeu");
 			}
 		});
 
