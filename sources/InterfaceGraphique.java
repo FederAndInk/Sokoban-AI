@@ -26,6 +26,8 @@
  *          38401 Saint Martin d'Hères
  */
 
+import java.util.logging.Logger;
+
 import Global.Configuration;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
@@ -58,15 +60,17 @@ public class InterfaceGraphique extends Application {
 	double tileWidth;
 	double tileHeight;
 	GraphicsContext gc;
+	Logger logger;
 
 	private Image lisImage(String nom) {
-		String resource = Configuration.lis(nom);
-		Configuration.logger().info("Lecture de " + resource);
+		String resource = Configuration.instance().lis(nom);
+		logger.info("Lecture de " + resource);
 		return new Image(Configuration.charge(resource));
 	}
 
 	@Override
 	public void init() {
+		logger = Configuration.instance().logger();
 		pousseur = lisImage("Pousseur");
 		mur = lisImage("Mur");
 		sol = lisImage("Sol");
@@ -144,7 +148,7 @@ public class InterfaceGraphique extends Application {
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent we) {
-				Configuration.logger().info("Fin du jeu");
+				logger.info("Fin du jeu");
 			}
 		});
 
@@ -176,7 +180,7 @@ public class InterfaceGraphique extends Application {
 
 	void trace() {
 		if (n == null) {
-			Configuration.logger().info("Dernier niveau lu, fin du jeu !");
+			logger.info("Dernier niveau lu, fin du jeu !");
 			System.exit(0);
 		}
 
