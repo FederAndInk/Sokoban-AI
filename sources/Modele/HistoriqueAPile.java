@@ -27,14 +27,16 @@
 package Modele;
 
 import Global.Configuration;
+import Structures.FabriqueSequence;
 import Structures.Sequence;
 
 public class HistoriqueAPile<E> implements EtatHistorique {
 	Sequence<E> passe, futur;
 	
 	HistoriqueAPile() {
-		passe = Configuration.fabriqueSequence().nouvelle();
-		futur = Configuration.fabriqueSequence().nouvelle();
+		FabriqueSequence fab = Configuration.instance().fabriqueSequence();
+		passe = fab.nouvelle();
+		futur = fab.nouvelle();
 	}
 	
 	public boolean peutAnnuler() {
