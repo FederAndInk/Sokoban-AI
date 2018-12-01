@@ -116,7 +116,7 @@ public class Niveau {
 			i++;
 		}
 		if (nb[POUSSEUR] != 1) {
-			Configuration.logger().severe("Nombre de pouseurs invalide : " + nb[POUSSEUR]);
+			Configuration.instance().logger().severe("Nombre de pouseurs invalide : " + nb[POUSSEUR]);
 		}
 	}
 

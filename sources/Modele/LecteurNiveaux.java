@@ -70,7 +70,7 @@ public class LecteurNiveaux {
 		}
 		int i = 0;
 		int jMax = 0;
-		Sequence<String> seq = Configuration.fabriqueSequence().nouvelle();
+		Sequence<String> seq = Configuration.instance().fabriqueSequence().nouvelle();
 		while (ligne.length() > 0) {
 			if (ligne.length() > jMax) {
 				jMax = ligne.length();
