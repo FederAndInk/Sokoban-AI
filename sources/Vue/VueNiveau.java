@@ -42,8 +42,8 @@ public class VueNiveau {
 	double tileHeight;
 
 	private ImageGraphique lisImage(String nom) {
-		String resource = Configuration.lis(nom);
-		Configuration.logger().info("Lecture de " + resource);
+		String resource = Configuration.instance().lis(nom);
+		Configuration.instance().logger().info("Lecture de " + resource);
 		return fenetre.charger(Configuration.charge(resource));
 	}
 
@@ -85,7 +85,7 @@ public class VueNiveau {
 	public void miseAJour() {
 		n = jeu.niveau();
 		if (n == null) {
-			Configuration.logger().info("Dernier niveau lu, fin du jeu !");
+			Configuration.instance().logger().info("Dernier niveau lu, fin du jeu !");
 			System.exit(0);
 		}
 
