@@ -66,7 +66,7 @@ public class VueNiveau {
 	}
 
 	public void annuleAnimations() {
-		animations = Configuration.fabriqueSequence().nouvelle();
+		animations = Configuration.instance().fabriqueSequence().nouvelle();
 	}
 
 	public VueNiveau(Jeu j, FenetreGraphique f) {
@@ -86,7 +86,7 @@ public class VueNiveau {
 		direction = jeu.direction();
 		etape = 0;
 		pousseur = pousseurs[direction][etape];
-		animations = Configuration.fabriqueSequence().nouvelle();
+		animations = Configuration.instance().fabriqueSequence().nouvelle();
 	}
 	
 	void traceSol(int l, int c) {

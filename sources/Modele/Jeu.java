@@ -77,7 +77,7 @@ public class Jeu extends Observable implements EtatHistorique {
 			direction = 3;
 			break;
 		default:
-			Configuration.logger().severe("Bug interne, direction invalide");
+			Configuration.instance().logger().severe("Bug interne, direction invalide");
 		}
 		super.metAJour();
 	}
