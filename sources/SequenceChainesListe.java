@@ -1,4 +1,3 @@
-
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -26,35 +25,36 @@
  *          38401 Saint Martin d'Hères
  */
 
-import java.util.Random;
+class SequenceChainesListe implements SequenceChaines {
+	MaillonChaines tete, queue;
 
-public class TestFAP {
-	public static void main(String[] args) {
-		int min = 0;
-		int[] count = new int[100];
-		Random r = new Random();
-		FAP<Integer> f = new FAPListe<>();
-
-		assert (f.estVide());
-		for (int i = 0; i < 10000; i++) {
-			if (r.nextBoolean()) {
-				int val = r.nextInt(count.length);
-				System.out.println("Insertion de " + val);
-				f.insere(val);
-				assert (!f.estVide());
-				if (val < min)
-					min = val;
-				count[val]++;
-			} else {
-				if (!f.estVide()) {
-					int val = f.extrait();
-					assert (count[val]-- > 0);
-					assert (val >= min);
-					if (val > min)
-						min = val;
-					System.out.println("Extraction de " + val);
-				}
-			}
+	// Les méthodes implémentant l'interface
+	// doivent être publiques
+	@Override
+	public void insereQueue(String element) {
+		MaillonChaines m = new MaillonChaines(element, null);
+		if (queue == null) {
+			tete = queue = m;
+		} else {
+			queue.suivant = m;
+			queue = m;
 		}
+	}
+
+	@Override
+	public String extraitTete() {
+		String resultat;
+		// Exception si tete == null (sequence vide)
+		resultat = tete.element;
+		tete = tete.suivant;
+		if (tete == null) {
+			queue = null;
+		}
+		return resultat;
+	}
+
+	@Override
+	public boolean estVide() {
+		return tete == null;
 	}
 }
