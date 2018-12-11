@@ -24,61 +24,13 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
+package Structures;
 
-class SequenceChainesListe implements SequenceChaines {
-	MaillonChaines tete, queue;
-
-	// Les méthodes implémentant l'interface
-	// doivent être publiques
-	@Override
-	public void insereTete(String element) {
-		MaillonChaines m = new MaillonChaines(element, tete);
-		if (queue == null)
-			queue = m;
-		tete = m;
-	}
+public class FabriqueSequenceTableau implements FabriqueSequence {
 
 	@Override
-	public void insereQueue(String element) {
-		MaillonChaines m = new MaillonChaines(element, null);
-		if (queue == null) {
-			tete = queue = m;
-		} else {
-			queue.suivant = m;
-			queue = m;
-		}
+	public <E> Sequence<E> nouvelle() {
+		return new SequenceTableau<>();
 	}
 
-	@Override
-	public String extraitTete() {
-		String resultat;
-		// Exception si tete == null (sequence vide)
-		resultat = tete.element;
-		tete = tete.suivant;
-		if (tete == null) {
-			queue = null;
-		}
-		return resultat;
-	}
-
-	@Override
-	public boolean estVide() {
-		return tete == null;
-	}
-
-	@Override
-	public String toString() {
-		String resultat = "SequenceListe [ ";
-		boolean premier = true;
-		MaillonChaines m = tete;
-		while (m != null) {
-			if (!premier)
-				resultat += ", ";
-			resultat += m.element;
-			m = m.suivant;
-			premier = false;
-		}
-		resultat += "]";
-		return resultat;
-	}
 }

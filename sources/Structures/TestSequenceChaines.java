@@ -26,6 +26,8 @@
  *          38401 Saint Martin d'Hères
  */
 
+package Structures;
+
 import java.util.Random;
 
 public class TestSequenceChaines {

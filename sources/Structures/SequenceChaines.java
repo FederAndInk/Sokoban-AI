@@ -25,12 +25,14 @@
  *          38401 Saint Martin d'Hères
  */
 
-class MaillonChaines {
-	String element;
-	MaillonChaines suivant;
+package Structures;
 
-	MaillonChaines(String element, MaillonChaines suivant) {
-		this.element = element;
-		this.suivant = suivant;
-	}
+interface SequenceChaines {
+	void insereTete(String element);
+
+	void insereQueue(String element);
+
+	String extraitTete();
+
+	boolean estVide();
 }

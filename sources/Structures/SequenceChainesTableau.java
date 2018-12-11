@@ -25,6 +25,8 @@
  *          38401 Saint Martin d'Hères
  */
 
+package Structures;
+
 class SequenceChainesTableau implements SequenceChaines {
 	String[] elements;
 	int taille, debut;
