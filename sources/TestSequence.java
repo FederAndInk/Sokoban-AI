@@ -28,10 +28,10 @@
 
 import java.util.Random;
 
-public class TestSequenceChaines {
+public class TestSequence {
 	static int min, max, count;
 
-	static String operation(SequenceChaines seq, int code) {
+	static String operation(Sequence seq, int code) {
 		String s;
 		System.out.println(seq);
 		switch (code) {
@@ -65,9 +65,9 @@ public class TestSequenceChaines {
 
 	public static void main(String[] args) {
 		Random r = new Random();
-		SequenceChaines s1, s2;
-		s1 = new SequenceChainesTableau();
-		s2 = new SequenceChainesListe();
+		Sequence s1, s2;
+		s1 = new SequenceTableau();
+		s2 = new SequenceListe();
 
 		assert (s1.estVide());
 		assert (s2.estVide());
