@@ -39,28 +39,28 @@ class Niveau {
 		cases = new int[1][1];
 		l = c = 1;
 	}
-	
+
 	int ajuste(int cap, int objectif) {
 		while (cap <= objectif) {
-			cap = cap*2;
+			cap = cap * 2;
 		}
 		return cap;
 	}
-	
+
 	void redimensionne(int nouvL, int nouvC) {
 		int capL = ajuste(cases.length, nouvL);
 		int capC = ajuste(cases[0].length, nouvC);
 		if ((capL > cases.length) || (capC > cases[0].length)) {
-			int [][] nouvelles = new int[capL][capC];
-			for (int i=0; i<cases.length; i++)
-				for (int j=0; j<cases[0].length; j++)
+			int[][] nouvelles = new int[capL][capC];
+			for (int i = 0; i < cases.length; i++)
+				for (int j = 0; j < cases[0].length; j++)
 					nouvelles[i][j] = cases[i][j];
 			cases = nouvelles;
 		}
 		if (nouvL >= l)
-			l = nouvL+1;
+			l = nouvL + 1;
 		if (nouvC >= c)
-			c = nouvC+1;
+			c = nouvC + 1;
 	}
 
 	void fixeNom(String s) {
@@ -71,12 +71,12 @@ class Niveau {
 		redimensionne(i, j);
 		cases[i][j] = VIDE;
 	}
-	
+
 	void ajoute(int contenu, int i, int j) {
 		redimensionne(i, j);
 		cases[i][j] |= contenu;
 	}
-	
+
 	void ajouteMur(int i, int j) {
 		ajoute(MUR, i, j);
 	}
@@ -100,15 +100,15 @@ class Niveau {
 	int colonnes() {
 		return c;
 	}
-	
+
 	String nom() {
 		return nom;
 	}
-	
+
 	boolean estVide(int l, int c) {
 		return cases[l][c] == VIDE;
 	}
-	
+
 	boolean aMur(int l, int c) {
 		return (cases[l][c] & MUR) != 0;
 	}

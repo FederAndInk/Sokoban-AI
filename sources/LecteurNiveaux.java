@@ -81,7 +81,7 @@ public class LecteurNiveaux {
 		}
 		int i = 0;
 		while ((ligne != null) && (ligne.length() > 0)) {
-			for (int j=0; j<ligne.length(); j++) {
+			for (int j = 0; j < ligne.length(); j++) {
 				char c = ligne.charAt(j);
 				n.videCase(i, j);
 				switch (c) {
