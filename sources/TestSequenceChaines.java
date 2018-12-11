@@ -29,33 +29,68 @@
 import java.util.Random;
 
 public class TestSequenceChaines {
-	public static void main(String[] args) {
-		int min = 0, max = 0, count = 0;
-		Random r = new Random();
-		SequenceChaines seq = new SequenceChainesListe();
-		// Changer les construction pour tester l'autre sequence
-		// SequenceChaines seq = new SequenceChainesTableau();
+	static int min, max, count;
 
-		assert (seq.estVide());
+	static String operation(SequenceChaines seq, int code) {
+		String s;
+		System.out.println(seq);
+		switch (code) {
+		case 0:
+			s = String.format("%08d", min);
+			System.out.println("Insertion en Tete de " + s);
+			seq.insereTete(s);
+			assert (!seq.estVide());
+			break;
+		case 1:
+			s = String.format("%08d", max);
+			System.out.println("Insertion en Queue de " + s);
+			seq.insereQueue(s);
+			assert (!seq.estVide());
+			break;
+		case 2:
+		case 3:
+			if (count > 0) {
+				s = seq.extraitTete();
+				System.out.println("Extraction en Tete de " + s);
+				int val = Integer.parseInt(s);
+				assert (val == min + 1);
+				assert ((count == 1) == (seq.estVide()));
+				return s;
+			}
+			break;
+		}
+
+		return null;
+	}
+
+	public static void main(String[] args) {
+		Random r = new Random();
+		SequenceChaines s1, s2;
+		s1 = new SequenceChainesTableau();
+		s2 = new SequenceChainesListe();
+
+		assert (s1.estVide());
+		assert (s2.estVide());
+		min = -1;
+		max = 0;
+		count = 0;
 		for (int i = 0; i < 100; i++) {
-			if (r.nextBoolean()) {
-				String s = String.format("%08d", max);
-				max++;
-				System.out.println("Insertion de " + s);
-				seq.insereQueue(s);
+			int code = r.nextInt(4);
+			String r1 = operation(s1, code);
+			String r2 = operation(s2, code);
+			if (code < 2) {
 				count++;
-				assert (!seq.estVide());
+				if (code < 1)
+					min--;
+				else
+					max++;
 			} else {
 				if (count > 0) {
-					String s = seq.extraitTete();
-					System.out.println("Extraction de " + s);
-					int val = Integer.parseInt(s);
-					assert (val == min);
-					min++;
 					count--;
-					assert ((count == 0) == (seq.estVide()));
+					min++;
 				}
 			}
+			assert ((r1 == r2) || (r1.equals(r2)));
 		}
 	}
 }

@@ -26,6 +26,8 @@
  */
 
 interface SequenceChaines {
+	void insereTete(String element);
+
 	void insereQueue(String element);
 
 	String extraitTete();

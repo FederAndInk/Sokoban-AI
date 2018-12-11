@@ -51,6 +51,17 @@ class SequenceChainesTableau implements SequenceChaines {
 	}
 
 	@Override
+	public void insereTete(String element) {
+		if (taille == elements.length)
+			redimensionne(taille * 2);
+		debut = debut - 1;
+		if (debut < 0)
+			debut = elements.length - 1;
+		elements[debut] = element;
+		taille++;
+	}
+
+	@Override
 	public void insereQueue(String element) {
 		if (taille == elements.length)
 			redimensionne(taille * 2);
@@ -70,5 +81,19 @@ class SequenceChainesTableau implements SequenceChaines {
 	@Override
 	public boolean estVide() {
 		return taille == 0;
+	}
+
+	@Override
+	public String toString() {
+		String resultat = "SequenceListe [ ";
+		int pos = debut;
+		for (int i = 0; i < taille; i++) {
+			if (i > 0)
+				resultat += ", ";
+			resultat += elements[pos];
+			pos = (pos + 1) % elements.length;
+		}
+		resultat += "]";
+		return resultat;
 	}
 }
