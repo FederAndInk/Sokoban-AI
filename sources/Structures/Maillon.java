@@ -27,11 +27,11 @@
 
 package Structures;
 
-class MaillonChaines {
+class Maillon {
 	String element;
-	MaillonChaines suivant;
+	Maillon suivant;
 
-	MaillonChaines(String element, MaillonChaines suivant) {
+	Maillon(String element, Maillon suivant) {
 		this.element = element;
 		this.suivant = suivant;
 	}

@@ -27,7 +27,7 @@
 
 package Structures;
 
-interface SequenceChaines {
+interface Sequence {
 	void insereTete(String element);
 
 	void insereQueue(String element);

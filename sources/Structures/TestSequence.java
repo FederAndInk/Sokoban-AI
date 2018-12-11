@@ -1,4 +1,3 @@
-
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -30,10 +29,12 @@ package Structures;
 
 import java.util.Random;
 
-public class TestSequenceChaines {
+import Global.Configuration;
+
+public class TestSequence {
 	static int min, max, count;
 
-	static String operation(SequenceChaines seq, int code) {
+	static String operation(Sequence seq, int code) {
 		String s;
 		System.out.println(seq);
 		switch (code) {
@@ -67,19 +68,16 @@ public class TestSequenceChaines {
 
 	public static void main(String[] args) {
 		Random r = new Random();
-		SequenceChaines s1, s2;
-		s1 = new SequenceChainesTableau();
-		s2 = new SequenceChainesListe();
+		Sequence s;
+		s = Configuration.instance().fabriqueSequence().nouvelle();
 
-		assert (s1.estVide());
-		assert (s2.estVide());
+		assert (s.estVide());
 		min = -1;
 		max = 0;
 		count = 0;
 		for (int i = 0; i < 100; i++) {
 			int code = r.nextInt(4);
-			String r1 = operation(s1, code);
-			String r2 = operation(s2, code);
+			operation(s, code);
 			if (code < 2) {
 				count++;
 				if (code < 1)
@@ -92,7 +90,6 @@ public class TestSequenceChaines {
 					min++;
 				}
 			}
-			assert ((r1 == r2) || (r1.equals(r2)));
 		}
 	}
 }

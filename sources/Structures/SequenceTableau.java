@@ -27,58 +27,73 @@
 
 package Structures;
 
-class SequenceChainesListe implements SequenceChaines {
-	MaillonChaines tete, queue;
+class SequenceTableau implements Sequence {
+	String[] elements;
+	int taille, debut;
 
-	// Les méthodes implémentant l'interface
-	// doivent être publiques
+	public SequenceTableau() {
+		// Taille par défaut
+		elements = new String[1];
+		debut = 0;
+		taille = 0;
+	}
+
+	private void redimensionne(int nouvelleCapacite) {
+		String[] nouveau;
+
+		if (nouvelleCapacite > elements.length) {
+			nouveau = new String[nouvelleCapacite];
+			int aCopier = taille;
+			for (int i = 0; i < aCopier; i++)
+				nouveau[i] = extraitTete();
+			debut = 0;
+			taille = aCopier;
+			elements = nouveau;
+		}
+	}
+
 	@Override
 	public void insereTete(String element) {
-		MaillonChaines m = new MaillonChaines(element, tete);
-		if (queue == null)
-			queue = m;
-		tete = m;
+		if (taille == elements.length)
+			redimensionne(taille * 2);
+		debut = debut - 1;
+		if (debut < 0)
+			debut = elements.length - 1;
+		elements[debut] = element;
+		taille++;
 	}
 
 	@Override
 	public void insereQueue(String element) {
-		MaillonChaines m = new MaillonChaines(element, null);
-		if (queue == null) {
-			tete = queue = m;
-		} else {
-			queue.suivant = m;
-			queue = m;
-		}
+		if (taille == elements.length)
+			redimensionne(taille * 2);
+		elements[(debut + taille) % elements.length] = element;
+		taille++;
 	}
 
 	@Override
 	public String extraitTete() {
-		String resultat;
-		// Exception si tete == null (sequence vide)
-		resultat = tete.element;
-		tete = tete.suivant;
-		if (tete == null) {
-			queue = null;
-		}
+		// Resultat invalide si la sequence est vide
+		String resultat = elements[debut];
+		debut = (debut + 1) % elements.length;
+		taille--;
 		return resultat;
 	}
 
 	@Override
 	public boolean estVide() {
-		return tete == null;
+		return taille == 0;
 	}
 
 	@Override
 	public String toString() {
 		String resultat = "SequenceListe [ ";
-		boolean premier = true;
-		MaillonChaines m = tete;
-		while (m != null) {
-			if (!premier)
+		int pos = debut;
+		for (int i = 0; i < taille; i++) {
+			if (i > 0)
 				resultat += ", ";
-			resultat += m.element;
-			m = m.suivant;
-			premier = false;
+			resultat += elements[pos];
+			pos = (pos + 1) % elements.length;
 		}
 		resultat += "]";
 		return resultat;

@@ -28,5 +28,5 @@
 package Structures;
 
 public interface FabriqueSequence {
-	<E> Sequence<E> nouvelle();
+	Sequence nouvelle();
 }
