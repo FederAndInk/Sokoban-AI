@@ -38,7 +38,7 @@ public class SequenceTableau<E> implements Sequence<E> {
 		taille = 0;
 	}
 
-	private void redimensionne(int nouvelleCapacite) {
+	public void redimensionne(int nouvelleCapacite) {
 		Object[] nouveau;
 
 		if (nouvelleCapacite > elements.length) {

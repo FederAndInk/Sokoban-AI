@@ -27,10 +27,16 @@
 
 package Structures;
 
-public interface FAP<E extends Comparable<E>> {
-	void insere(E element);
+public abstract class FAP<E extends Comparable<E>> {
+	Sequence<E> s;
 
-	E extrait();
+	abstract void insere(E element);
 
-	boolean estVide();
+	public E extrait() {
+		return s.extraitTete();
+	}
+
+	public boolean estVide() {
+		return s.estVide();
+	}
 }
