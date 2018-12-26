@@ -87,7 +87,7 @@ class SequenceTableau implements Sequence {
 
 	@Override
 	public String toString() {
-		String resultat = "SequenceListe [ ";
+		String resultat = "SequenceTableau [ ";
 		int pos = debut;
 		for (int i = 0; i < taille; i++) {
 			if (i > 0)
