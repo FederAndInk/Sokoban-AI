@@ -69,7 +69,7 @@ public class SequenceListe<E> implements Sequence<E> {
 	public boolean estVide() {
 		return tete == null;
 	}
-	
+
 	@Override
 	public String toString() {
 		String resultat = "SequenceListe [ ";
