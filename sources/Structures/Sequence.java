@@ -35,6 +35,6 @@ interface Sequence {
 	String extraitTete();
 
 	boolean estVide();
-	
+
 	Iterateur iterateur();
 }
