@@ -1,3 +1,4 @@
+
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -25,58 +26,41 @@
  *          38401 Saint Martin d'Hères
  */
 
-package Structures;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
-import java.util.NoSuchElementException;
+public class RedacteurNiveau {
+	PrintStream sortie;
 
-class IterateurSequenceTableau<T> implements Iterateur<T> {
-
-	SequenceTableau<T> e;
-	int position, rang, last;
-
-	IterateurSequenceTableau(SequenceTableau<T> e) {
-		this.e = e;
-		rang = 0;
-		position = e.debut;
-		last = -1;
+	RedacteurNiveau(OutputStream out) {
+		sortie = new PrintStream(out);
 	}
 
-	@Override
-	public boolean aProchain() {
-		return rang < e.taille;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public T prochain() {
-		if (aProchain()) {
-			last = position;
-			position = (position + 1) % e.elements.length;
-			rang++;
-			return (T) e.elements[last];
-		} else {
-			throw new NoSuchElementException();
+	void ecrisNiveau(Niveau n) {
+		for (int i = 0; i < n.lignes(); i++) {
+			int dernier = 0;
+			for (int j = 0; j < n.colonnes(); j++)
+				if (!n.estVide(i, j))
+					dernier = j;
+			for (int j = 0; j <= dernier; j++)
+				if (n.aMur(i, j))
+					sortie.print('#');
+				else if (n.aBut(i, j))
+					if (n.aPousseur(i, j))
+						sortie.print('+');
+					else if (n.aCaisse(i, j))
+						sortie.print('*');
+					else
+						sortie.print('.');
+				else if (n.aPousseur(i, j))
+					sortie.print('@');
+				else if (n.aCaisse(i, j))
+					sortie.print('$');
+				else
+					sortie.print(' ');
+			sortie.println();
 		}
-	}
-
-	@Override
-	public void supprime() {
-		if (last != -1) {
-			// On recule
-			position = last;
-			// On décale les éléments qui suivent
-			int courant = rang;
-			while (courant < e.taille) {
-				int next = (last + 1) % e.elements.length;
-				e.elements[last] = e.elements[next];
-				last = next;
-				courant++;
-			}
-			last = -1;
-			rang--;
-			e.taille--;
-		} else {
-			throw new IllegalStateException();
-		}
+		if (n.nom() != null)
+			sortie.println("; " + n.nom());
 	}
 }

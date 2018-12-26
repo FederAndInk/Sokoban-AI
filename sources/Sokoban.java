@@ -46,10 +46,11 @@ public class Sokoban {
 		Configuration.instance().logger().info("Niveaux trouvés");
 
 		LecteurNiveaux l = new LecteurNiveaux(in);
+		RedacteurNiveau r = new RedacteurNiveau(System.out);
 		Niveau n = l.lisProchainNiveau();
 		while (n != null) {
 			System.out.println("Niveau lu :");
-			System.out.print(n);
+			r.ecrisNiveau(n);
 			n = l.lisProchainNiveau();
 		}
 	}

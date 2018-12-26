@@ -69,6 +69,22 @@ public class SequenceListe<E> implements Sequence<E> {
 	public boolean estVide() {
 		return tete == null;
 	}
+	
+	@Override
+	public String toString() {
+		String resultat = "SequenceListe [ ";
+		boolean premier = true;
+		Maillon<E> m = tete;
+		while (m != null) {
+			if (!premier)
+				resultat += ", ";
+			resultat += m.element;
+			m = m.suivant;
+			premier = false;
+		}
+		resultat += "]";
+		return resultat;
+	}
 
 	@Override
 	public Iterateur<E> iterateur() {

@@ -87,6 +87,20 @@ public class SequenceTableau<E> implements Sequence<E> {
 	}
 
 	@Override
+	public String toString() {
+		String resultat = "SequenceTableau [ ";
+		int pos = debut;
+		for (int i = 0; i < taille; i++) {
+			if (i > 0)
+				resultat += ", ";
+			resultat += elements[pos];
+			pos = (pos + 1) % elements.length;
+		}
+		resultat += "]";
+		return resultat;
+	}
+
+	@Override
 	public Iterateur<E> iterateur() {
 		return new IterateurSequenceTableau<>(this);
 	}
