@@ -24,11 +24,13 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
+package Structures;
 
-public interface FAP<E extends Comparable<E>> {
-	void insere(E element);
+public class FabriqueSequenceTableau implements FabriqueSequence {
 
-	E extrait();
+	@Override
+	public Sequence nouvelle() {
+		return new SequenceTableau();
+	}
 
-	boolean estVide();
 }

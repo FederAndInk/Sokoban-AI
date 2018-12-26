@@ -1,3 +1,5 @@
+package Structures;
+
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -24,42 +26,56 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
+import java.util.NoSuchElementException;
 
-public class FAPListe<E extends Comparable<E>> implements FAP<E> {
-	SequenceListe<E> s;
+class IterateurSequenceTableau<T> implements Iterateur<T> {
 
-	FAPListe() {
-		s = new SequenceListe<>();
+	SequenceTableau<T> e;
+	int position, rang, last;
+
+	IterateurSequenceTableau(SequenceTableau<T> e) {
+		this.e = e;
+		rang = 0;
+		position = e.debut;
+		last = -1;
 	}
 
 	@Override
-	public void insere(E element) {
-		Maillon<E> precedent, courant;
+	public boolean aProchain() {
+		return rang < e.taille;
+	}
 
-		precedent = null;
-		courant = s.tete;
-		while ((courant != null) && (element.compareTo(courant.element) > 0)) {
-			precedent = courant;
-			courant = courant.suivant;
-		}
-
-		Maillon<E> m = new Maillon<>(element, courant);
-		if (precedent == null) {
-			s.tete = m;
+	@SuppressWarnings("unchecked")
+	@Override
+	public T prochain() {
+		if (aProchain()) {
+			last = position;
+			position = (position + 1) % e.elements.length;
+			rang++;
+			return (T) e.elements[last];
 		} else {
-			precedent.suivant = m;
+			throw new NoSuchElementException();
 		}
-		if (courant == null)
-			s.queue = m;
 	}
 
 	@Override
-	public E extrait() {
-		return s.extraitTete();
-	}
-
-	@Override
-	public boolean estVide() {
-		return s.estVide();
+	public void supprime() {
+		if (last != -1) {
+			// On recule
+			position = last;
+			// On décale les éléments qui suivent
+			int courant = rang;
+			while (courant < e.taille) {
+				int next = (last + 1) % e.elements.length;
+				e.elements[last] = e.elements[next];
+				last = next;
+				courant++;
+			}
+			last = -1;
+			rang--;
+			e.taille--;
+		} else {
+			throw new IllegalStateException();
+		}
 	}
 }

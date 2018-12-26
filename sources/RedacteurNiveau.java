@@ -26,27 +26,41 @@
  *          38401 Saint Martin d'Hères
  */
 
-import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
-public class Sokoban {
-	public static void main(String[] args) {
-		InputStream in;
-		// La méthode de chargement suivante ne dépend pas du système de fichier et sera
-		// donc utilisable pour un .jar
-		// Attention, par contre, le fichier doit se trouver dans le CLASSPATH
-		in = ClassLoader.getSystemClassLoader().getResourceAsStream("Niveaux/Original.txt");
-		if (in == null) {
-			System.err.println("ERREUR : impossible de trouver le fichier de niveaux");
-			System.exit(1);
-		}
+public class RedacteurNiveau {
+	PrintStream sortie;
 
-		LecteurNiveaux l = new LecteurNiveaux(in);
-		RedacteurNiveau r = new RedacteurNiveau(System.out);
-		Niveau n = l.lisProchainNiveau();
-		while (n != null) {
-			System.out.println("Niveau lu :");
-			r.ecrisNiveau(n);
-			n = l.lisProchainNiveau();
+	RedacteurNiveau(OutputStream out) {
+		sortie = new PrintStream(out);
+	}
+
+	void ecrisNiveau(Niveau n) {
+		for (int i = 0; i < n.lignes(); i++) {
+			int dernier = 0;
+			for (int j = 0; j < n.colonnes(); j++)
+				if (!n.estVide(i, j))
+					dernier = j;
+			for (int j = 0; j <= dernier; j++)
+				if (n.aMur(i, j))
+					sortie.print('#');
+				else if (n.aBut(i, j))
+					if (n.aPousseur(i, j))
+						sortie.print('+');
+					else if (n.aCaisse(i, j))
+						sortie.print('*');
+					else
+						sortie.print('.');
+				else if (n.aPousseur(i, j))
+					sortie.print('@');
+				else if (n.aCaisse(i, j))
+					sortie.print('$');
+				else
+					sortie.print(' ');
+			sortie.println();
 		}
+		if (n.nom() != null)
+			sortie.println("; " + n.nom());
 	}
 }

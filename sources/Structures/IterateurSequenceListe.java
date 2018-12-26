@@ -1,3 +1,4 @@
+package Structures;
 
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu

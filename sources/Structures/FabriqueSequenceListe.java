@@ -24,11 +24,13 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
+package Structures;
 
-public interface Iterateur<T> {
-	boolean aProchain();
+public class FabriqueSequenceListe implements FabriqueSequence {
 
-	T prochain();
+	@Override
+	public Sequence nouvelle() {
+		return new SequenceListe();
+	}
 
-	void supprime();
 }
