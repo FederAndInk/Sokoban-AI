@@ -26,10 +26,10 @@ package Structures;
  *          38401 Saint Martin d'Hères
  */
 
-public interface Iterateur<T> {
+public interface Iterateur {
 	boolean aProchain();
 
-	T prochain();
+	String prochain();
 
 	void supprime();
 }

@@ -28,12 +28,12 @@ package Structures;
  */
 import java.util.NoSuchElementException;
 
-class IterateurSequenceTableau<T> implements Iterateur<T> {
+class IterateurSequenceTableau implements Iterateur {
 
-	SequenceTableau<T> e;
+	SequenceTableau e;
 	int position, rang, last;
 
-	IterateurSequenceTableau(SequenceTableau<T> e) {
+	IterateurSequenceTableau(SequenceTableau e) {
 		this.e = e;
 		rang = 0;
 		position = e.debut;
@@ -45,14 +45,13 @@ class IterateurSequenceTableau<T> implements Iterateur<T> {
 		return rang < e.taille;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public T prochain() {
+	public String prochain() {
 		if (aProchain()) {
 			last = position;
 			position = (position + 1) % e.elements.length;
 			rang++;
-			return (T) e.elements[last];
+			return e.elements[last];
 		} else {
 			throw new NoSuchElementException();
 		}

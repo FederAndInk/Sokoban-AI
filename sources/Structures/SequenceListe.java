@@ -83,4 +83,9 @@ class SequenceListe implements Sequence {
 		resultat += "]";
 		return resultat;
 	}
+
+	@Override
+	public Iterateur iterateur() {
+		return new IterateurSequenceListe(this);
+	}
 }

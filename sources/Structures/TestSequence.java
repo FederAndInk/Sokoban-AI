@@ -35,35 +35,57 @@ public class TestSequence {
 	static int min, max, count;
 
 	static String operation(Sequence seq, int code) {
-		String s;
+		String s = null;
+		int val = 0, pos = 0;
 		System.out.println(seq);
 		switch (code) {
 		case 0:
 			s = String.format("%08d", min);
 			System.out.println("Insertion en Tete de " + s);
 			seq.insereTete(s);
-			assert (!seq.estVide());
 			break;
 		case 1:
 			s = String.format("%08d", max);
 			System.out.println("Insertion en Queue de " + s);
 			seq.insereQueue(s);
-			assert (!seq.estVide());
 			break;
 		case 2:
+			if (count > 0) {
+				pos = new Random().nextInt(count);
+				Iterateur it = seq.iterateur();
+				System.out.println("Extraction de l'élément de position " + pos);
+				while (pos > 0) {
+					assert (it.aProchain());
+					it.prochain();
+					pos--;
+				}
+				assert (it.aProchain());
+				s = it.prochain();
+				val = Integer.parseInt(s);
+			}
 		case 3:
 			if (count > 0) {
 				s = seq.extraitTete();
 				System.out.println("Extraction en Tete de " + s);
-				int val = Integer.parseInt(s);
-				assert (val == min + 1);
-				assert ((count == 1) == (seq.estVide()));
-				return s;
+				val = Integer.parseInt(s);
 			}
 			break;
 		}
-
-		return null;
+		if (code < 2) {
+			assert (!seq.estVide());
+		} else {
+			if (count > 0) {
+				assert ((val > min) && (val < max));
+				if ((code == 3) || ((code == 2) && (pos == 0)))
+					min = val;
+				if ((code == 2) && (pos == count - 1))
+					max = val;
+				if (min == max)
+					max++;
+				assert ((count == 1) == (seq.estVide()));
+			}
+		}
+		return s;
 	}
 
 	public static void main(String[] args) {
@@ -87,7 +109,6 @@ public class TestSequence {
 			} else {
 				if (count > 0) {
 					count--;
-					min++;
 				}
 			}
 		}
