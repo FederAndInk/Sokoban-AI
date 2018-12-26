@@ -38,6 +38,12 @@ public class TestSequence {
 		String s = null;
 		int val = 0, pos = 0;
 		System.out.println(seq);
+		System.out.print("Affichage avec itérateur :");
+		Iterateur it = seq.iterateur();
+		while (it.aProchain()) {
+			System.out.print(" " + it.prochain());
+		}
+		System.out.println();
 		switch (code) {
 		case 0:
 			s = String.format("%08d", min);
@@ -52,7 +58,7 @@ public class TestSequence {
 		case 2:
 			if (count > 0) {
 				pos = new Random().nextInt(count);
-				Iterateur it = seq.iterateur();
+				it = seq.iterateur();
 				System.out.println("Extraction de l'élément de position " + pos);
 				while (pos > 0) {
 					assert (it.aProchain());
