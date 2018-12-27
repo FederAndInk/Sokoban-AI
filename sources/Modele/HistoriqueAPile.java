@@ -27,10 +27,11 @@
 package Modele;
 
 import Global.Configuration;
+import Patterns.Commande;
 import Structures.FabriqueSequence;
 import Structures.Sequence;
 
-public class HistoriqueAPile<E> implements EtatHistorique {
+public class HistoriqueAPile<E extends Commande> implements EtatHistorique {
 	Sequence<E> passe, futur;
 	
 	HistoriqueAPile() {
@@ -53,15 +54,16 @@ public class HistoriqueAPile<E> implements EtatHistorique {
 		return resultat;
 	}
 	
-	public E annuler() {
-		return transfert(passe, futur);
+	public void annuler() {
+		transfert(passe, futur).desexecute();
 	}
 	
-	public E refaire() {
-		return transfert(futur, passe);
+	public void refaire() {
+		transfert(futur, passe).execute();
 	}
 	
 	public void faire(E nouveau) {
+		nouveau.execute();
 		passe.insereTete(nouveau);
 		while (!futur.estVide()) {
 			futur.extraitTete();

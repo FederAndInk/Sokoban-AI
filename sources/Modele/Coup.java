@@ -29,10 +29,12 @@ package Modele;
 import Patterns.Commande;
 
 public class Coup extends Commande {
+	Niveau n;
 	int dirL, dirC, posL, posC;
 	boolean caisse;
-	
-	Coup(int pL, int pC, int dL, int dC, boolean c) {
+
+	Coup(Niveau niveau, int pL, int pC, int dL, int dC, boolean c) {
+		n = niveau;
 		posL = pL;
 		posC = pC;
 		dirL = dL;
@@ -42,13 +44,25 @@ public class Coup extends Commande {
 
 	@Override
 	public void execute() {
-		// TODO Auto-generated method stub
-		
+		int dstL = posL + dirL;
+		int dstC = posC + dirC;
+		if (caisse) {
+			n.deplace(dstL, dstC, dstL + dirL, dstC + dirC);
+			n.comptePoussee();
+		}
+		n.deplace(posL, posC, dstL, dstC);
+		n.comptePas();
 	}
 
 	@Override
 	public void desexecute() {
-		// TODO Auto-generated method stub
-		
+		int dstL = posL + dirL;
+		int dstC = posC + dirC;
+		n.deplace(dstL, dstC, posL, posC);
+		n.decomptePas();
+		if (caisse) {
+			n.deplace(dstL + dirL, dstC + dirC, dstL, dstC);
+			n.decomptePoussee();
+		}
 	}
 }

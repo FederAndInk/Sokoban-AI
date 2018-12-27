@@ -197,39 +197,13 @@ public class Niveau extends HistoriqueAPile<Coup> {
 		return !aMur(i, j) && !aCaisse(i, j);
 	}
 
-	private void deplace(int srcL, int srcC, int dstL, int dstC) {
+	public void deplace(int srcL, int srcC, int dstL, int dstC) {
 		int inamovible = VIDE | BUT | MUR;
 		int element = cases[srcL][srcC] & ~inamovible;
 		supprime(element, srcL, srcC);
 		ajoute(element, dstL, dstC);
 	}
-
-	public void jouer(Coup c) {
-		int dstL = c.posL + c.dirL;
-		int dstC = c.posC + c.dirC;
-		if (c.caisse) {
-			deplace(dstL, dstC, dstL + c.dirL, dstC + c.dirC);
-			nbPoussees++;
-		}
-		deplace(c.posL, c.posC, dstL, dstC);
-		nbPas++;
-		pousseurL = dstL;
-		pousseurC = dstC;
-	}
-
-	public void dejouer(Coup c) {
-		int dstL = c.posL + c.dirL;
-		int dstC = c.posC + c.dirC;
-		deplace(dstL, dstC, c.posL, c.posC);
-		nbPas--;
-		pousseurL = c.posL;
-		pousseurC = c.posC;
-		if (c.caisse) {
-			deplace(dstL + c.dirL, dstC + c.dirC, dstL, dstC);
-			nbPoussees--;
-		}
-	}
-
+/*
 	@Override
 	public void faire(Coup c) {
 		jouer(c);
@@ -249,7 +223,7 @@ public class Niveau extends HistoriqueAPile<Coup> {
 		jouer(c);
 		return c;
 	}
-
+*/
 	public Coup jouer(int dL, int dC) {
 		Coup c = null;
 		// Seulement une direction, -1 ou +1
@@ -258,10 +232,10 @@ public class Niveau extends HistoriqueAPile<Coup> {
 			int destC = pousseurC + dC;
 
 			if (aCaisse(destL, destC) && estOccupable(destL + dL, destC + dC)) {
-				c = new Coup(pousseurL, pousseurC, dL, dC, true);
+				c = new Coup(this, pousseurL, pousseurC, dL, dC, true);
 			}
 			if (estOccupable(destL, destC)) {
-				c = new Coup(pousseurL, pousseurC, dL, dC, false);
+				c = new Coup(this, pousseurL, pousseurC, dL, dC, false);
 			}
 			if (c != null) {
 				faire(c);
@@ -280,5 +254,21 @@ public class Niveau extends HistoriqueAPile<Coup> {
 
 	public boolean estTermine() {
 		return nbCaissesSurBut == nbButs;
+	}
+	
+	public void comptePas() {
+		nbPas++;
+	}
+	
+	public void decomptePas() {
+		nbPas--;
+	}
+	
+	public void comptePoussee() {
+		nbPoussees++;
+	}
+	
+	public void decomptePoussee() {
+		nbPoussees--;
 	}
 }
