@@ -26,7 +26,7 @@
  */
 package Modele;
 
-public class Coup {
+public class Coup extends Commande {
 	int dirL, dirC, posL, posC;
 	boolean caisse;
 	
@@ -36,5 +36,17 @@ public class Coup {
 		dirL = dL;
 		dirC = dC;
 		caisse = c;
+	}
+
+	@Override
+	void execute() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	void desexecute() {
+		// TODO Auto-generated method stub
+		
 	}
 }

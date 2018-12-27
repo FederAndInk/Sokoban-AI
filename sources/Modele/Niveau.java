@@ -152,7 +152,9 @@ public class Niveau extends HistoriqueAPile<Coup> {
 		return (cases[l][c] & (CAISSE | MUR)) == 0;
 	}
 
-	private void deplace(int element, int srcL, int srcC, int dstL, int dstC) {
+	void deplace(int srcL, int srcC, int dstL, int dstC) {
+		int inamovible = VIDE | BUT | MUR;
+		int element = cases[srcL][srcC] & ~inamovible;
 		cases[dstL][dstC] |= element;
 		cases[srcL][srcC] &= ~element;
 		if (estBut(dstL, dstC))
@@ -160,15 +162,15 @@ public class Niveau extends HistoriqueAPile<Coup> {
 		if (estBut(srcL, srcC))
 			nbSurBut[element]--;
 	}
-
+	
 	public void jouer(Coup c) {
 		int dstL = c.posL + c.dirL;
 		int dstC = c.posC + c.dirC;
 		if (c.caisse) {
-			deplace(CAISSE, dstL, dstC, dstL + c.dirL, dstC + c.dirC);
+			deplace(dstL, dstC, dstL + c.dirL, dstC + c.dirC);
 			nbPoussees++;
 		}
-		deplace(POUSSEUR, c.posL, c.posC, dstL, dstC);
+		deplace(c.posL, c.posC, dstL, dstC);
 		nbPas++;
 		pousseurL = dstL;
 		pousseurC = dstC;
@@ -177,12 +179,12 @@ public class Niveau extends HistoriqueAPile<Coup> {
 	public void dejouer(Coup c) {
 		int dstL = c.posL + c.dirL;
 		int dstC = c.posC + c.dirC;
-		deplace(POUSSEUR, dstL, dstC, c.posL, c.posC);
+		deplace(dstL, dstC, c.posL, c.posC);
 		nbPas--;
 		pousseurL = c.posL;
 		pousseurC = c.posC;
 		if (c.caisse) {
-			deplace(CAISSE, dstL + c.dirL, dstC + c.dirC, dstL, dstC);
+			deplace(dstL + c.dirL, dstC + c.dirC, dstL, dstC);
 			nbPoussees--;
 		}
 	}
