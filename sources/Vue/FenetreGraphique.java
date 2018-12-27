@@ -123,20 +123,20 @@ public class FenetreGraphique implements Observateur {
 		jeu.ajouteObservateur(this);
 		miseAJour();
 	}
-	
+
 	public void ecouteurDeRedimensionnement(ChangeListener<Number> l) {
 		canvas.widthProperty().addListener(l);
 		canvas.heightProperty().addListener(l);
 	}
-	
+
 	public void ecouteurDeSouris(EventHandler<MouseEvent> h) {
 		canvas.setOnMouseClicked(h);
 	}
-	
+
 	public void ecouteurDeClavier(EventHandler<KeyEvent> h) {
 		scene.setOnKeyPressed(h);
 	}
-	
+
 	public void ecouteurProchain(EventHandler<ActionEvent> h) {
 		prochain.setOnAction(h);
 	}
@@ -156,33 +156,33 @@ public class FenetreGraphique implements Observateur {
 		nbPas.setText("Pas :" + jeu.niveau().nbPas());
 		nbPoussees.setText("Poussées :" + jeu.niveau().nbPoussees());
 	}
-	
+
 	double largeur() {
 		return canvas.getWidth();
 	}
-	
+
 	double hauteur() {
 		return canvas.getHeight();
 	}
-	
+
 	ImageGraphique charger(InputStream in) {
 		ImageGraphique resultat = new ImageGraphique();
 		resultat.setImage(new Image(in));
 		return resultat;
 	}
-	
+
 	void tracer(ImageGraphique r, double x, double y, double l, double h) {
 		gc.drawImage(r.getImage(), x, y, l, h);
 	}
-	
+
 	void effacer() {
 		gc.clearRect(0, 0, largeur(), hauteur());
 	}
-	
+
 	public double tileWidth() {
 		return vueNiveau.tileWidth();
 	}
-	
+
 	public double tileHeight() {
 		return vueNiveau.tileHeight();
 	}

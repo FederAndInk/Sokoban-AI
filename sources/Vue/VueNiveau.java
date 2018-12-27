@@ -58,7 +58,7 @@ public class VueNiveau {
 		but = lisImage("But");
 		caisseSurBut = lisImage("CaisseSurBut");
 	}
-	
+
 	void traceSol(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
@@ -67,7 +67,7 @@ public class VueNiveau {
 		else
 			fenetre.tracer(sol, x, y, tileWidth, tileHeight);
 	}
-	
+
 	void traceObjet(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
@@ -103,11 +103,11 @@ public class VueNiveau {
 				traceObjet(ligne, colonne);
 			}
 	}
-	
+
 	public double tileWidth() {
 		return tileWidth;
 	}
-	
+
 	public double tileHeight() {
 		return tileHeight;
 	}

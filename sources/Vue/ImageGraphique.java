@@ -30,11 +30,11 @@ import javafx.scene.image.Image;
 
 class ImageGraphique {
 	Image image;
-	
+
 	void setImage(Image i) {
 		image = i;
 	}
-	
+
 	Image getImage() {
 		return image;
 	}

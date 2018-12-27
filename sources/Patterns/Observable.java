@@ -48,7 +48,7 @@ public class Observable {
 
 	public void metAJour() {
 		Iterateur<Observateur> it;
-		
+
 		it = observateurs.iterateur();
 		while (it.aProchain()) {
 			Observateur o = it.prochain();
