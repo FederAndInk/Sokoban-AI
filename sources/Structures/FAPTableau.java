@@ -27,32 +27,31 @@
 
 package Structures;
 
-public class FAPListe<E extends Comparable<E>> extends FAP<E> {
-	SequenceListe<E> s;
+public class FAPTableau<E extends Comparable<E>> extends FAP<E> {
+	SequenceTableau<E> s;
 
-	public FAPListe() {
-		s = new SequenceListe<>();
+	public FAPTableau() {
+		s = new SequenceTableau<>();
 		super.s = s;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void insere(E element) {
-		Maillon<E> precedent, courant;
-
-		precedent = null;
-		courant = s.tete;
-		while ((courant != null) && (element.compareTo(courant.element) > 0)) {
-			precedent = courant;
-			courant = courant.suivant;
+		if (s.taille == s.elements.length)
+			s.redimensionne(s.taille * 2);
+		int courant = (s.debut + s.taille) % s.elements.length;
+		int precedent = courant - 1;
+		if (precedent < 0)
+			precedent = s.elements.length - 1;
+		while ((courant != s.debut) && (element.compareTo((E) s.elements[precedent]) < 0)) {
+			s.elements[courant] = s.elements[precedent];
+			courant = precedent;
+			precedent = courant - 1;
+			if (precedent < 0)
+				precedent = s.elements.length - 1;
 		}
-
-		Maillon<E> m = new Maillon<>(element, courant);
-		if (precedent == null) {
-			s.tete = m;
-		} else {
-			precedent.suivant = m;
-		}
-		if (courant == null)
-			s.queue = m;
+		s.elements[courant] = element;
+		s.taille++;
 	}
 }
