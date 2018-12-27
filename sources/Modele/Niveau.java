@@ -46,7 +46,7 @@ public class Niveau {
 	Niveau() {
 		cases = new int[1][1];
 		l = c = 1;
-		cases[1][1] = VIDE;
+		cases[0][0] = VIDE;
 		nbButs = 0;
 		nbCaissesSurBut = 0;
 		pousseurL = pousseurC = -1;
@@ -105,7 +105,7 @@ public class Niveau {
 				nbButs++;
 		}
 		if (aPousseur(resultat) && !aPousseur(i, j)) {
-			if (pousseurL == -1)
+			if (pousseurL != -1)
 				throw new IllegalStateException("Plusieurs pousseurs sur le terrain !");
 			pousseurL = i;
 			pousseurC = j;
@@ -114,6 +114,7 @@ public class Niveau {
 	}
 
 	void videCase(int i, int j) {
+		redimensionne(i, j);
 		supprime(cases[i][j], i, j);
 	}
 
