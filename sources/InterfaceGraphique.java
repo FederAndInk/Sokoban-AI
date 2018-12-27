@@ -154,7 +154,7 @@ public class InterfaceGraphique extends Application {
 
 		trace();
 	}
-	
+
 	void traceSol(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
@@ -163,7 +163,7 @@ public class InterfaceGraphique extends Application {
 		else
 			gc.drawImage(sol, x, y, tileWidth, tileHeight);
 	}
-	
+
 	void traceObjet(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
