@@ -1,3 +1,4 @@
+
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -25,34 +26,41 @@
  *          38401 Saint Martin d'Hères
  */
 
-package Structures;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
-public class FAPListe<E extends Comparable<E>> extends FAP<E> {
-	SequenceListe<E> s;
+public class RedacteurNiveau {
+	PrintStream sortie;
 
-	public FAPListe() {
-		s = new SequenceListe<>();
-		super.s = s;
+	RedacteurNiveau(OutputStream out) {
+		sortie = new PrintStream(out);
 	}
 
-	@Override
-	public void insere(E element) {
-		Maillon<E> precedent, courant;
-
-		precedent = null;
-		courant = s.tete;
-		while ((courant != null) && (element.compareTo(courant.element) > 0)) {
-			precedent = courant;
-			courant = courant.suivant;
+	void ecrisNiveau(Niveau n) {
+		for (int i = 0; i < n.lignes(); i++) {
+			int dernier = 0;
+			for (int j = 0; j < n.colonnes(); j++)
+				if (!n.estVide(i, j))
+					dernier = j;
+			for (int j = 0; j <= dernier; j++)
+				if (n.aMur(i, j))
+					sortie.print('#');
+				else if (n.aBut(i, j))
+					if (n.aPousseur(i, j))
+						sortie.print('+');
+					else if (n.aCaisse(i, j))
+						sortie.print('*');
+					else
+						sortie.print('.');
+				else if (n.aPousseur(i, j))
+					sortie.print('@');
+				else if (n.aCaisse(i, j))
+					sortie.print('$');
+				else
+					sortie.print(' ');
+			sortie.println();
 		}
-
-		Maillon<E> m = new Maillon<>(element, courant);
-		if (precedent == null) {
-			s.tete = m;
-		} else {
-			precedent.suivant = m;
-		}
-		if (courant == null)
-			s.queue = m;
+		if (n.nom() != null)
+			sortie.println("; " + n.nom());
 	}
 }

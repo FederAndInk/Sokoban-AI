@@ -158,7 +158,7 @@ public class InterfaceGraphique extends Application {
 	void traceSol(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (n.estBut(l, c))
+		if (n.aBut(l, c))
 			gc.drawImage(but, x, y, tileWidth, tileHeight);
 		else
 			gc.drawImage(sol, x, y, tileWidth, tileHeight);
@@ -167,12 +167,12 @@ public class InterfaceGraphique extends Application {
 	void traceObjet(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (n.estMur(l, c))
+		if (n.aMur(l, c))
 			gc.drawImage(mur, x, y, tileWidth, tileHeight);
 		if (n.aPousseur(l, c))
 			gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
 		if (n.aCaisse(l, c))
-			if (n.estBut(l, c))
+			if (n.aBut(l, c))
 				gc.drawImage(caisseSurBut, x, y, tileWidth, tileHeight);
 			else
 				gc.drawImage(caisse, x, y, tileWidth, tileHeight);
