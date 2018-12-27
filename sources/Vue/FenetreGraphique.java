@@ -79,7 +79,7 @@ public class FenetreGraphique implements Observateur {
 	public void annuleAnimations() {
 		vueNiveau.annuleAnimations();
 	}
-	
+
 	public void afficheAnimations() {
 		vueNiveau.afficheAnimations();
 	}
@@ -178,11 +178,11 @@ public class FenetreGraphique implements Observateur {
 	public void ecouteurRefaire(EventHandler<ActionEvent> h) {
 		refaire.setOnAction(h);
 	}
-	
+
 	public void changeBoutonAnimation(boolean valeur) {
 		animation.setSelected(valeur);
 	}
-	
+
 	@Override
 	public void miseAJour() {
 		gc = canvas.getGraphicsContext2D();
@@ -194,21 +194,21 @@ public class FenetreGraphique implements Observateur {
 	double largeur() {
 		return canvas.getWidth();
 	}
-	
+
 	double hauteur() {
 		return canvas.getHeight();
 	}
-	
+
 	ImageGraphique charger(InputStream in) {
 		ImageGraphique resultat = new ImageGraphique();
 		resultat.setImage(new Image(in));
 		return resultat;
 	}
-	
+
 	void tracer(ImageGraphique r, double x, double y, double l, double h) {
 		gc.drawImage(r.getImage(), x, y, l, h);
 	}
-	
+
 	void effacer() {
 		gc.clearRect(0, 0, largeur(), hauteur());
 	}

@@ -105,12 +105,12 @@ public class Jeu extends Observable implements EtatHistorique {
 	public boolean peutAnnuler() {
 		return niveau().peutAnnuler();
 	}
-	
+
 	@Override
 	public boolean peutRefaire() {
 		return niveau().peutRefaire();
 	}
-	
+
 	public Coup annuler() {
 		Coup cp = null;
 		if (niveau().peutAnnuler()) {

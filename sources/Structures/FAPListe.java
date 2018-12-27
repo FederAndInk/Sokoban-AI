@@ -27,11 +27,12 @@
 
 package Structures;
 
-public class FAPListe<E extends Comparable<E>> implements FAP<E> {
+public class FAPListe<E extends Comparable<E>> extends FAP<E> {
 	SequenceListe<E> s;
 
 	public FAPListe() {
 		s = new SequenceListe<>();
+		super.s = s;
 	}
 
 	@Override
@@ -53,15 +54,5 @@ public class FAPListe<E extends Comparable<E>> implements FAP<E> {
 		}
 		if (courant == null)
 			s.queue = m;
-	}
-
-	@Override
-	public E extrait() {
-		return s.extraitTete();
-	}
-
-	@Override
-	public boolean estVide() {
-		return s.estVide();
 	}
 }

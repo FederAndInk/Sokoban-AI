@@ -88,16 +88,16 @@ public class VueNiveau {
 		pousseur = pousseurs[direction][etape];
 		animations = Configuration.instance().fabriqueSequence().nouvelle();
 	}
-	
+
 	void traceSol(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (n.estBut(l, c))
+		if (n.aBut(l, c))
 			fenetre.tracer(but, x, y, tileWidth, tileHeight);
 		else
 			fenetre.tracer(sol, x, y, tileWidth, tileHeight);
 	}
-	
+
 	void traceObjet(int l, int c) {
 		traceObjet(n.contenu(l, c), l, c);
 	}
@@ -105,22 +105,22 @@ public class VueNiveau {
 	void traceObjet(int contenu, double l, double c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (Niveau.estMur(contenu))
+		if (Niveau.aMur(contenu))
 			fenetre.tracer(mur, x, y, tileWidth, tileHeight);
 		if (Niveau.aPousseur(contenu))
 			fenetre.tracer(pousseur, x, y, tileWidth, tileHeight);
 		if (Niveau.aCaisse(contenu))
-			if (Niveau.estBut(contenu))
+			if (Niveau.aBut(contenu))
 				fenetre.tracer(caisseSurBut, x, y, tileWidth, tileHeight);
 			else
 				fenetre.tracer(caisse, x, y, tileWidth, tileHeight);
 	}
-	
+
 	void traceCase(int l, int c) {
 		traceSol(l, c);
 		traceObjet(l, c);
 	}
-	
+
 	void miseAJourPousseur() {
 		direction = jeu.direction();
 		pousseur = pousseurs[direction][etape];
@@ -167,11 +167,11 @@ public class VueNiveau {
 			}
 		afficheAnimations();
 	}
-	
+
 	public double tileWidth() {
 		return tileWidth;
 	}
-	
+
 	public double tileHeight() {
 		return tileHeight;
 	}
