@@ -39,7 +39,6 @@ public class ControleurMediateur {
 	FenetreGraphique f;
 	boolean avecAnimations;
 	double vitesseAnimations;
-	boolean enMouvement;
 	int lenteurPas, decomptePas;
 	Observable animations;
 
@@ -47,7 +46,7 @@ public class ControleurMediateur {
 		jeu = j;
 		f = fen;
 		avecAnimations = Boolean.parseBoolean(Configuration.instance().lis("Animations"));
-		fen.changeBoutonAnimation(avecAnimations);
+		fen.basculeAnimations(avecAnimations);
 		vitesseAnimations = Double.parseDouble(Configuration.instance().lis("VitesseAnimations"));
 		lenteurPas = Integer.parseInt(Configuration.instance().lis("LenteurPas"));
 		decomptePas = lenteurPas;
@@ -67,41 +66,44 @@ public class ControleurMediateur {
 		int dC = c - n.colonnePousseur();
 		jeu.jouer(dL, dC);
 	}
+	
+	private boolean enMouvement() {
+		return f.animationsEnCours();
+	}
 
 	public void prochain() {
-		if (!enMouvement) {
+		if (!enMouvement()) {
 			if (!jeu.prochainNiveau())
 				System.exit(0);
 		}
 	}
 
 	public void annuler() {
-		if (!enMouvement)
-			animeCoup(jeu.annuler(), -1);
+		if (!enMouvement())
+			jeu.annuler();
 	}
 
 	public void refaire() {
-		if (!enMouvement)
-			animeCoup(jeu.refaire(), 1);
+		if (!enMouvement())
+			jeu.refaire();
 	}
 
 	public void jouer(int l, int c) {
-		if (!enMouvement) {
-			animeCoup(jeu.jouer(l, c), 1);
+		if (!enMouvement()) {
+			jeu.jouer(l, c);/*
+			if (!avecAnimations && jeu.niveau().estTermine())
+				prochain();*/
 		}
 	}
 
 	public void basculeAnimations(boolean valeur) {
-		if (!enMouvement) {
-			if (!avecAnimations && valeur) {
-				if (f.animationsEnCours())
-					f.annuleAnimations();
-			}
+		if (!enMouvement()) {
 			avecAnimations = valeur;
-			f.changeBoutonAnimation(valeur);
+			f.basculeAnimations(valeur);
 		}
 	}
 
+	/*
 	void animeCoup(Coup cp, int sens) {
 		if (cp != null) {
 			double vitesse;
@@ -118,7 +120,7 @@ public class ControleurMediateur {
 				tictac();
 			}
 		}
-	}
+	}*/
 
 	public void pressionTouche(char touche) {
 		switch (touche) {
@@ -152,6 +154,10 @@ public class ControleurMediateur {
 	}
 
 	public void tictac() {
+		f.tictac();
+		if (jeu.niveau().estTermine())
+			prochain();
+		/*
 		if (avecAnimations) {
 			decomptePas--;
 			if (decomptePas == 0) {
@@ -171,6 +177,6 @@ public class ControleurMediateur {
 				if (jeu.niveau().estTermine())
 					prochain();
 			}
-		}
+		}*/
 	}
 }

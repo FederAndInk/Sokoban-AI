@@ -29,17 +29,22 @@ package Vue;
 import Global.Configuration;
 import Modele.Jeu;
 import Modele.Niveau;
+import Structures.Iterateur;
+import Structures.Sequence;
 
-public class VueNiveau {
+public class VueNiveauAnimee {
 	Jeu jeu;
 	FenetreGraphique fenetre;
 	ImageGraphique pousseur, mur, sol, caisse, but, caisseSurBut;
+	ImageGraphique[][] pousseurs;
+	int direction, etape;
 
 	Niveau n;
 	double width;
 	double height;
 	double tileWidth;
 	double tileHeight;
+	Sequence<AnimationCoup> animations;
 
 	private ImageGraphique lisImage(String nom) {
 		String resource = Configuration.instance().lis(nom);
@@ -47,16 +52,41 @@ public class VueNiveau {
 		return fenetre.charger(Configuration.charge(resource));
 	}
 
-	public VueNiveau(Jeu j, FenetreGraphique f) {
+	public void changeEtapePousseur() {
+		etape = (etape + 1) % pousseurs[direction].length;
+		pousseur = pousseurs[direction][etape];
+	}
+
+	public void ajouteAnimation(AnimationCoup a) {
+		animations.insereQueue(a);
+	}
+
+	public boolean animationsEnCours() {
+		return !animations.estVide();
+	}
+
+	public void annuleAnimations() {
+		animations = Configuration.instance().fabriqueSequence().nouvelle();
+	}
+
+	public VueNiveauAnimee(Jeu j, FenetreGraphique f) {
 		jeu = j;
 		fenetre = f;
 
-		pousseur = lisImage("Pousseur");
+		pousseurs = new ImageGraphique[4][4];
+		for (int d = 0; d < pousseurs.length; d++)
+			for (int i = 0; i < pousseurs[d].length; i++)
+				pousseurs[d][i] = lisImage("Pousseur_" + d + "_" + i);
 		mur = lisImage("Mur");
 		sol = lisImage("Sol");
 		caisse = lisImage("Caisse");
 		but = lisImage("But");
 		caisseSurBut = lisImage("CaisseSurBut");
+
+		direction = jeu.direction();
+		etape = 0;
+		pousseur = pousseurs[direction][etape];
+		animations = Configuration.instance().fabriqueSequence().nouvelle();
 	}
 
 	void traceSol(int l, int c) {
@@ -68,22 +98,50 @@ public class VueNiveau {
 			fenetre.tracer(sol, x, y, tileWidth, tileHeight);
 	}
 
-	void traceObjet(int contenu, double l, double c) {
-		traceObjet((int) l, (int) c);
-	}
-	
 	void traceObjet(int l, int c) {
+		traceObjet(n.contenu(l, c), l, c);
+	}
+
+	void traceObjet(int contenu, double l, double c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (n.aMur(l, c))
+		if (Niveau.aMur(contenu))
 			fenetre.tracer(mur, x, y, tileWidth, tileHeight);
-		if (n.aPousseur(l, c))
+		if (Niveau.aPousseur(contenu))
 			fenetre.tracer(pousseur, x, y, tileWidth, tileHeight);
-		if (n.aCaisse(l, c))
-			if (n.aBut(l, c))
+		if (Niveau.aCaisse(contenu))
+			if (Niveau.aBut(contenu))
 				fenetre.tracer(caisseSurBut, x, y, tileWidth, tileHeight);
 			else
 				fenetre.tracer(caisse, x, y, tileWidth, tileHeight);
+	}
+
+	void traceCase(int l, int c) {
+		traceSol(l, c);
+		traceObjet(l, c);
+	}
+
+	void miseAJourPousseur() {
+		direction = jeu.direction();
+		pousseur = pousseurs[direction][etape];
+	}
+
+	public void afficheAnimations() {
+		miseAJourPousseur();
+		traceCase(n.lignePousseur(), n.colonnePousseur());
+		if (animationsEnCours()) {
+			Iterateur<AnimationCoup> it;
+			for (it = animations.iterateur(); it.aProchain();) {
+				AnimationCoup a = it.prochain();
+				a.effaceZone();
+			}
+			for (it = animations.iterateur(); it.aProchain();) {
+				AnimationCoup a = it.prochain();
+				a.afficheObjets();
+				if (a.estTerminee())
+					it.supprime();
+			}
+		}
 	}
 
 	public void miseAJour() {
@@ -100,12 +158,14 @@ public class VueNiveau {
 		tileWidth = Math.min(tileWidth, tileHeight);
 		tileHeight = Math.min(tileWidth, tileHeight);
 
+		miseAJourPousseur();
+
 		fenetre.effacer();
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
-				traceSol(ligne, colonne);
-				traceObjet(ligne, colonne);
+				traceCase(ligne, colonne);
 			}
+		afficheAnimations();
 	}
 
 	public double tileWidth() {
@@ -114,13 +174,5 @@ public class VueNiveau {
 
 	public double tileHeight() {
 		return tileHeight;
-	}
-	
-	public boolean animationsEnCours() {
-		return false;
-	}
-	
-	public void tictac() {
-		// Rien à faire, le niveau n'est pas animé
 	}
 }

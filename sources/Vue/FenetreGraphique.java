@@ -63,6 +63,7 @@ public class FenetreGraphique implements Observateur {
 	BoutonAnnuler annuler;
 	BoutonRefaire refaire;
 
+	/*
 	// On délègue toutes les parties animées à vueNiveau
 	public void changeEtapePousseur() {
 		vueNiveau.changeEtapePousseur();
@@ -71,11 +72,19 @@ public class FenetreGraphique implements Observateur {
 	public void ajouteAnimation(AnimationCoup a) {
 		vueNiveau.ajouteAnimation(a);
 	}
-
+*/
 	public boolean animationsEnCours() {
 		return vueNiveau.animationsEnCours();
 	}
 
+	public void basculeAnimations(boolean valeur) {
+		animation.setSelected(valeur);
+	}
+
+	public void tictac() {
+		vueNiveau.tictac();
+	}
+/*
 	public void annuleAnimations() {
 		vueNiveau.annuleAnimations();
 	}
@@ -83,7 +92,7 @@ public class FenetreGraphique implements Observateur {
 	public void afficheAnimations() {
 		vueNiveau.afficheAnimations();
 	}
-
+*/
 	public FenetreGraphique(Jeu j, Stage primaryStage) {
 		jeu = j;
 		primaryStage.setTitle("Sokoban");
@@ -177,10 +186,6 @@ public class FenetreGraphique implements Observateur {
 
 	public void ecouteurRefaire(EventHandler<ActionEvent> h) {
 		refaire.setOnAction(h);
-	}
-
-	public void changeBoutonAnimation(boolean valeur) {
-		animation.setSelected(valeur);
 	}
 
 	@Override
