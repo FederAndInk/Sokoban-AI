@@ -28,5 +28,6 @@ package Modele;
 
 public interface EtatHistorique {
 	boolean peutAnnuler();
+
 	boolean peutRefaire();
 }

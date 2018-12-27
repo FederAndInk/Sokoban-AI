@@ -33,7 +33,7 @@ import javafx.scene.control.Button;
 
 public class BoutonAnnuler extends Button implements Observateur {
 	EtatHistorique histo;
-	
+
 	BoutonAnnuler(Observable o, EtatHistorique h) {
 		histo = h;
 		setText("<");

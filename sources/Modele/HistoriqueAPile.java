@@ -33,35 +33,35 @@ import Structures.Sequence;
 
 public class HistoriqueAPile<E extends Commande> implements EtatHistorique {
 	Sequence<E> passe, futur;
-	
+
 	HistoriqueAPile() {
 		FabriqueSequence fab = Configuration.instance().fabriqueSequence();
 		passe = fab.nouvelle();
 		futur = fab.nouvelle();
 	}
-	
+
 	public boolean peutAnnuler() {
 		return !passe.estVide();
 	}
-	
+
 	public boolean peutRefaire() {
 		return !futur.estVide();
 	}
-	
+
 	private E transfert(Sequence<E> source, Sequence<E> destination) {
 		E resultat = source.extraitTete();
 		destination.insereTete(resultat);
 		return resultat;
 	}
-	
+
 	public void annuler() {
 		transfert(passe, futur).desexecute();
 	}
-	
+
 	public void refaire() {
 		transfert(futur, passe).execute();
 	}
-	
+
 	public void faire(E nouveau) {
 		nouveau.execute();
 		passe.insereTete(nouveau);

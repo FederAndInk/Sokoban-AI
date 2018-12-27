@@ -148,7 +148,7 @@ public class FenetreGraphique implements Observateur {
 	public void ecouteurRefaire(EventHandler<ActionEvent> h) {
 		refaire.setOnAction(h);
 	}
-	
+
 	@Override
 	public void miseAJour() {
 		gc = canvas.getGraphicsContext2D();

@@ -235,19 +235,19 @@ public class Niveau extends HistoriqueAPile<Coup> {
 	public boolean estTermine() {
 		return nbCaissesSurBut == nbButs;
 	}
-	
+
 	public void comptePas() {
 		nbPas++;
 	}
-	
+
 	public void decomptePas() {
 		nbPas--;
 	}
-	
+
 	public void comptePoussee() {
 		nbPoussees++;
 	}
-	
+
 	public void decomptePoussee() {
 		nbPoussees--;
 	}

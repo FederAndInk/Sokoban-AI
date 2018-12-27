@@ -75,17 +75,17 @@ public class Jeu extends Observable implements EtatHistorique {
 				metAJour();
 		}
 	}
-	
+
 	@Override
 	public boolean peutAnnuler() {
 		return niveau().peutAnnuler();
 	}
-	
+
 	@Override
 	public boolean peutRefaire() {
 		return niveau().peutRefaire();
 	}
-	
+
 	public void annuler() {
 		if (niveau().peutAnnuler()) {
 			niveau().annuler();
