@@ -203,27 +203,7 @@ public class Niveau extends HistoriqueAPile<Coup> {
 		supprime(element, srcL, srcC);
 		ajoute(element, dstL, dstC);
 	}
-/*
-	@Override
-	public void faire(Coup c) {
-		jouer(c);
-		super.faire(c);
-	}
 
-	@Override
-	public Coup annuler() {
-		Coup c = super.annuler();
-		dejouer(c);
-		return c;
-	}
-
-	@Override
-	public Coup refaire() {
-		Coup c = super.refaire();
-		jouer(c);
-		return c;
-	}
-*/
 	public Coup jouer(int dL, int dC) {
 		Coup c = null;
 		// Seulement une direction, -1 ou +1
