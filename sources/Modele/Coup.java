@@ -26,6 +26,8 @@
  */
 package Modele;
 
+import Patterns.Commande;
+
 public class Coup extends Commande {
 	int dirL, dirC, posL, posC;
 	boolean caisse;
@@ -39,13 +41,13 @@ public class Coup extends Commande {
 	}
 
 	@Override
-	void execute() {
+	public void execute() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	void desexecute() {
+	public void desexecute() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -62,7 +62,7 @@ public class VueNiveau {
 	void traceSol(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (n.estBut(l, c))
+		if (n.aBut(l, c))
 			fenetre.tracer(but, x, y, tileWidth, tileHeight);
 		else
 			fenetre.tracer(sol, x, y, tileWidth, tileHeight);
@@ -71,12 +71,12 @@ public class VueNiveau {
 	void traceObjet(int l, int c) {
 		double x = c * tileWidth;
 		double y = l * tileHeight;
-		if (n.estMur(l, c))
+		if (n.aMur(l, c))
 			fenetre.tracer(mur, x, y, tileWidth, tileHeight);
 		if (n.aPousseur(l, c))
 			fenetre.tracer(pousseur, x, y, tileWidth, tileHeight);
 		if (n.aCaisse(l, c))
-			if (n.estBut(l, c))
+			if (n.aBut(l, c))
 				fenetre.tracer(caisseSurBut, x, y, tileWidth, tileHeight);
 			else
 				fenetre.tracer(caisse, x, y, tileWidth, tileHeight);
