@@ -63,42 +63,28 @@ public class FenetreGraphique implements Observateur {
 	BoutonAnnuler annuler;
 	BoutonRefaire refaire;
 
-	/*
-	// On délègue toutes les parties animées à vueNiveau
-	public void changeEtapePousseur() {
-		vueNiveau.changeEtapePousseur();
-	}
-
-	public void ajouteAnimation(AnimationCoup a) {
-		vueNiveau.ajouteAnimation(a);
-	}
-*/
 	public boolean animationsEnCours() {
 		return vueNiveau.animationsEnCours();
 	}
 
 	public void basculeAnimations(boolean valeur) {
 		animation.setSelected(valeur);
+		if (valeur)
+			vueNiveau = new VueNiveauAnimee(vueNiveau.toutNu());
+		else
+			vueNiveau = vueNiveau.toutNu();
 	}
 
 	public void tictac() {
 		vueNiveau.tictac();
 	}
-/*
-	public void annuleAnimations() {
-		vueNiveau.annuleAnimations();
-	}
 
-	public void afficheAnimations() {
-		vueNiveau.afficheAnimations();
-	}
-*/
 	public FenetreGraphique(Jeu j, Stage primaryStage) {
 		jeu = j;
 		primaryStage.setTitle("Sokoban");
 		primaryStage.setFullScreen(true);
 
-		vueNiveau = new VueNiveau(jeu, this);
+		vueNiveau = new VueNiveauFixe(jeu, this);
 		canvas = new Canvas();
 		Pane vue = new Pane(canvas);
 		vue.setPrefSize(600, 400);

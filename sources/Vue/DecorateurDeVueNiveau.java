@@ -26,52 +26,66 @@
  */
 package Vue;
 
-import Global.Configuration;
-import Modele.Jeu;
+abstract class DecorateurDeVueNiveau extends VueNiveau {
+	VueNiveau vueNiveau;
 
-abstract class VueNiveau {
-	Jeu jeu;
-	FenetreGraphique fenetre;
-
-	protected ImageGraphique lisImage(String nom) {
-		String resource = Configuration.instance().lis(nom);
-		Configuration.instance().logger().info("Lecture de " + resource);
-		return fenetre.charger(Configuration.charge(resource));
+	DecorateurDeVueNiveau(VueNiveau v) {
+		super(v.jeu, v.fenetre);
+		vueNiveau = v;
 	}
 
-	VueNiveau(Jeu j, FenetreGraphique f) {
-		jeu = j;
-		fenetre = f;
+	@Override
+	void traceSol(int l, int c) {
+		vueNiveau.traceSol(l, c);
 	}
 
-	abstract void traceSol(int l, int c);
+	@Override
+	void traceObjet(int l, int c) {
+		vueNiveau.traceObjet(l, c);
+	}
 
-	abstract void traceObjet(int l, int c);
-
+	@Override
 	void traceObjet(int contenu, double l, double c) {
-		// Version continue
-		// Rien à faire par défaut, le niveau n'est pas forcément animé
+		vueNiveau.traceObjet(contenu, l, c);
 	}
 
-	abstract ImageGraphique trouveObjet(int contenu);
+	@Override
+	ImageGraphique trouveObjet(int contenu) {
+		return vueNiveau.trouveObjet(contenu);
+	}
 
-	abstract void miseAJour();
+	@Override
+	void miseAJour() {
+		vueNiveau.miseAJour();
+	}
 
-	abstract double tileWidth();
+	@Override
+	double tileWidth() {
+		return vueNiveau.tileWidth();
+	}
 
-	abstract double tileHeight();
+	@Override
+	double tileHeight() {
+		return vueNiveau.tileHeight();
+	}
 
+	@Override
 	boolean animationsEnCours() {
-		return false;
+		return vueNiveau.animationsEnCours();
 	}
 
+	@Override
 	void tictac() {
-		// Rien à faire par défaut, le niveau n'est pas forcément animé
+		vueNiveau.tictac();
 	}
 
+	@Override
 	VueNiveau toutNu() {
-		return this;
+		return vueNiveau.toutNu();
 	}
 
-	abstract void changePousseur(ImageGraphique p);
+	@Override
+	void changePousseur(ImageGraphique p) {
+		vueNiveau.changePousseur(p);
+	}
 }

@@ -27,93 +27,37 @@
 package Vue;
 
 import Global.Configuration;
-import Modele.Jeu;
-import Modele.Niveau;
+import Modele.Coup;
 import Structures.Iterateur;
 import Structures.Sequence;
 
-public class VueNiveauAnimee {
-	Jeu jeu;
-	FenetreGraphique fenetre;
-	ImageGraphique pousseur, mur, sol, caisse, but, caisseSurBut;
+public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 	ImageGraphique[][] pousseurs;
 	int direction, etape;
+	double vitesseAnimations;
+	int lenteurPas, decomptePas;
 
-	Niveau n;
-	double width;
-	double height;
-	double tileWidth;
-	double tileHeight;
 	Sequence<AnimationCoup> animations;
 
-	private ImageGraphique lisImage(String nom) {
-		String resource = Configuration.instance().lis(nom);
-		Configuration.instance().logger().info("Lecture de " + resource);
-		return fenetre.charger(Configuration.charge(resource));
-	}
-
-	public void changeEtapePousseur() {
-		etape = (etape + 1) % pousseurs[direction].length;
-		pousseur = pousseurs[direction][etape];
-	}
-
-	public void ajouteAnimation(AnimationCoup a) {
-		animations.insereQueue(a);
-	}
-
-	public boolean animationsEnCours() {
-		return !animations.estVide();
-	}
-
-	public void annuleAnimations() {
-		animations = Configuration.instance().fabriqueSequence().nouvelle();
-	}
-
-	public VueNiveauAnimee(Jeu j, FenetreGraphique f) {
-		jeu = j;
-		fenetre = f;
-
+	public VueNiveauAnimee(VueNiveau v) {
+		super(v);
 		pousseurs = new ImageGraphique[4][4];
 		for (int d = 0; d < pousseurs.length; d++)
 			for (int i = 0; i < pousseurs[d].length; i++)
 				pousseurs[d][i] = lisImage("Pousseur_" + d + "_" + i);
-		mur = lisImage("Mur");
-		sol = lisImage("Sol");
-		caisse = lisImage("Caisse");
-		but = lisImage("But");
-		caisseSurBut = lisImage("CaisseSurBut");
-
-		direction = jeu.direction();
 		etape = 0;
-		pousseur = pousseurs[direction][etape];
+		direction = 2;
 		animations = Configuration.instance().fabriqueSequence().nouvelle();
-	}
-
-	void traceSol(int l, int c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
-		if (n.aBut(l, c))
-			fenetre.tracer(but, x, y, tileWidth, tileHeight);
-		else
-			fenetre.tracer(sol, x, y, tileWidth, tileHeight);
-	}
-
-	void traceObjet(int l, int c) {
-		traceObjet(n.contenu(l, c), l, c);
+		vitesseAnimations = Double.parseDouble(Configuration.instance().lis("VitesseAnimations"));
+		lenteurPas = Integer.parseInt(Configuration.instance().lis("LenteurPas"));
+		decomptePas = lenteurPas;
 	}
 
 	void traceObjet(int contenu, double l, double c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
-		if (Niveau.aMur(contenu))
-			fenetre.tracer(mur, x, y, tileWidth, tileHeight);
-		if (Niveau.aPousseur(contenu))
-			fenetre.tracer(pousseur, x, y, tileWidth, tileHeight);
-		if (Niveau.aCaisse(contenu))
-			if (Niveau.aBut(contenu))
-				fenetre.tracer(caisseSurBut, x, y, tileWidth, tileHeight);
-			else
-				fenetre.tracer(caisse, x, y, tileWidth, tileHeight);
+		double x = c * tileWidth();
+		double y = l * tileHeight();
+		ImageGraphique image = trouveObjet(contenu);
+		fenetre.tracer(image, x, y, tileWidth(), tileHeight());
 	}
 
 	void traceCase(int l, int c) {
@@ -121,58 +65,72 @@ public class VueNiveauAnimee {
 		traceObjet(l, c);
 	}
 
-	void miseAJourPousseur() {
-		direction = jeu.direction();
-		pousseur = pousseurs[direction][etape];
+	public boolean animationsEnCours() {
+		return !animations.estVide();
 	}
 
-	public void afficheAnimations() {
-		miseAJourPousseur();
-		traceCase(n.lignePousseur(), n.colonnePousseur());
-		if (animationsEnCours()) {
-			Iterateur<AnimationCoup> it;
-			for (it = animations.iterateur(); it.aProchain();) {
-				AnimationCoup a = it.prochain();
-				a.effaceZone();
-			}
-			for (it = animations.iterateur(); it.aProchain();) {
-				AnimationCoup a = it.prochain();
-				a.afficheObjets();
-				if (a.estTerminee())
-					it.supprime();
-			}
+	void afficheAnimations() {
+		Iterateur<AnimationCoup> it;
+		for (it = animations.iterateur(); it.aProchain();) {
+			AnimationCoup a = it.prochain();
+			a.effaceZone();
+		}
+		for (it = animations.iterateur(); it.aProchain();) {
+			AnimationCoup a = it.prochain();
+			a.afficheObjets();
+			if (a.estTerminee())
+				it.supprime();
 		}
 	}
 
-	public void miseAJour() {
-		n = jeu.niveau();
-		if (n == null) {
-			Configuration.instance().logger().info("Dernier niveau lu, fin du jeu !");
-			System.exit(0);
+	void metAJourDirection(Coup cp) {
+		int dL = cp.dirL;
+		int dC = cp.dirC;
+		switch (dL + 2 * dC) {
+		case -2:
+			direction = 1;
+			break;
+		case -1:
+			direction = 0;
+			break;
+		case 1:
+			direction = 2;
+			break;
+		case 2:
+			direction = 3;
+			break;
+		default:
+			Configuration.instance().logger().severe("Bug interne, direction invalide");
 		}
+	}
 
-		width = fenetre.largeur();
-		height = fenetre.hauteur();
-		tileWidth = width / n.colonnes();
-		tileHeight = height / n.lignes();
-		tileWidth = Math.min(tileWidth, tileHeight);
-		tileHeight = Math.min(tileWidth, tileHeight);
-
-		miseAJourPousseur();
-
-		fenetre.effacer();
-		for (int ligne = 0; ligne < n.lignes(); ligne++)
-			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
-				traceCase(ligne, colonne);
-			}
+	@Override
+	void miseAJour() {
+		Coup cp = jeu.dernierCoup();
+		if (cp != null) {
+			metAJourDirection(cp);
+			changePousseur(pousseurs[direction][etape]);
+			AnimationCoup a;
+			a = new AnimationCoup(jeu.niveau(), fenetre, cp, vitesseAnimations);
+			animations.insereQueue(a);
+		}
+		super.miseAJour();
 		afficheAnimations();
 	}
 
-	public double tileWidth() {
-		return tileWidth;
-	}
-
-	public double tileHeight() {
-		return tileHeight;
+	@Override
+	void tictac() {
+		decomptePas--;
+		if (decomptePas == 0) {
+			etape = (etape + 1) % pousseurs[direction].length;
+			changePousseur(pousseurs[direction][etape]);
+			traceCase(jeu.niveau().lignePousseur(), jeu.niveau().colonnePousseur());
+			decomptePas = lenteurPas;
+		}
+		Iterateur<AnimationCoup> it;
+		for (it = animations.iterateur(); it.aProchain();) {
+			it.prochain().miseAJour();
+		}
+		afficheAnimations();
 	}
 }

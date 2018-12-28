@@ -34,7 +34,7 @@ import Patterns.Observable;
 public class Jeu extends Observable implements EtatHistorique {
 	LecteurNiveaux l;
 	Niveau n;
-	int direction;
+	Coup dernierCoup;
 
 	public Jeu() {
 		InputStream in;
@@ -51,54 +51,26 @@ public class Jeu extends Observable implements EtatHistorique {
 		Configuration.instance().logger().info("Niveaux trouvés");
 		l = new LecteurNiveaux(in);
 		prochainNiveau();
-		direction = 2;
 	}
 
 	public Niveau niveau() {
 		return n;
 	}
 
-	public int direction() {
-		return direction;
-	}
-
-	void metAJour(int dL, int dC) {
-		switch (dL + 2 * dC) {
-		case -2:
-			direction = 1;
-			break;
-		case -1:
-			direction = 0;
-			break;
-		case 1:
-			direction = 2;
-			break;
-		case 2:
-			direction = 3;
-			break;
-		default:
-			Configuration.instance().logger().severe("Bug interne, direction invalide");
-		}
-		super.metAJour();
-	}
-
 	public boolean prochainNiveau() {
 		Niveau nouveau = l.lisProchainNiveau();
 		if (nouveau != null) {
 			n = nouveau;
-			metAJour(1, 0);
+			metAJour();
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public Coup jouer(int dL, int dC) {
-		Coup cp = n.jouer(dL, dC);
-		if (cp != null) {
-			metAJour(cp.dirL, cp.dirC);
-		}
-		return cp;
+	public void jouer(int dL, int dC) {
+		dernierCoup = n.jouer(dL, dC);
+		metAJour();
 	}
 
 	@Override
@@ -111,21 +83,23 @@ public class Jeu extends Observable implements EtatHistorique {
 		return niveau().peutRefaire();
 	}
 
-	public Coup annuler() {
-		Coup cp = null;
+	public void annuler() {
 		if (niveau().peutAnnuler()) {
-			cp = niveau().annuler();
-			metAJour(cp.dirL, cp.dirC);
+			dernierCoup = niveau().annuler();
+			metAJour();
 		}
-		return cp;
 	}
 
-	public Coup refaire() {
-		Coup cp = null;
+	public void refaire() {
 		if (niveau().peutRefaire()) {
-			cp = niveau().refaire();
-			metAJour(cp.dirL, cp.dirC);
+			dernierCoup = niveau().refaire();
+			metAJour();
 		}
-		return cp;
+	}
+
+	public Coup dernierCoup() {
+		Coup resultat = dernierCoup;
+		dernierCoup = null;
+		return resultat;
 	}
 }

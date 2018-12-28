@@ -27,30 +27,20 @@
 package Controleur;
 
 import Global.Configuration;
-import Modele.Coup;
 import Modele.Jeu;
 import Modele.Niveau;
-import Patterns.Observable;
-import Vue.AnimationCoup;
 import Vue.FenetreGraphique;
 
 public class ControleurMediateur {
 	Jeu jeu;
 	FenetreGraphique f;
 	boolean avecAnimations;
-	double vitesseAnimations;
-	int lenteurPas, decomptePas;
-	Observable animations;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
 		f = fen;
 		avecAnimations = Boolean.parseBoolean(Configuration.instance().lis("Animations"));
 		fen.basculeAnimations(avecAnimations);
-		vitesseAnimations = Double.parseDouble(Configuration.instance().lis("VitesseAnimations"));
-		lenteurPas = Integer.parseInt(Configuration.instance().lis("LenteurPas"));
-		decomptePas = lenteurPas;
-		animations = new Observable();
 	}
 
 	public void redimensionnement() {
@@ -64,9 +54,9 @@ public class ControleurMediateur {
 		Niveau n = jeu.niveau();
 		int dL = l - n.lignePousseur();
 		int dC = c - n.colonnePousseur();
-		jeu.jouer(dL, dC);
+		jouer(dL, dC);
 	}
-	
+
 	private boolean enMouvement() {
 		return f.animationsEnCours();
 	}
@@ -91,8 +81,8 @@ public class ControleurMediateur {
 	public void jouer(int l, int c) {
 		if (!enMouvement()) {
 			jeu.jouer(l, c);/*
-			if (!avecAnimations && jeu.niveau().estTermine())
-				prochain();*/
+							if (!avecAnimations && jeu.niveau().estTermine())
+							prochain();*/
 		}
 	}
 
@@ -102,25 +92,6 @@ public class ControleurMediateur {
 			f.basculeAnimations(valeur);
 		}
 	}
-
-	/*
-	void animeCoup(Coup cp, int sens) {
-		if (cp != null) {
-			double vitesse;
-			if (avecAnimations) {
-				vitesse = vitesseAnimations;
-			} else {
-				vitesse = 1;
-			}
-			AnimationCoup a = new AnimationCoup(jeu.niveau(), f, cp, sens, vitesse);
-			animations.ajouteObservateur(a);
-			f.ajouteAnimation(a);
-			enMouvement = true;
-			if (!avecAnimations) {
-				tictac();
-			}
-		}
-	}*/
 
 	public void pressionTouche(char touche) {
 		switch (touche) {
@@ -157,26 +128,5 @@ public class ControleurMediateur {
 		f.tictac();
 		if (jeu.niveau().estTermine())
 			prochain();
-		/*
-		if (avecAnimations) {
-			decomptePas--;
-			if (decomptePas == 0) {
-				f.changeEtapePousseur();
-				if (!enMouvement)
-					f.afficheAnimations();
-				decomptePas = lenteurPas;
-			}
-		}
-		if (enMouvement) {
-			// Progression des animations
-			animations.metAJour();
-			// Dessin des animations
-			f.afficheAnimations();
-			if (!f.animationsEnCours()) {
-				enMouvement = false;
-				if (jeu.niveau().estTermine())
-					prochain();
-			}
-		}*/
 	}
 }

@@ -32,6 +32,7 @@ public class Coup extends Commande {
 	Niveau n;
 	public int dirL, dirC, posL, posC;
 	public boolean caisse;
+	public int sens;
 
 	Coup(Niveau niveau, int pL, int pC, int dL, int dC, boolean c) {
 		n = niveau;
@@ -52,6 +53,7 @@ public class Coup extends Commande {
 		}
 		n.deplace(posL, posC, dstL, dstC);
 		n.comptePas();
+		sens = 1;
 	}
 
 	@Override
@@ -64,5 +66,6 @@ public class Coup extends Commande {
 			n.deplace(dstL + dirL, dstC + dirC, dstL, dstC);
 			n.decomptePoussee();
 		}
+		sens = -1;
 	}
 }
