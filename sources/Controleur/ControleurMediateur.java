@@ -79,11 +79,8 @@ public class ControleurMediateur {
 	}
 
 	public void jouer(int l, int c) {
-		if (!enMouvement()) {
-			jeu.jouer(l, c);/*
-							if (!avecAnimations && jeu.niveau().estTermine())
-							prochain();*/
-		}
+		if (!enMouvement())
+			jeu.jouer(l, c);
 	}
 
 	public void basculeAnimations(boolean valeur) {
