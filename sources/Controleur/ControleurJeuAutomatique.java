@@ -49,7 +49,7 @@ public class ControleurJeuAutomatique {
 			int lP, cP;
 			lP = jeu.niveau().lignePousseur();
 			cP = jeu.niveau().colonnePousseur();
-			cp = new Coup(lP, cP, 0, 0, false);
+			cp = new Coup(jeu.niveau(), lP, cP, 0, 0, false);
 		}
 	}
 

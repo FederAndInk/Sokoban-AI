@@ -24,53 +24,34 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
-package Modele;
 
-import Structures.Sequence;
-import Patterns.Commande;
+package Structures;
 
-public class Coup extends Commande {
-	Niveau n;
-	public int dirL, dirC, posL, posC;
-	public boolean caisse;
-	public int sens;
-	public Sequence<Marque> marques;
-	public Sequence<Marque> inverses;
-	
-	public Coup(Niveau niveau, int pL, int pC, int dL, int dC, boolean c) {
-		n = niveau;
-		posL = pL;
-		posC = pC;
-		dirL = dL;
-		dirC = dC;
-		caisse = c;
-		marques = null;
-		inverses = null;
+public class FAPTableau<E extends Comparable<E>> extends FAP<E> {
+	SequenceTableau<E> s;
+
+	public FAPTableau() {
+		s = new SequenceTableau<>();
+		super.s = s;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void execute() {
-		int dstL = posL + dirL;
-		int dstC = posC + dirC;
-		if (caisse) {
-			n.deplace(dstL, dstC, dstL + dirL, dstC + dirC);
-			n.comptePoussee();
+	public void insere(E element) {
+		if (s.taille == s.elements.length)
+			s.redimensionne(s.taille * 2);
+		int courant = (s.debut + s.taille) % s.elements.length;
+		int precedent = courant - 1;
+		if (precedent < 0)
+			precedent = s.elements.length - 1;
+		while ((courant != s.debut) && (element.compareTo((E) s.elements[precedent]) < 0)) {
+			s.elements[courant] = s.elements[precedent];
+			courant = precedent;
+			precedent = courant - 1;
+			if (precedent < 0)
+				precedent = s.elements.length - 1;
 		}
-		n.deplace(posL, posC, dstL, dstC);
-		n.comptePas();
-		sens = 1;
-	}
-
-	@Override
-	public void desexecute() {
-		int dstL = posL + dirL;
-		int dstC = posC + dirC;
-		n.deplace(dstL, dstC, posL, posC);
-		n.decomptePas();
-		if (caisse) {
-			n.deplace(dstL + dirL, dstC + dirC, dstL, dstC);
-			n.decomptePoussee();
-		}
-		sens = -1;
+		s.elements[courant] = element;
+		s.taille++;
 	}
 }

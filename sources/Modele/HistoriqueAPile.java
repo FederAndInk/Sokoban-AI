@@ -27,41 +27,47 @@
 package Modele;
 
 import Global.Configuration;
+import Patterns.Commande;
 import Structures.FabriqueSequence;
 import Structures.Sequence;
 
-public class HistoriqueAPile<E> implements EtatHistorique {
+public class HistoriqueAPile<E extends Commande> implements EtatHistorique {
 	Sequence<E> passe, futur;
-	
+
 	HistoriqueAPile() {
 		FabriqueSequence fab = Configuration.instance().fabriqueSequence();
 		passe = fab.nouvelle();
 		futur = fab.nouvelle();
 	}
-	
+
 	public boolean peutAnnuler() {
 		return !passe.estVide();
 	}
-	
+
 	public boolean peutRefaire() {
 		return !futur.estVide();
 	}
-	
+
 	private E transfert(Sequence<E> source, Sequence<E> destination) {
 		E resultat = source.extraitTete();
 		destination.insereTete(resultat);
 		return resultat;
 	}
-	
+
 	public E annuler() {
-		return transfert(passe, futur);
+		E resultat = transfert(passe, futur);
+		resultat.desexecute();
+		return resultat;
 	}
-	
+
 	public E refaire() {
-		return transfert(futur, passe);
+		E resultat = transfert(futur, passe);
+		resultat.execute();
+		return resultat;
 	}
-	
+
 	public void faire(E nouveau) {
+		nouveau.execute();
 		passe.insereTete(nouveau);
 		while (!futur.estVide()) {
 			futur.extraitTete();

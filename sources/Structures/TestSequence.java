@@ -1,4 +1,3 @@
-
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -28,81 +27,96 @@
 
 package Structures;
 
-import Structures.Iterateur;
-import Structures.SequenceTableau;
-import Structures.Sequence;
-import Structures.SequenceListe;
 import java.util.Random;
 
+import Global.Configuration;
+
 public class TestSequence {
-	static void afficheSequence(Sequence<Integer> s) {
-		System.out.print("Sequence : ");
-		Iterateur<Integer> it = s.iterateur();
+	static int min, max, count;
+
+	static int operation(Sequence<Integer> seq, int code) {
+		int s = 0;
+		int val = 0, pos = 0;
+		System.out.println(seq);
+		System.out.print("Affichage avec itérateur :");
+		Iterateur<Integer> it = seq.iterateur();
 		while (it.aProchain()) {
-			Integer i = it.prochain();
-			System.out.print(i + " ");
+			System.out.print(" " + it.prochain());
 		}
 		System.out.println();
+		switch (code) {
+		case 0:
+			s = min;
+			System.out.println("Insertion en Tete de " + s);
+			seq.insereTete(s);
+			break;
+		case 1:
+			s = max;
+			System.out.println("Insertion en Queue de " + s);
+			seq.insereQueue(s);
+			break;
+		case 2:
+			if (count > 0) {
+				pos = new Random().nextInt(count);
+				it = seq.iterateur();
+				System.out.println("Extraction de l'élément de position " + pos);
+				while (pos > 0) {
+					assert (it.aProchain());
+					it.prochain();
+					pos--;
+				}
+				assert (it.aProchain());
+				s = it.prochain();
+				val = s;
+			}
+		case 3:
+			if (count > 0) {
+				s = seq.extraitTete();
+				System.out.println("Extraction en Tete de " + s);
+				val = s;
+			}
+			break;
+		}
+		if (code < 2) {
+			assert (!seq.estVide());
+		} else {
+			if (count > 0) {
+				assert ((val > min) && (val < max));
+				if ((code == 3) || ((code == 2) && (pos == 0)))
+					min = val;
+				if ((code == 2) && (pos == count - 1))
+					max = val;
+				if (min == max)
+					max++;
+				assert ((count == 1) == (seq.estVide()));
+			}
+		}
+		return s;
 	}
 
 	public static void main(String[] args) {
-		int max = 0, count = 0;
 		Random r = new Random();
-		@SuppressWarnings("unchecked")
-		Sequence<Integer>[] seq = new Sequence[2];
-		@SuppressWarnings("unchecked")
-		Iterateur<Integer>[] it = new Iterateur[2];
-		seq[0] = new SequenceListe<>();
-		seq[1] = new SequenceTableau<>();
-		for (int k = 0; k < seq.length; k++) {
-			assert (seq[k].estVide());
-		}
+		Sequence<Integer> s;
+		s = Configuration.instance().fabriqueSequence().nouvelle();
+
+		assert (s.estVide());
+		min = -1;
+		max = 0;
+		count = 0;
 		for (int i = 0; i < 100; i++) {
-			if (r.nextBoolean()) {
-				System.out.println("Insertion de " + max);
-				for (int k = 0; k < seq.length; k++) {
-					seq[k].insereQueue(max);
-					assert (!seq[k].estVide());
-				}
-				max++;
+			int code = r.nextInt(4);
+			operation(s, code);
+			if (code < 2) {
 				count++;
+				if (code < 1)
+					min--;
+				else
+					max++;
 			} else {
 				if (count > 0) {
-					Integer s = null;
-					if (r.nextBoolean()) {
-						for (int k = 0; k < seq.length; k++) {
-							s = seq[k].extraitTete();
-							assert ((count == 0) == (seq[k].estVide()));
-						}
-						System.out.println("Extraction (tete)");
-					} else {
-						int position = r.nextInt(count);
-						for (int k = 0; k < seq.length; k++) {
-							it[k] = seq[k].iterateur();
-						}
-						for (int j = 0; j <= position; j++) {
-							s = null;
-							for (int k = 0; k < seq.length; k++) {
-								assert (it[k].aProchain());
-								if (s == null)
-									s = it[k].prochain();
-								else {
-									Integer elt = it[k].prochain();
-									assert (s == elt);
-								}
-							}
-						}
-						for (int k = 0; k < seq.length; k++)
-							it[k].supprime();
-						System.out.println("Extraction (random) en position " + position);
-					}
 					count--;
-					for (int k = 0; k < seq.length; k++)
-						assert ((count == 0) == (seq[k].estVide()));
 				}
 			}
-			for (int k = 0; k < seq.length; k++)
-				afficheSequence(seq[k]);
 		}
 	}
 }

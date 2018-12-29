@@ -70,7 +70,7 @@ class IAAleatoire extends IA {
 			}
 			l = niveau.lignePousseur() + dL;
 			c = niveau.colonnePousseur() + dC;
-			if (niveau.estMur(l, c)) {
+			if (niveau.aMur(l, c)) {
 				logger.info("Tentative de déplacement (" + dL + ", " + dC + ") heurte un mur");
 				dL = dC = 0;
 			} else

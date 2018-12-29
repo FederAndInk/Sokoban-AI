@@ -27,118 +27,143 @@
 
 package Modele;
 
-import Global.Configuration;
-import Structures.Iterateur;
-import Structures.Sequence;
-
 public class Niveau extends NiveauConsultable {
-	Niveau(int lignes, int colonnes, Sequence<String> s) {
-		super(lignes, colonnes, s);
+	Niveau() {
+		cases = new int[1][1];
+		l = c = 1;
+		cases[0][0] = VIDE;
+		nbButs = 0;
+		nbCaissesSurBut = 0;
+		pousseurL = pousseurC = -1;
+	}
+
+	int ajuste(int cap, int objectif) {
+		while (cap <= objectif) {
+			cap = cap * 2;
+		}
+		return cap;
+	}
+
+	void redimensionne(int nouvL, int nouvC) {
+		int capL = ajuste(cases.length, nouvL);
+		int capC = ajuste(cases[0].length, nouvC);
+		if ((capL > cases.length) || (capC > cases[0].length)) {
+			int[][] nouvelles = new int[capL][capC];
+			for (int i = 0; i < capL; i++)
+				for (int j = 0; j < capC; j++)
+					if ((i < cases.length) && (j < cases[0].length))
+						nouvelles[i][j] = cases[i][j];
+					else
+						nouvelles[i][j] = VIDE;
+			cases = nouvelles;
+		}
+		if (nouvL >= l)
+			l = nouvL + 1;
+		if (nouvC >= c)
+			c = nouvC + 1;
+	}
+
+	void fixeNom(String s) {
+		nom = s;
+	}
+
+	void supprime(int contenu, int i, int j) {
+		redimensionne(i, j);
+		if (aBut(i, j)) {
+			if (aCaisse(i, j) && (aCaisse(contenu) || aBut(contenu)))
+				nbCaissesSurBut--;
+			if (aBut(contenu))
+				nbButs--;
+		}
+		if (aPousseur(i, j) && aPousseur(contenu))
+			pousseurL = pousseurC = -1;
+		cases[i][j] &= ~contenu;
+	}
+
+	void ajoute(int contenu, int i, int j) {
+		redimensionne(i, j);
+		int resultat = cases[i][j] | contenu;
+		if (aBut(resultat)) {
+			if (aCaisse(resultat) && (!aCaisse(i, j) || !aBut(i, j)))
+				nbCaissesSurBut++;
+			if (!aBut(i, j))
+				nbButs++;
+		}
+		if (aPousseur(resultat) && !aPousseur(i, j)) {
+			if (pousseurL != -1)
+				throw new IllegalStateException("Plusieurs pousseurs sur le terrain !");
+			pousseurL = i;
+			pousseurC = j;
+		}
+		cases[i][j] = resultat;
+	}
+
+	void videCase(int i, int j) {
+		redimensionne(i, j);
+		supprime(cases[i][j], i, j);
+	}
+
+	void ajouteMur(int i, int j) {
+		ajoute(MUR, i, j);
+	}
+
+	void ajoutePousseur(int i, int j) {
+		ajoute(POUSSEUR, i, j);
+	}
+
+	void ajouteCaisse(int i, int j) {
+		ajoute(CAISSE, i, j);
+	}
+
+	void ajouteBut(int i, int j) {
+		ajoute(BUT, i, j);
 	}
 
 	public void marquer(int l, int c, int m) {
 		cases[l][c] = (contenu(l, c) & 0xFF) | (m << 8);
 	}
 
-	private void deplace(int element, int srcL, int srcC, int dstL, int dstC) {
-		cases[srcL][srcC] &= ~element;
-		cases[dstL][dstC] |= element;
-		if (estBut(dstL, dstC))
-			nbSurBut[element]++;
-		if (estBut(srcL, srcC))
-			nbSurBut[element]--;
+	public void deplace(int srcL, int srcC, int dstL, int dstC) {
+		int inamovible = VIDE | BUT | MUR;
+		int element = cases[srcL][srcC] & ~inamovible & 0xFF;
+		supprime(element, srcL, srcC);
+		ajoute(element, dstL, dstC);
 	}
 
-	public void jouer(Coup c) {
-		int dstL = c.posL + c.dirL;
-		int dstC = c.posC + c.dirC;
-		if (c.caisse) {
-			deplace(CAISSE, dstL, dstC, dstL + c.dirL, dstC + c.dirC);
-			nbPoussees++;
-		}
-		deplace(POUSSEUR, c.posL, c.posC, dstL, dstC);
-		nbPas++;
-		pousseurL = dstL;
-		pousseurC = dstC;
-		if (c.marques != null) {
-			Iterateur<Marque> it = c.marques.iterateur();
-			while (it.aProchain()) {
-				Marque m = it.prochain();
-				marquer(m.ligne, m.colonne, m.nouvelle);
-			}
-		}
-	}
-
-	public void dejouer(Coup c) {
-		int dstL = c.posL + c.dirL;
-		int dstC = c.posC + c.dirC;
-		deplace(POUSSEUR, dstL, dstC, c.posL, c.posC);
-		nbPas--;
-		pousseurL = c.posL;
-		pousseurC = c.posC;
-		if (c.caisse) {
-			deplace(CAISSE, dstL + c.dirL, dstC + c.dirC, dstL, dstC);
-			nbPoussees--;
-		}
-		if (c.marques != null) {
-			if (c.inverses == null) {
-				c.inverses = Configuration.instance().fabriqueSequence().nouvelle();
-				Iterateur<Marque> it = c.marques.iterateur();
-				while (it.aProchain()) {
-					Marque m = it.prochain();
-					c.inverses.insereTete(m);
-				}
-			}
-			Iterateur<Marque> it = c.inverses.iterateur();
-			while (it.aProchain()) {
-				Marque m = it.prochain();
-				marquer(m.ligne, m.colonne, m.ancienne);
-			}
-		}
-	}
-
-	@Override
-	public void faire(Coup c) {
-		jouer(c);
-		super.faire(c);
-	}
-
-	@Override
-	public Coup annuler() {
-		Coup c = super.annuler();
-		dejouer(c);
-		return c;
-	}
-
-	@Override
-	public Coup refaire() {
-		Coup c = super.refaire();
-		jouer(c);
-		return c;
-	}
-
-	public Coup jouer(int dL, int dC) {/*
-		Coup cp = construireCoup(dL, dC);
-		if (cp != null)
-			faire(cp);
-		return cp;
-	}
-
-	public Coup construireCoup(int dL, int dC) {*/
-		Coup c = null;
+	public Coup jouer(int dL, int dC) {		Coup c = null;
 		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) <= 1)) {
 			int destL = pousseurL + dL;
 			int destC = pousseurC + dC;
 
 			if (aCaisse(destL, destC) && estOccupable(destL + dL, destC + dC)) {
-				c = new Coup(pousseurL, pousseurC, dL, dC, true);
+				c = new Coup(this, pousseurL, pousseurC, dL, dC, true);
 			}
 			if (estOccupable(destL, destC)) {
-				c = new Coup(pousseurL, pousseurC, dL, dC, false);
+				c = new Coup(this, pousseurL, pousseurC, dL, dC, false);
 			}
 			if (c != null)
 				faire(c);
 		}
 		return c;
+	}
+
+	public void comptePas() {
+		nbPas++;
+	}
+
+	public void decomptePas() {
+		nbPas--;
+	}
+
+	public void comptePoussee() {
+		nbPoussees++;
+	}
+
+	public void decomptePoussee() {
+		nbPoussees--;
+	}
+
+	public int contenu(int l, int c) {
+		return cases[l][c];
 	}
 }

@@ -38,7 +38,7 @@ public class SequenceTableau<E> implements Sequence<E> {
 		taille = 0;
 	}
 
-	private void redimensionne(int nouvelleCapacite) {
+	public void redimensionne(int nouvelleCapacite) {
 		Object[] nouveau;
 
 		if (nouvelleCapacite > elements.length) {
@@ -84,6 +84,20 @@ public class SequenceTableau<E> implements Sequence<E> {
 	@Override
 	public boolean estVide() {
 		return taille == 0;
+	}
+
+	@Override
+	public String toString() {
+		String resultat = "SequenceTableau [ ";
+		int pos = debut;
+		for (int i = 0; i < taille; i++) {
+			if (i > 0)
+				resultat += ", ";
+			resultat += elements[pos];
+			pos = (pos + 1) % elements.length;
+		}
+		resultat += "]";
+		return resultat;
 	}
 
 	@Override

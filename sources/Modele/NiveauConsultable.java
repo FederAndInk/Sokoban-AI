@@ -27,25 +27,71 @@
 
 package Modele;
 
-import Global.Configuration;
-import Structures.Sequence;
-
-public class NiveauConsultable extends HistoriqueAPile<Coup> {
+public abstract class NiveauConsultable extends HistoriqueAPile<Coup> {
 	static final int VIDE = 0;
 	static final int MUR = 1;
 	static final int POUSSEUR = 2;
 	static final int CAISSE = 4;
 	static final int BUT = 8;
 	static final int NBMAX = 9;
+	int l, c;
 	int[][] cases;
+	String nom;
 	int pousseurL, pousseurC;
-	int[] nb;
-	int[] nbSurBut;
+	int nbButs;
+	int nbCaissesSurBut;
 	int nbPas, nbPoussees;
 
-	private void nouveauPousseur(int l, int c) {
-		pousseurL = l;
-		pousseurC = c;
+	public int lignes() {
+		return l;
+	}
+
+	public int colonnes() {
+		return c;
+	}
+
+	String nom() {
+		return nom;
+	}
+
+	public boolean estVide(int l, int c) {
+		return cases[l][c] == VIDE;
+	}
+
+	public static boolean aMur(int contenu) {
+		return (contenu & MUR) != 0;
+	}
+
+	public boolean aMur(int l, int c) {
+		return aMur(cases[l][c]);
+	}
+
+	public static boolean aBut(int contenu) {
+		return (contenu & BUT) != 0;
+	}
+
+	public boolean aBut(int l, int c) {
+		return aBut(cases[l][c]);
+	}
+
+	public static boolean aPousseur(int contenu) {
+		return (contenu & POUSSEUR) != 0;
+	}
+
+	public boolean aPousseur(int l, int c) {
+		return aPousseur(cases[l][c]);
+	}
+
+	public static boolean aCaisse(int contenu) {
+		return (contenu & CAISSE) != 0;
+	}
+
+	public boolean aCaisse(int l, int c) {
+		return aCaisse(cases[l][c]);
+	}
+
+	public boolean estOccupable(int i, int j) {
+		return !aMur(i, j) && !aCaisse(i, j);
 	}
 
 	public int lignePousseur() {
@@ -56,124 +102,12 @@ public class NiveauConsultable extends HistoriqueAPile<Coup> {
 		return pousseurC;
 	}
 
-	NiveauConsultable(int lignes, int colonnes, Sequence<String> s) {
-		cases = new int[lignes][colonnes];
-		nb = new int[NBMAX];
-		nbSurBut = new int[NBMAX];
-		for (int i = 0; i < lignes; i++) {
-			for (int j = 0; j < colonnes; j++) {
-				cases[i][j] = VIDE;
-			}
-		}
-		for (int i = 0; i < NBMAX; i++) {
-			nb[i] = 0;
-			nbSurBut[i] = 0;
-		}
-		int i = 0;
-		while (!s.estVide()) {
-			String l = s.extraitTete();
-			for (int j = 0; j < l.length(); j++) {
-				char c = l.charAt(j);
-				switch (c) {
-				case ' ':
-					cases[i][j] = VIDE;
-					nb[VIDE]++;
-					break;
-				case '#':
-					cases[i][j] = MUR;
-					break;
-				case '@':
-					cases[i][j] = POUSSEUR;
-					nouveauPousseur(i, j);
-					break;
-				case '+':
-					cases[i][j] = POUSSEUR | BUT;
-					nouveauPousseur(i, j);
-					break;
-				case '$':
-					cases[i][j] = CAISSE;
-					break;
-				case '*':
-					cases[i][j] = CAISSE | BUT;
-					break;
-				case '.':
-					cases[i][j] = BUT;
-					break;
-				default:
-					System.err.println("Caractère inconnu : " + c);
-				}
-				int element = cases[i][j] & ~BUT;
-				if (element != 0) {
-					nb[element]++;
-					if (estBut(i, j)) {
-						nb[BUT]++;
-						nbSurBut[element]++;
-					}
-				} else {
-					nb[cases[i][j]]++;
-				}
-			}
-			i++;
-		}
-		if (nb[POUSSEUR] != 1) {
-			Configuration.instance().logger().severe("Nombre de pouseurs invalide : " + nb[POUSSEUR]);
-		}
-	}
-
-	public int lignes() {
-		return cases.length;
-	}
-
-	public int colonnes() {
-		return cases[0].length;
-	}
-
-	public int contenu(int l, int c) {
-		return cases[l][c];
-	}
-
-	public int marque(int l, int c) {
-		return marque(cases[l][c]);
-	}
-
 	public static int marque(int contenu) {
 		return contenu >> 8;
 	}
 
-	public boolean estMur(int l, int c) {
-		return estMur(cases[l][c]);
-	}
-
-	public static boolean estMur(int contenu) {
-		return (contenu & MUR) != 0;
-	}
-
-	public boolean estBut(int l, int c) {
-		return estBut(cases[l][c]);
-	}
-
-	public static boolean estBut(int contenu) {
-		return (contenu & BUT) != 0;
-	}
-
-	public boolean aPousseur(int l, int c) {
-		return aPousseur(cases[l][c]);
-	}
-
-	public static boolean aPousseur(int contenu) {
-		return (contenu & POUSSEUR) != 0;
-	}
-
-	public boolean aCaisse(int l, int c) {
-		return aCaisse(cases[l][c]);
-	}
-
-	public static boolean aCaisse(int contenu) {
-		return (contenu & CAISSE) != 0;
-	}
-
-	public boolean estOccupable(int l, int c) {
-		return (cases[l][c] & (CAISSE | MUR)) == 0;
+	public int marque(int l, int c) {
+		return marque(cases[l][c]);
 	}
 
 	public int nbPas() {
@@ -185,50 +119,6 @@ public class NiveauConsultable extends HistoriqueAPile<Coup> {
 	}
 
 	public boolean estTermine() {
-		return nbSurBut[CAISSE] == nb[BUT];
-	}
-
-	@Override
-	public String toString() {
-		int capacite = lignes() * (colonnes() + 1);
-		StringBuilder result = new StringBuilder(capacite);
-		for (int i = 0; i < lignes(); i++) {
-			int dernier = 0;
-			for (int j = 0; j < colonnes(); j++)
-				if (cases[i][j] != VIDE)
-					dernier = j;
-			for (int j = 0; j <= dernier; j++) {
-				char c;
-				switch (cases[i][j]) {
-				case VIDE:
-					c = ' ';
-					break;
-				case MUR:
-					c = '#';
-					break;
-				case POUSSEUR:
-					c = '@';
-					break;
-				case POUSSEUR | BUT:
-					c = '+';
-					break;
-				case CAISSE:
-					c = '$';
-					break;
-				case CAISSE | BUT:
-					c = '*';
-					break;
-				case BUT:
-					c = '.';
-					break;
-				default:
-					c = ' ';
-					System.err.println("Bug interne, case inconnue en (" + i + ", " + j + ") : " + cases[i][j]);
-				}
-				result.append(c);
-			}
-			result.append('\n');
-		}
-		return result.toString();
+		return nbCaissesSurBut == nbButs;
 	}
 }

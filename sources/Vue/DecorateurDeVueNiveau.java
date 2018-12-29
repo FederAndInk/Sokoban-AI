@@ -24,70 +24,68 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
+package Vue;
 
-package Structures;
+abstract class DecorateurDeVueNiveau extends VueNiveau {
+	VueNiveau vueNiveau;
 
-public class SequenceListe<E> implements Sequence<E> {
-	Maillon<E> tete, queue;
-
-	// Les méthodes implémentant l'interface
-	// doivent être publiques
-	@Override
-	public void insereQueue(E element) {
-		Maillon<E> m = new Maillon<>(element, null);
-		if (queue == null) {
-			tete = queue = m;
-		} else {
-			queue.suivant = m;
-			queue = m;
-		}
+	DecorateurDeVueNiveau(VueNiveau v) {
+		super(v.jeu, v.fenetre);
+		vueNiveau = v;
 	}
 
 	@Override
-	public void insereTete(E element) {
-		Maillon<E> m = new Maillon<>(element, tete);
-		if (tete == null) {
-			tete = queue = m;
-		} else {
-			tete = m;
-		}
+	void traceSol(int l, int c) {
+		vueNiveau.traceSol(l, c);
 	}
 
 	@Override
-	public E extraitTete() {
-		E resultat;
-		// Exception si tete == null (sequence vide)
-		resultat = tete.element;
-		tete = tete.suivant;
-		if (tete == null) {
-			queue = null;
-		}
-		return resultat;
+	void traceObjet(int l, int c) {
+		vueNiveau.traceObjet(l, c);
 	}
 
 	@Override
-	public boolean estVide() {
-		return tete == null;
+	void traceObjet(int contenu, double l, double c) {
+		vueNiveau.traceObjet(contenu, l, c);
 	}
 
 	@Override
-	public String toString() {
-		String resultat = "SequenceListe [ ";
-		boolean premier = true;
-		Maillon<E> m = tete;
-		while (m != null) {
-			if (!premier)
-				resultat += ", ";
-			resultat += m.element;
-			m = m.suivant;
-			premier = false;
-		}
-		resultat += "]";
-		return resultat;
+	ImageGraphique trouveObjet(int contenu) {
+		return vueNiveau.trouveObjet(contenu);
 	}
 
 	@Override
-	public Iterateur<E> iterateur() {
-		return new IterateurSequenceListe<>(this);
+	void miseAJour() {
+		vueNiveau.miseAJour();
+	}
+
+	@Override
+	double tileWidth() {
+		return vueNiveau.tileWidth();
+	}
+
+	@Override
+	double tileHeight() {
+		return vueNiveau.tileHeight();
+	}
+
+	@Override
+	boolean animationsEnCours() {
+		return vueNiveau.animationsEnCours();
+	}
+
+	@Override
+	void tictac() {
+		vueNiveau.tictac();
+	}
+
+	@Override
+	VueNiveau toutNu() {
+		return vueNiveau.toutNu();
+	}
+
+	@Override
+	void changePousseur(ImageGraphique p) {
+		vueNiveau.changePousseur(p);
 	}
 }

@@ -33,7 +33,7 @@ import javafx.scene.control.Button;
 
 public class BoutonRefaire extends Button implements Observateur {
 	EtatHistorique histo;
-	
+
 	BoutonRefaire(Observable o, EtatHistorique h) {
 		histo = h;
 		setText(">");

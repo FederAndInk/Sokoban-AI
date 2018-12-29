@@ -1,3 +1,5 @@
+package Modele;
+
 /*
  * Sokoban - Encore une nouvelle version (à but pédagogique) du célèbre jeu
  * Copyright (C) 2018 Guillaume Huard
@@ -24,53 +26,42 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
-package Modele;
 
-import Structures.Sequence;
-import Patterns.Commande;
+import java.io.OutputStream;
+import java.io.PrintStream;
 
-public class Coup extends Commande {
-	Niveau n;
-	public int dirL, dirC, posL, posC;
-	public boolean caisse;
-	public int sens;
-	public Sequence<Marque> marques;
-	public Sequence<Marque> inverses;
-	
-	public Coup(Niveau niveau, int pL, int pC, int dL, int dC, boolean c) {
-		n = niveau;
-		posL = pL;
-		posC = pC;
-		dirL = dL;
-		dirC = dC;
-		caisse = c;
-		marques = null;
-		inverses = null;
+public class RedacteurNiveau {
+	PrintStream sortie;
+
+	RedacteurNiveau(OutputStream out) {
+		sortie = new PrintStream(out);
 	}
 
-	@Override
-	public void execute() {
-		int dstL = posL + dirL;
-		int dstC = posC + dirC;
-		if (caisse) {
-			n.deplace(dstL, dstC, dstL + dirL, dstC + dirC);
-			n.comptePoussee();
+	void ecrisNiveau(Niveau n) {
+		for (int i = 0; i < n.lignes(); i++) {
+			int dernier = 0;
+			for (int j = 0; j < n.colonnes(); j++)
+				if (!n.estVide(i, j))
+					dernier = j;
+			for (int j = 0; j <= dernier; j++)
+				if (n.aMur(i, j))
+					sortie.print('#');
+				else if (n.aBut(i, j))
+					if (n.aPousseur(i, j))
+						sortie.print('+');
+					else if (n.aCaisse(i, j))
+						sortie.print('*');
+					else
+						sortie.print('.');
+				else if (n.aPousseur(i, j))
+					sortie.print('@');
+				else if (n.aCaisse(i, j))
+					sortie.print('$');
+				else
+					sortie.print(' ');
+			sortie.println();
 		}
-		n.deplace(posL, posC, dstL, dstC);
-		n.comptePas();
-		sens = 1;
-	}
-
-	@Override
-	public void desexecute() {
-		int dstL = posL + dirL;
-		int dstC = posC + dirC;
-		n.deplace(dstL, dstC, posL, posC);
-		n.decomptePas();
-		if (caisse) {
-			n.deplace(dstL + dirL, dstC + dirC, dstL, dstC);
-			n.decomptePoussee();
-		}
-		sens = -1;
+		if (n.nom() != null)
+			sortie.println("; " + n.nom());
 	}
 }

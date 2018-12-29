@@ -28,29 +28,25 @@ package Vue;
 
 import Modele.Coup;
 import Modele.Niveau;
-import Patterns.Observateur;
-import Vue.FenetreGraphique;
 
-public class AnimationCoup implements Observateur {
+public class AnimationCoup {
 	double vitesse;
 	Niveau niv;
 	VueNiveau vue;
 	Coup coup;
 	double progres;
-	int sens;
 	int nbTuiles, pousseur, caisse, offset;
-	
-	public AnimationCoup(Niveau n, FenetreGraphique f, Coup cp, int s, double v) {
+
+	public AnimationCoup(Niveau n, FenetreGraphique f, Coup cp, double v) {
 		niv = n;
 		vue = f.vueNiveau;
 		coup = cp;
-		sens = s;
 		vitesse = v;
-		offset = (sens+1)/2;
-		progres = 1-offset;
+		offset = (coup.sens + 1) / 2;
+		progres = 1 - offset;
 		nbTuiles = 2;
-		int l = coup.posL+offset*coup.dirL;
-		int c = coup.posC+offset*coup.dirC;
+		int l = coup.posL + offset * coup.dirL;
+		int c = coup.posC + offset * coup.dirC;
 		pousseur = niv.contenu(l, c);
 		if (coup.caisse) {
 			nbTuiles++;
@@ -59,20 +55,20 @@ public class AnimationCoup implements Observateur {
 			caisse = niv.contenu(l, c);
 		}
 	}
-	
+
 	void effaceZone() {
 		int l = coup.posL;
 		int c = coup.posC;
-		for (int i=0; i<nbTuiles; i++) {
+		for (int i = 0; i < nbTuiles; i++) {
 			vue.traceSol(l, c);
 			l += coup.dirL;
 			c += coup.dirC;
 		}
 	}
-	
+
 	void afficheObjets() {
-		double l = coup.posL+coup.dirL*progres;
-		double c = coup.posC+coup.dirC*progres;
+		double l = coup.posL + coup.dirL * progres;
+		double c = coup.posC + coup.dirC * progres;
 		vue.traceObjet(pousseur, l, c);
 		if (coup.caisse) {
 			l += coup.dirL;
@@ -80,16 +76,15 @@ public class AnimationCoup implements Observateur {
 			vue.traceObjet(caisse, l, c);
 		}
 	}
-	
-	@Override
+
 	public void miseAJour() {
-		progres += vitesse*sens;
+		progres += vitesse * coup.sens;
 		if (progres < 0)
 			progres = 0;
 		if (progres > 1)
 			progres = 1;
 	}
-	
+
 	boolean estTerminee() {
 		return progres == offset;
 	}
