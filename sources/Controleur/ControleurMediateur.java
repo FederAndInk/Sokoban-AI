@@ -91,9 +91,8 @@ public class ControleurMediateur {
 	}
 
 	public void jouer(int l, int c) {
-		if (!enMouvement()) {
+		if (!enMouvement())
 			jeu.jouer(l, c);
-		}
 	}
 
 	public void basculeAnimations(boolean valeur) {
