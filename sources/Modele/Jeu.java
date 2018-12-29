@@ -69,9 +69,11 @@ public class Jeu extends Observable implements EtatHistorique {
 	}
 
 	public Coup jouer(int dL, int dC) {
-		dernierCoup = n.jouer(dL, dC);
+		Coup coupTrouve = n.jouer(dL, dC);
+		dernierCoup = coupTrouve;
+		// Attention, met à jour consomme le dernier coup
 		metAJour();
-		return dernierCoup;
+		return coupTrouve;
 	}
 
 	@Override

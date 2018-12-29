@@ -39,7 +39,6 @@ public class ControleurMediateur {
 	boolean jeuAutomatique;
 	int lenteurJeuAutomatique, decompteJA;
 	IA joueurAutomatique;
-	boolean JAInitialise;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
@@ -49,7 +48,9 @@ public class ControleurMediateur {
 		ctrlAuto = new ControleurJeuAutomatique(this, jeu);
 		jeuAutomatique = false;
 		f.changeBoutonIA(jeuAutomatique);
-		initialiseIA();
+		lenteurJeuAutomatique = Integer.parseInt(Configuration.instance().lis("LenteurJeuAutomatique"));
+		decompteJA = lenteurJeuAutomatique;
+		joueurAutomatique = IA.nouvelle(ctrlAuto);
 	}
 
 	public void redimensionnement() {
@@ -75,7 +76,7 @@ public class ControleurMediateur {
 			if (!jeu.prochainNiveau())
 				System.exit(0);
 			else
-				initialiseIA();
+				activeNiveauIA();
 		}
 	}
 
@@ -104,19 +105,13 @@ public class ControleurMediateur {
 
 	public void basculeIA(boolean value) {
 		jeuAutomatique = value;
-		initialiseIA();
+		activeNiveauIA();
 		f.changeBoutonIA(value);
 	}
 
-	void initialiseIA() {
-		if (jeuAutomatique) {
-			if (joueurAutomatique == null) {
-				lenteurJeuAutomatique = Integer.parseInt(Configuration.instance().lis("LenteurJeuAutomatique"));
-				decompteJA = lenteurJeuAutomatique;
-				joueurAutomatique = IA.nouvelle(ctrlAuto);
-			}
+	void activeNiveauIA() {
+		if (jeuAutomatique)
 			joueurAutomatique.nouveauNiveau(jeu.niveau());
-		}
 	}
 
 	public boolean IAEnCours() {
@@ -161,7 +156,7 @@ public class ControleurMediateur {
 		if (!enMouvement()) {
 			decompteJA--;
 			if (jeuAutomatique && (decompteJA <= 0)) {
-				joueurAutomatique.joue();
+				joueurAutomatique.elaboreCoup();
 				decompteJA = lenteurJeuAutomatique;
 			}
 		}

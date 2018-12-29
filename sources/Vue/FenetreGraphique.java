@@ -165,7 +165,7 @@ public class FenetreGraphique implements Observateur {
 	public void ecouteurIA(EventHandler<ActionEvent> h) {
 		IA.setOnAction(h);
 	}
-	
+
 	public void ecouteurAnimation(EventHandler<ActionEvent> h) {
 		animation.setOnAction(h);
 	}
@@ -181,11 +181,11 @@ public class FenetreGraphique implements Observateur {
 	public void ecouteurRefaire(EventHandler<ActionEvent> h) {
 		refaire.setOnAction(h);
 	}
-	
+
 	public void changeBoutonIA(boolean value) {
 		IA.setSelected(value);
 	}
-	
+
 	@Override
 	public void miseAJour() {
 		gc = canvas.getGraphicsContext2D();

@@ -26,7 +26,9 @@
  */
 package Modele;
 
+import Structures.Iterateur;
 import Structures.Sequence;
+import Global.Configuration;
 import Patterns.Commande;
 
 public class Coup extends Commande {
@@ -36,7 +38,7 @@ public class Coup extends Commande {
 	public int sens;
 	public Sequence<Marque> marques;
 	public Sequence<Marque> inverses;
-	
+
 	public Coup(Niveau niveau, int pL, int pC, int dL, int dC, boolean c) {
 		n = niveau;
 		posL = pL;
@@ -57,6 +59,13 @@ public class Coup extends Commande {
 			n.comptePoussee();
 		}
 		n.deplace(posL, posC, dstL, dstC);
+		if (marques != null) {
+			Iterateur<Marque> it;
+			for (it = marques.iterateur(); it.aProchain();) {
+				Marque m = it.prochain();
+				n.marquer(m.ligne, m.colonne, m.nouvelle);
+			}
+		}
 		n.comptePas();
 		sens = 1;
 	}
@@ -70,6 +79,18 @@ public class Coup extends Commande {
 		if (caisse) {
 			n.deplace(dstL + dirL, dstC + dirC, dstL, dstC);
 			n.decomptePoussee();
+		}
+		if (marques != null) {
+			Iterateur<Marque> it;
+			if (inverses == null) {
+				inverses = Configuration.instance().fabriqueSequence().nouvelle();
+				for (it = marques.iterateur(); it.aProchain();)
+					inverses.insereQueue(it.prochain());
+			}
+			for (it = inverses.iterateur(); it.aProchain();) {
+				Marque m = it.prochain();
+				n.marquer(m.ligne, m.colonne, m.ancienne);
+			}
 		}
 		sens = -1;
 	}

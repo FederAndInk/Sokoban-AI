@@ -130,7 +130,8 @@ public class Niveau extends NiveauConsultable {
 		ajoute(element, dstL, dstC);
 	}
 
-	public Coup jouer(int dL, int dC) {		Coup c = null;
+	public Coup jouer(int dL, int dC) {
+		Coup c = null;
 		if ((dL * dC == 0) && ((dL + dC) * (dL + dC) <= 1)) {
 			int destL = pousseurL + dL;
 			int destC = pousseurC + dC;

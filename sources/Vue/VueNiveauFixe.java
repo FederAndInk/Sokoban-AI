@@ -32,7 +32,7 @@ import Modele.Niveau;
 
 class VueNiveauFixe extends VueNiveau {
 	ImageGraphique pousseur, mur;
-	ImageGraphique [] sol, caisse, but, caisseSurBut;
+	ImageGraphique[] sol, caisse, but, caisseSurBut;
 
 	Niveau n;
 	double width;
@@ -53,7 +53,7 @@ class VueNiveauFixe extends VueNiveau {
 
 	private ImageGraphique[] lisImages(String nom) {
 		ImageGraphique[] resultat = new ImageGraphique[3];
-		for (int i=0; i<resultat.length; i++)
+		for (int i = 0; i < resultat.length; i++)
 			resultat[i] = lisImage(nom + "_" + i);
 		return resultat;
 	}

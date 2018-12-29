@@ -43,13 +43,15 @@ public class ControleurJeuAutomatique {
 		jeu = j;
 		s = Configuration.instance().fabriqueSequence().nouvelle();
 	}
-	
+
 	void creerCoupSiBesoin() {
+		// On anticipe le cas où le joueur automatique ne joue pas du tout
 		if (cp == null) {
 			int lP, cP;
 			lP = jeu.niveau().lignePousseur();
 			cP = jeu.niveau().colonnePousseur();
 			cp = new Coup(jeu.niveau(), lP, cP, 0, 0, false);
+			jeu.niveau().faire(cp);
 		}
 	}
 
@@ -62,19 +64,19 @@ public class ControleurJeuAutomatique {
 
 	public void marquer(int l, int c, int m) {
 		int existant = jeu.niveau().marque(l, c);
-		jeu.niveau().marquer(l, c, m);
-		Marque nouvelle = new Marque(l, c, existant, m);
-		s.insereQueue(nouvelle);
+		if (m != existant) {
+			jeu.niveau().marquer(l, c, m);
+			Marque nouvelle = new Marque(l, c, existant, m);
+			s.insereQueue(nouvelle);
+		}
 	}
 
-	Coup recupereCoup() {
+	void finaliseCoup() {
 		if (!s.estVide()) {
 			creerCoupSiBesoin();
 			cp.marques = s;
 			s = Configuration.instance().fabriqueSequence().nouvelle();
 		}
-		Coup c = cp;
 		cp = null;
-		return c;
 	}
 }

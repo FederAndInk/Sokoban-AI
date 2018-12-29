@@ -44,7 +44,7 @@ abstract class IA {
 		}
 		return instance;
 	}
-	
+
 	final void nouveauNiveau(NiveauConsultable niv) {
 		if (niveau != niv) {
 			if (niveau != null)
@@ -52,6 +52,11 @@ abstract class IA {
 			niveau = niv;
 			initialise();
 		}
+	}
+
+	final void elaboreCoup() {
+		joue();
+		controle.finaliseCoup();
 	}
 
 	void initialise() {
