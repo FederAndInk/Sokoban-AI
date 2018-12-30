@@ -54,10 +54,10 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 	}
 
 	void traceObjet(int contenu, double l, double c) {
-		double x = c * tileWidth();
-		double y = l * tileHeight();
+		double x = c * largeurCase();
+		double y = l * hauteurCase();
 		ImageGraphique image = trouveObjet(contenu);
-		fenetre.tracer(image, x, y, tileWidth(), tileHeight());
+		fenetre.tracer(image, x, y, largeurCase(), hauteurCase());
 	}
 
 	void traceCase(int l, int c) {

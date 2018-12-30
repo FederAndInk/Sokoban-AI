@@ -34,10 +34,10 @@ class VueNiveauFixe extends VueNiveau {
 	ImageGraphique pousseur, mur, sol, caisse, but, caisseSurBut;
 
 	Niveau n;
-	double width;
-	double height;
-	double tileWidth;
-	double tileHeight;
+	double largeur;
+	double hauteur;
+	double largeurCase;
+	double hauteurCase;
 
 	VueNiveauFixe(Jeu j, FenetreGraphique f) {
 		super(j, f);
@@ -52,21 +52,21 @@ class VueNiveauFixe extends VueNiveau {
 
 	@Override
 	void traceSol(int l, int c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
+		double x = c * largeurCase;
+		double y = l * hauteurCase;
 		if (n.aBut(l, c))
-			fenetre.tracer(but, x, y, tileWidth, tileHeight);
+			fenetre.tracer(but, x, y, largeurCase, hauteurCase);
 		else
-			fenetre.tracer(sol, x, y, tileWidth, tileHeight);
+			fenetre.tracer(sol, x, y, largeurCase, hauteurCase);
 	}
 
 	@Override
 	void traceObjet(int l, int c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
+		double x = c * largeurCase;
+		double y = l * hauteurCase;
 		ImageGraphique image = trouveObjet(n.contenu(l, c));
 		if (image != null)
-			fenetre.tracer(image, x, y, tileWidth, tileHeight);
+			fenetre.tracer(image, x, y, largeurCase, hauteurCase);
 	}
 
 	@Override
@@ -91,12 +91,12 @@ class VueNiveauFixe extends VueNiveau {
 			System.exit(0);
 		}
 
-		width = fenetre.largeur();
-		height = fenetre.hauteur();
-		tileWidth = width / n.colonnes();
-		tileHeight = height / n.lignes();
-		tileWidth = Math.min(tileWidth, tileHeight);
-		tileHeight = Math.min(tileWidth, tileHeight);
+		largeur = fenetre.largeur();
+		hauteur = fenetre.hauteur();
+		largeurCase = largeur / n.colonnes();
+		hauteurCase = hauteur / n.lignes();
+		largeurCase = Math.min(largeurCase, hauteurCase);
+		hauteurCase = Math.min(largeurCase, hauteurCase);
 
 		fenetre.effacer();
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
@@ -107,13 +107,13 @@ class VueNiveauFixe extends VueNiveau {
 	}
 
 	@Override
-	double tileWidth() {
-		return tileWidth;
+	double largeurCase() {
+		return largeurCase;
 	}
 
 	@Override
-	double tileHeight() {
-		return tileHeight;
+	double hauteurCase() {
+		return hauteurCase;
 	}
 
 	@Override
