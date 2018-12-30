@@ -60,13 +60,13 @@ abstract class DecorateurDeVueNiveau extends VueNiveau {
 	}
 
 	@Override
-	double tileWidth() {
-		return vueNiveau.tileWidth();
+	double largeurCase() {
+		return vueNiveau.largeurCase();
 	}
 
 	@Override
-	double tileHeight() {
-		return vueNiveau.tileHeight();
+	double hauteurCase() {
+		return vueNiveau.hauteurCase();
 	}
 
 	@Override

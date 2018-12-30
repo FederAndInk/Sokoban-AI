@@ -216,11 +216,11 @@ public class FenetreGraphique implements Observateur {
 		gc.clearRect(0, 0, largeur(), hauteur());
 	}
 
-	public double tileWidth() {
-		return vueNiveau.tileWidth();
+	public double largeurCase() {
+		return vueNiveau.largeurCase();
 	}
 
-	public double tileHeight() {
-		return vueNiveau.tileHeight();
+	public double hauteurCase() {
+		return vueNiveau.hauteurCase();
 	}
 }

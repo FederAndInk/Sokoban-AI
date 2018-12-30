@@ -57,9 +57,9 @@ abstract class VueNiveau {
 
 	abstract void miseAJour();
 
-	abstract double tileWidth();
+	abstract double largeurCase();
 
-	abstract double tileHeight();
+	abstract double hauteurCase();
 
 	boolean animationsEnCours() {
 		return false;

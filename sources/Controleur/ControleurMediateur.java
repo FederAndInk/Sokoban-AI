@@ -58,8 +58,8 @@ public class ControleurMediateur {
 	}
 
 	public void clicSouris(double x, double y) {
-		int l = (int) (y / f.tileHeight());
-		int c = (int) (x / f.tileWidth());
+		int l = (int) (y / f.hauteurCase());
+		int c = (int) (x / f.largeurCase());
 
 		Niveau n = jeu.niveau();
 		int dL = l - n.lignePousseur();
