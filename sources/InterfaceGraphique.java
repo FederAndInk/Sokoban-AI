@@ -55,10 +55,10 @@ public class InterfaceGraphique extends Application {
 	Canvas can;
 	Niveau n;
 
-	double width;
-	double height;
-	double tileWidth;
-	double tileHeight;
+	double largeur;
+	double hauteur;
+	double largeurCase;
+	double hauteurCase;
 	GraphicsContext gc;
 	Logger logger;
 
@@ -127,8 +127,8 @@ public class InterfaceGraphique extends Application {
 		can.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
-				int l = (int) (e.getY() / tileHeight);
-				int c = (int) (e.getX() / tileWidth);
+				int l = (int) (e.getY() / hauteurCase);
+				int c = (int) (e.getX() / largeurCase);
 				System.out.println("Vous avez cliqué en ligne " + l + ", colonne " + c);
 			}
 		});
@@ -156,26 +156,26 @@ public class InterfaceGraphique extends Application {
 	}
 
 	void traceSol(int l, int c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
+		double x = c * largeurCase;
+		double y = l * hauteurCase;
 		if (n.aBut(l, c))
-			gc.drawImage(but, x, y, tileWidth, tileHeight);
+			gc.drawImage(but, x, y, largeurCase, hauteurCase);
 		else
-			gc.drawImage(sol, x, y, tileWidth, tileHeight);
+			gc.drawImage(sol, x, y, largeurCase, hauteurCase);
 	}
 
 	void traceObjet(int l, int c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
+		double x = c * largeurCase;
+		double y = l * hauteurCase;
 		if (n.aMur(l, c))
-			gc.drawImage(mur, x, y, tileWidth, tileHeight);
+			gc.drawImage(mur, x, y, largeurCase, hauteurCase);
 		if (n.aPousseur(l, c))
-			gc.drawImage(pousseur, x, y, tileWidth, tileHeight);
+			gc.drawImage(pousseur, x, y, largeurCase, hauteurCase);
 		if (n.aCaisse(l, c))
 			if (n.aBut(l, c))
-				gc.drawImage(caisseSurBut, x, y, tileWidth, tileHeight);
+				gc.drawImage(caisseSurBut, x, y, largeurCase, hauteurCase);
 			else
-				gc.drawImage(caisse, x, y, tileWidth, tileHeight);
+				gc.drawImage(caisse, x, y, largeurCase, hauteurCase);
 	}
 
 	void trace() {
@@ -184,15 +184,15 @@ public class InterfaceGraphique extends Application {
 			System.exit(0);
 		}
 
-		width = can.getWidth();
-		height = can.getHeight();
-		tileWidth = width / n.colonnes();
-		tileHeight = height / n.lignes();
-		tileWidth = Math.min(tileWidth, tileHeight);
-		tileHeight = Math.min(tileWidth, tileHeight);
+		largeur = can.getWidth();
+		hauteur = can.getHeight();
+		largeurCase = largeur / n.colonnes();
+		hauteurCase = hauteur / n.lignes();
+		largeurCase = Math.min(largeurCase, hauteurCase);
+		hauteurCase = Math.min(largeurCase, hauteurCase);
 		gc = can.getGraphicsContext2D();
 
-		gc.clearRect(0, 0, width, height);
+		gc.clearRect(0, 0, largeur, hauteur);
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
 			for (int colonne = 0; colonne < n.colonnes(); colonne++) {
 				traceSol(ligne, colonne);
