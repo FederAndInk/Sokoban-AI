@@ -36,10 +36,10 @@ public class VueNiveau {
 	ImageGraphique pousseur, mur, sol, caisse, but, caisseSurBut;
 
 	Niveau n;
-	double width;
-	double height;
-	double tileWidth;
-	double tileHeight;
+	double largeur;
+	double hauteur;
+	double largeurCase;
+	double hauteurCase;
 
 	private ImageGraphique lisImage(String nom) {
 		String resource = Configuration.instance().lis(nom);
@@ -60,26 +60,26 @@ public class VueNiveau {
 	}
 
 	void traceSol(int l, int c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
+		double x = c * largeurCase;
+		double y = l * hauteurCase;
 		if (n.aBut(l, c))
-			fenetre.tracer(but, x, y, tileWidth, tileHeight);
+			fenetre.tracer(but, x, y, largeurCase, hauteurCase);
 		else
-			fenetre.tracer(sol, x, y, tileWidth, tileHeight);
+			fenetre.tracer(sol, x, y, largeurCase, hauteurCase);
 	}
 
 	void traceObjet(int l, int c) {
-		double x = c * tileWidth;
-		double y = l * tileHeight;
+		double x = c * largeurCase;
+		double y = l * hauteurCase;
 		if (n.aMur(l, c))
-			fenetre.tracer(mur, x, y, tileWidth, tileHeight);
+			fenetre.tracer(mur, x, y, largeurCase, hauteurCase);
 		if (n.aPousseur(l, c))
-			fenetre.tracer(pousseur, x, y, tileWidth, tileHeight);
+			fenetre.tracer(pousseur, x, y, largeurCase, hauteurCase);
 		if (n.aCaisse(l, c))
 			if (n.aBut(l, c))
-				fenetre.tracer(caisseSurBut, x, y, tileWidth, tileHeight);
+				fenetre.tracer(caisseSurBut, x, y, largeurCase, hauteurCase);
 			else
-				fenetre.tracer(caisse, x, y, tileWidth, tileHeight);
+				fenetre.tracer(caisse, x, y, largeurCase, hauteurCase);
 	}
 
 	public void miseAJour() {
@@ -89,12 +89,12 @@ public class VueNiveau {
 			System.exit(0);
 		}
 
-		width = fenetre.largeur();
-		height = fenetre.hauteur();
-		tileWidth = width / n.colonnes();
-		tileHeight = height / n.lignes();
-		tileWidth = Math.min(tileWidth, tileHeight);
-		tileHeight = Math.min(tileWidth, tileHeight);
+		largeur = fenetre.largeur();
+		hauteur = fenetre.hauteur();
+		largeurCase = largeur / n.colonnes();
+		hauteurCase = hauteur / n.lignes();
+		largeurCase = Math.min(largeurCase, hauteurCase);
+		hauteurCase = Math.min(largeurCase, hauteurCase);
 
 		fenetre.effacer();
 		for (int ligne = 0; ligne < n.lignes(); ligne++)
@@ -104,11 +104,11 @@ public class VueNiveau {
 			}
 	}
 
-	public double tileWidth() {
-		return tileWidth;
+	public double largeurCase() {
+		return largeurCase;
 	}
 
-	public double tileHeight() {
-		return tileHeight;
+	public double hauteurCase() {
+		return hauteurCase;
 	}
 }

@@ -164,10 +164,10 @@ public class FenetreGraphique implements Observateur {
 	}
 
 	public double tileWidth() {
-		return vueNiveau.tileWidth();
+		return vueNiveau.largeurCase();
 	}
 
 	public double tileHeight() {
-		return vueNiveau.tileHeight();
+		return vueNiveau.hauteurCase();
 	}
 }
