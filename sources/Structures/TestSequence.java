@@ -71,7 +71,6 @@ public class TestSequence {
 				s = seq.extraitTete();
 				System.out.println("Extraction en Tete de " + s);
 				assert ((count == 1) == (seq.estVide()));
-				return s;
 			}
 			break;
 		}
