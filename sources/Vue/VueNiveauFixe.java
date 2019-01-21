@@ -94,7 +94,7 @@ class VueNiveauFixe extends VueNiveau {
 	}
 
 	@Override
-	void miseAJour() {
+	void trace() {
 		n = jeu.niveau();
 		if (n == null) {
 			Configuration.instance().logger().info("Dernier niveau lu, fin du jeu !");

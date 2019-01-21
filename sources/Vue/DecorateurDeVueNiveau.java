@@ -55,8 +55,8 @@ abstract class DecorateurDeVueNiveau extends VueNiveau {
 	}
 
 	@Override
-	void miseAJour() {
-		vueNiveau.miseAJour();
+	void trace() {
+		vueNiveau.trace();
 	}
 
 	@Override
@@ -72,11 +72,6 @@ abstract class DecorateurDeVueNiveau extends VueNiveau {
 	@Override
 	boolean animationsEnCours() {
 		return vueNiveau.animationsEnCours();
-	}
-
-	@Override
-	void tictac() {
-		vueNiveau.tictac();
 	}
 
 	@Override
