@@ -113,7 +113,7 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 	}
 
 	@Override
-	void miseAJour() {
+	void trace() {
 		Coup cp = jeu.dernierCoup();
 		if (cp != null) {
 			metAJourDirection(cp);
@@ -123,7 +123,7 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 			animations.insereQueue(a);
 			coupsEnCours++;
 		}
-		super.miseAJour();
+		super.trace();
 		avanceAnimations();
 	}
 

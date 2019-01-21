@@ -55,7 +55,7 @@ abstract class VueNiveau {
 
 	abstract ImageGraphique trouveObjet(int contenu);
 
-	abstract void miseAJour();
+	abstract void trace();
 
 	abstract double largeurCase();
 

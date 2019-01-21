@@ -177,7 +177,7 @@ public class FenetreGraphique implements Observateur {
 	@Override
 	public void miseAJour() {
 		gc = canvas.getGraphicsContext2D();
-		vueNiveau.miseAJour();
+		vueNiveau.trace();
 		nbPas.setText("Pas :" + jeu.niveau().nbPas());
 		nbPoussees.setText("Poussées :" + jeu.niveau().nbPoussees());
 	}
