@@ -28,15 +28,13 @@
 package Structures;
 
 import java.util.Random;
-
 import Global.Configuration;
 
 public class TestSequence {
 	static int min, max, count;
 
-	static int operation(Sequence<Integer> seq, int code) {
-		int s = 0;
-		int val = 0, pos = 0;
+	static int operation(Sequence<Integer> seq, int code, int pos) {
+		int s = Integer.MIN_VALUE;
 		System.out.println(seq);
 		System.out.print("Affichage avec itérateur :");
 		Iterateur<Integer> it = seq.iterateur();
@@ -57,7 +55,6 @@ public class TestSequence {
 			break;
 		case 2:
 			if (count > 0) {
-				pos = new Random().nextInt(count);
 				it = seq.iterateur();
 				System.out.println("Extraction de l'élément de position " + pos);
 				while (pos > 0) {
@@ -67,13 +64,14 @@ public class TestSequence {
 				}
 				assert (it.aProchain());
 				s = it.prochain();
-				val = s;
+				it.supprime();
 			}
+			break;
 		case 3:
 			if (count > 0) {
 				s = seq.extraitTete();
 				System.out.println("Extraction en Tete de " + s);
-				val = s;
+				assert ((count == 1) == (seq.estVide()));
 			}
 			break;
 		}
@@ -81,13 +79,7 @@ public class TestSequence {
 			assert (!seq.estVide());
 		} else {
 			if (count > 0) {
-				assert ((val > min) && (val < max));
-				if ((code == 3) || ((code == 2) && (pos == 0)))
-					min = val;
-				if ((code == 2) && (pos == count - 1))
-					max = val;
-				if (min == max)
-					max++;
+				assert ((s > min) && (s < max));
 				assert ((count == 1) == (seq.estVide()));
 			}
 		}
@@ -105,7 +97,8 @@ public class TestSequence {
 		count = 0;
 		for (int i = 0; i < 100; i++) {
 			int code = r.nextInt(4);
-			operation(s, code);
+			int pos = (count > 0) ? r.nextInt(count) : -1;
+			int r1 = operation(s, code, pos);
 			if (code < 2) {
 				count++;
 				if (code < 1)
@@ -114,6 +107,12 @@ public class TestSequence {
 					max++;
 			} else {
 				if (count > 0) {
+					if ((code == 3) || ((code == 2) && (pos == 0)))
+						min = r1;
+					if ((code == 2) && (pos == count - 1))
+						max = r1;
+					if (min == max)
+						max++;
 					count--;
 				}
 			}
