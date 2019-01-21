@@ -29,17 +29,18 @@ package Vue;
 import Modele.Coup;
 import Modele.Niveau;
 
-public class AnimationCoup {
+public class AnimationCoup extends Animation {
 	double vitesse;
 	Niveau niv;
-	VueNiveau vue;
+	VueNiveauAnimee vue;
 	Coup coup;
 	double progres;
 	int nbTuiles, pousseur, caisse, offset;
 
-	public AnimationCoup(Niveau n, FenetreGraphique f, Coup cp, double v) {
+	public AnimationCoup(Niveau n, VueNiveauAnimee vn, Coup cp, double v) {
+		super(1);
 		niv = n;
-		vue = f.vueNiveau;
+		vue = vn;
 		coup = cp;
 		vitesse = v;
 		offset = (coup.sens + 1) / 2;
@@ -77,14 +78,22 @@ public class AnimationCoup {
 		}
 	}
 
+	@Override
 	public void miseAJour() {
-		progres += vitesse * coup.sens;
-		if (progres < 0)
-			progres = 0;
-		if (progres > 1)
-			progres = 1;
+		if (!estTerminee()) {
+			progres += vitesse * coup.sens;
+			if (progres < 0)
+				progres = 0;
+			if (progres > 1)
+				progres = 1;
+			effaceZone();
+			afficheObjets();
+			if (estTerminee())
+				vue.termineCoup();
+		}
 	}
 
+	@Override
 	boolean estTerminee() {
 		return progres == offset;
 	}

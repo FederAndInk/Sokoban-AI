@@ -35,9 +35,9 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 	ImageGraphique[][] pousseurs;
 	int direction, etape;
 	double vitesseAnimations;
-	int lenteurPas, decomptePas;
+	int lenteurPas, coupsEnCours;
 
-	Sequence<AnimationCoup> animations;
+	Sequence<Animation> animations;
 
 	public VueNiveauAnimee(VueNiveau v) {
 		super(v);
@@ -50,7 +50,8 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 		animations = Configuration.instance().fabriqueSequence().nouvelle();
 		vitesseAnimations = Double.parseDouble(Configuration.instance().lis("VitesseAnimations"));
 		lenteurPas = Integer.parseInt(Configuration.instance().lis("LenteurPas"));
-		decomptePas = lenteurPas;
+		animations.insereTete(new AnimationPousseur(lenteurPas, this));
+		coupsEnCours = 0;
 	}
 
 	void traceObjet(int contenu, double l, double c) {
@@ -66,21 +67,22 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 	}
 
 	public boolean animationsEnCours() {
-		return !animations.estVide();
+		return coupsEnCours != 0;
 	}
 
-	void afficheAnimations() {
-		Iterateur<AnimationCoup> it;
+	void avanceAnimations() {
+		Iterateur<Animation> it;
 		for (it = animations.iterateur(); it.aProchain();) {
-			AnimationCoup a = it.prochain();
-			a.effaceZone();
-		}
-		for (it = animations.iterateur(); it.aProchain();) {
-			AnimationCoup a = it.prochain();
-			a.afficheObjets();
-			if (a.estTerminee())
+			Animation a = it.prochain();
+			a.tictac();
+			if (a.estTerminee()) {
 				it.supprime();
+			}
 		}
+	}
+	
+	void termineCoup() {
+		coupsEnCours--;
 	}
 
 	void metAJourDirection(Coup cp) {
@@ -103,6 +105,12 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 			Configuration.instance().logger().severe("Bug interne, direction invalide");
 		}
 	}
+	
+	void changeEtape() {
+		etape = (etape + 1) % pousseurs[direction].length;
+		changePousseur(pousseurs[direction][etape]);
+		traceCase(jeu.niveau().lignePousseur(), jeu.niveau().colonnePousseur());
+	}
 
 	@Override
 	void miseAJour() {
@@ -111,26 +119,16 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 			metAJourDirection(cp);
 			changePousseur(pousseurs[direction][etape]);
 			AnimationCoup a;
-			a = new AnimationCoup(jeu.niveau(), fenetre, cp, vitesseAnimations);
+			a = new AnimationCoup(jeu.niveau(), this, cp, vitesseAnimations);
 			animations.insereQueue(a);
+			coupsEnCours++;
 		}
 		super.miseAJour();
-		afficheAnimations();
+		avanceAnimations();
 	}
 
 	@Override
 	void tictac() {
-		decomptePas--;
-		if (decomptePas == 0) {
-			etape = (etape + 1) % pousseurs[direction].length;
-			changePousseur(pousseurs[direction][etape]);
-			traceCase(jeu.niveau().lignePousseur(), jeu.niveau().colonnePousseur());
-			decomptePas = lenteurPas;
-		}
-		Iterateur<AnimationCoup> it;
-		for (it = animations.iterateur(); it.aProchain();) {
-			it.prochain().miseAJour();
-		}
-		afficheAnimations();
+		avanceAnimations();
 	}
 }
