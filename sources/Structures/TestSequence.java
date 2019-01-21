@@ -29,14 +29,11 @@ package Structures;
 
 import java.util.Random;
 
-import Global.Configuration;
-
 public class TestSequence {
 	static int min, max, count;
 
-	static String operation(Sequence seq, int code) {
-		String s = null;
-		int val = 0, pos = 0;
+	static int operation(Sequence seq, int code, int pos) {
+		int s = Integer.MIN_VALUE;
 		System.out.println(seq);
 		System.out.print("Affichage avec itérateur :");
 		Iterateur it = seq.iterateur();
@@ -46,18 +43,17 @@ public class TestSequence {
 		System.out.println();
 		switch (code) {
 		case 0:
-			s = String.format("%08d", min);
+			s = min;
 			System.out.println("Insertion en Tete de " + s);
 			seq.insereTete(s);
 			break;
 		case 1:
-			s = String.format("%08d", max);
+			s = max;
 			System.out.println("Insertion en Queue de " + s);
 			seq.insereQueue(s);
 			break;
 		case 2:
 			if (count > 0) {
-				pos = new Random().nextInt(count);
 				it = seq.iterateur();
 				System.out.println("Extraction de l'élément de position " + pos);
 				while (pos > 0) {
@@ -67,13 +63,15 @@ public class TestSequence {
 				}
 				assert (it.aProchain());
 				s = it.prochain();
-				val = Integer.parseInt(s);
 			}
+			break;
 		case 3:
 			if (count > 0) {
 				s = seq.extraitTete();
 				System.out.println("Extraction en Tete de " + s);
-				val = Integer.parseInt(s);
+				assert (s == min + 1);
+				assert ((count == 1) == (seq.estVide()));
+				return s;
 			}
 			break;
 		}
@@ -81,11 +79,11 @@ public class TestSequence {
 			assert (!seq.estVide());
 		} else {
 			if (count > 0) {
-				assert ((val > min) && (val < max));
+				assert ((s > min) && (s < max));
 				if ((code == 3) || ((code == 2) && (pos == 0)))
-					min = val;
+					min = s;
 				if ((code == 2) && (pos == count - 1))
-					max = val;
+					max = s;
 				if (min == max)
 					max++;
 				assert ((count == 1) == (seq.estVide()));
@@ -96,16 +94,20 @@ public class TestSequence {
 
 	public static void main(String[] args) {
 		Random r = new Random();
-		Sequence s;
-		s = Configuration.instance().fabriqueSequence().nouvelle();
+		Sequence s1, s2;
+		s1 = new SequenceTableau();
+		s2 = new SequenceListe();
 
-		assert (s.estVide());
+		assert (s1.estVide());
+		assert (s2.estVide());
 		min = -1;
 		max = 0;
 		count = 0;
 		for (int i = 0; i < 100; i++) {
 			int code = r.nextInt(4);
-			operation(s, code);
+			int pos = (count > 0) ? r.nextInt(count) : -1;
+			int r1 = operation(s1, code, pos);
+			int r2 = operation(s2, code, pos);
 			if (code < 2) {
 				count++;
 				if (code < 1)
@@ -117,6 +119,7 @@ public class TestSequence {
 					count--;
 				}
 			}
+			assert (r1 == r2);
 		}
 	}
 }

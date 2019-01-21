@@ -28,21 +28,21 @@
 package Structures;
 
 class SequenceTableau implements Sequence {
-	String[] elements;
+	int[] elements;
 	int taille, debut;
 
 	public SequenceTableau() {
 		// Taille par défaut
-		elements = new String[1];
+		elements = new int[1];
 		debut = 0;
 		taille = 0;
 	}
 
 	private void redimensionne(int nouvelleCapacite) {
-		String[] nouveau;
+		int[] nouveau;
 
 		if (nouvelleCapacite > elements.length) {
-			nouveau = new String[nouvelleCapacite];
+			nouveau = new int[nouvelleCapacite];
 			int aCopier = taille;
 			for (int i = 0; i < aCopier; i++)
 				nouveau[i] = extraitTete();
@@ -53,7 +53,7 @@ class SequenceTableau implements Sequence {
 	}
 
 	@Override
-	public void insereTete(String element) {
+	public void insereTete(int element) {
 		if (taille == elements.length)
 			redimensionne(taille * 2);
 		debut = debut - 1;
@@ -64,7 +64,7 @@ class SequenceTableau implements Sequence {
 	}
 
 	@Override
-	public void insereQueue(String element) {
+	public void insereQueue(int element) {
 		if (taille == elements.length)
 			redimensionne(taille * 2);
 		elements[(debut + taille) % elements.length] = element;
@@ -72,9 +72,9 @@ class SequenceTableau implements Sequence {
 	}
 
 	@Override
-	public String extraitTete() {
+	public int extraitTete() {
 		// Resultat invalide si la sequence est vide
-		String resultat = elements[debut];
+		int resultat = elements[debut];
 		debut = (debut + 1) % elements.length;
 		taille--;
 		return resultat;

@@ -46,7 +46,7 @@ class IterateurSequenceTableau implements Iterateur {
 	}
 
 	@Override
-	public String prochain() {
+	public int prochain() {
 		if (aProchain()) {
 			last = position;
 			position = (position + 1) % e.elements.length;

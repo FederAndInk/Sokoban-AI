@@ -47,7 +47,7 @@ class IterateurSequenceListe implements Iterateur {
 	}
 
 	@Override
-	public String prochain() {
+	public int prochain() {
 		if (aProchain()) {
 			pprec = prec;
 			prec = courant;

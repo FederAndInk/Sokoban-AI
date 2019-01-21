@@ -29,7 +29,7 @@ package Structures;
 public interface Iterateur {
 	boolean aProchain();
 
-	String prochain();
+	int prochain();
 
 	void supprime();
 }
