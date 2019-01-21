@@ -24,18 +24,20 @@
  *          Domaine universitaire
  *          38401 Saint Martin d'Hères
  */
-package Vue;
+package Controleur;
 
-class AnimationPousseur extends Animation {
-	VueNiveauAnimee vue;
+import Vue.Animation;
 
-	AnimationPousseur(int lenteur, VueNiveauAnimee v) {
+class AnimationJeuAutomatique extends Animation {
+	IA joueur;
+	
+	AnimationJeuAutomatique(int lenteur, IA j) {
 		super(lenteur);
-		vue = v;
+		joueur = j;
 	}
 
 	@Override
 	public void miseAJour() {
-		vue.changeEtape();
+		joueur.elaboreCoup();
 	}
 }

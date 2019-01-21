@@ -37,8 +37,9 @@ public class ControleurMediateur {
 	boolean avecAnimations;
 	ControleurJeuAutomatique ctrlAuto;
 	boolean jeuAutomatique;
-	int lenteurJeuAutomatique, decompteJA;
+	int lenteurJeuAutomatique;
 	IA joueurAutomatique;
+	AnimationJeuAutomatique animationIA;
 
 	public ControleurMediateur(Jeu j, FenetreGraphique fen) {
 		jeu = j;
@@ -49,8 +50,8 @@ public class ControleurMediateur {
 		jeuAutomatique = false;
 		f.changeBoutonIA(jeuAutomatique);
 		lenteurJeuAutomatique = Integer.parseInt(Configuration.instance().lis("LenteurJeuAutomatique"));
-		decompteJA = lenteurJeuAutomatique;
 		joueurAutomatique = IA.nouvelle(ctrlAuto);
+		animationIA = new AnimationJeuAutomatique(lenteurJeuAutomatique, joueurAutomatique);
 	}
 
 	public void redimensionnement() {
@@ -152,12 +153,8 @@ public class ControleurMediateur {
 	}
 
 	public void tictac() {
-		if (!enMouvement()) {
-			decompteJA--;
-			if (jeuAutomatique && (decompteJA <= 0)) {
-				joueurAutomatique.elaboreCoup();
-				decompteJA = lenteurJeuAutomatique;
-			}
+		if (!enMouvement() && jeuAutomatique) {
+			animationIA.tictac();
 		}
 		f.tictac();
 		if (jeu.niveau().estTermine())

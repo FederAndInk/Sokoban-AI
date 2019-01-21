@@ -26,16 +26,16 @@
  */
 package Vue;
 
-abstract class Animation {
+public abstract class Animation {
 	int lenteur;
 	int decompte;
 	
-	Animation(int l) {
+	public Animation(int l) {
 		lenteur = l;
 		decompte = l;
 	}
 
-	void tictac() {
+	public void tictac() {
 		decompte--;
 		if (decompte <= 0) {
 			decompte = lenteur;
@@ -43,6 +43,9 @@ abstract class Animation {
 		}
 	}
 
-	abstract void miseAJour();
-	abstract boolean estTerminee();
+	public abstract void miseAJour();
+
+	public boolean estTerminee() {
+		return false;
+	}
 }

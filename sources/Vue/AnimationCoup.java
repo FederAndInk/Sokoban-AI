@@ -94,7 +94,7 @@ public class AnimationCoup extends Animation {
 	}
 
 	@Override
-	boolean estTerminee() {
+	public boolean estTerminee() {
 		return progres == offset;
 	}
 }
