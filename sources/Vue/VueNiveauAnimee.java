@@ -70,17 +70,6 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 		return coupsEnCours != 0;
 	}
 
-	void avanceAnimations() {
-		Iterateur<Animation> it;
-		for (it = animations.iterateur(); it.aProchain();) {
-			Animation a = it.prochain();
-			a.tictac();
-			if (a.estTerminee()) {
-				it.supprime();
-			}
-		}
-	}
-	
 	void termineCoup() {
 		coupsEnCours--;
 	}
@@ -124,11 +113,17 @@ public class VueNiveauAnimee extends DecorateurDeVueNiveau {
 			coupsEnCours++;
 		}
 		super.trace();
-		avanceAnimations();
 	}
 
 	@Override
 	void tictac() {
-		avanceAnimations();
+		Iterateur<Animation> it;
+		for (it = animations.iterateur(); it.aProchain();) {
+			Animation a = it.prochain();
+			a.tictac();
+			if (a.estTerminee()) {
+				it.supprime();
+			}
+		}
 	}
 }
