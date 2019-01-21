@@ -82,7 +82,7 @@ public class VueNiveau {
 				fenetre.tracer(caisse, x, y, largeurCase, hauteurCase);
 	}
 
-	public void miseAJour() {
+	public void trace() {
 		n = jeu.niveau();
 		if (n == null) {
 			Configuration.instance().logger().info("Dernier niveau lu, fin du jeu !");
