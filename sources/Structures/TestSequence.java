@@ -29,23 +29,21 @@ package Structures;
 
 import java.util.Random;
 
-import Global.Configuration;
-
 public class TestSequence {
 	static int min, max, count;
 
-	static String operation(Sequence seq, int code) {
-		String s;
+	static int operation(Sequence seq, int code) {
+		int s;
 		System.out.println(seq);
 		switch (code) {
 		case 0:
-			s = String.format("%08d", min);
+			s = min;
 			System.out.println("Insertion en Tete de " + s);
 			seq.insereTete(s);
 			assert (!seq.estVide());
 			break;
 		case 1:
-			s = String.format("%08d", max);
+			s = max;
 			System.out.println("Insertion en Queue de " + s);
 			seq.insereQueue(s);
 			assert (!seq.estVide());
@@ -55,29 +53,31 @@ public class TestSequence {
 			if (count > 0) {
 				s = seq.extraitTete();
 				System.out.println("Extraction en Tete de " + s);
-				int val = Integer.parseInt(s);
-				assert (val == min + 1);
+				assert (s == min + 1);
 				assert ((count == 1) == (seq.estVide()));
 				return s;
 			}
 			break;
 		}
 
-		return null;
+		return Integer.MIN_VALUE;
 	}
 
 	public static void main(String[] args) {
 		Random r = new Random();
-		Sequence s;
-		s = Configuration.instance().fabriqueSequence().nouvelle();
+		Sequence s1, s2;
+		s1 = new SequenceTableau();
+		s2 = new SequenceListe();
 
-		assert (s.estVide());
+		assert (s1.estVide());
+		assert (s2.estVide());
 		min = -1;
 		max = 0;
 		count = 0;
 		for (int i = 0; i < 100; i++) {
 			int code = r.nextInt(4);
-			operation(s, code);
+			int r1 = operation(s1, code);
+			int r2 = operation(s2, code);
 			if (code < 2) {
 				count++;
 				if (code < 1)
@@ -90,6 +90,7 @@ public class TestSequence {
 					min++;
 				}
 			}
+			assert (r1 == r2);
 		}
 	}
 }
