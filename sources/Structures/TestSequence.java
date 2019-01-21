@@ -63,13 +63,13 @@ public class TestSequence {
 				}
 				assert (it.aProchain());
 				s = it.prochain();
+				it.supprime();
 			}
 			break;
 		case 3:
 			if (count > 0) {
 				s = seq.extraitTete();
 				System.out.println("Extraction en Tete de " + s);
-				assert (s == min + 1);
 				assert ((count == 1) == (seq.estVide()));
 				return s;
 			}
@@ -80,12 +80,6 @@ public class TestSequence {
 		} else {
 			if (count > 0) {
 				assert ((s > min) && (s < max));
-				if ((code == 3) || ((code == 2) && (pos == 0)))
-					min = s;
-				if ((code == 2) && (pos == count - 1))
-					max = s;
-				if (min == max)
-					max++;
 				assert ((count == 1) == (seq.estVide()));
 			}
 		}
@@ -93,7 +87,7 @@ public class TestSequence {
 	}
 
 	public static void main(String[] args) {
-		Random r = new Random();
+		Random r = new Random(0);
 		Sequence s1, s2;
 		s1 = new SequenceTableau();
 		s2 = new SequenceListe();
@@ -116,9 +110,16 @@ public class TestSequence {
 					max++;
 			} else {
 				if (count > 0) {
+					if ((code == 3) || ((code == 2) && (pos == 0)))
+						min = r1;
+					if ((code == 2) && (pos == count - 1))
+						max = r1;
+					if (min == max)
+						max++;
 					count--;
 				}
 			}
+
 			assert (r1 == r2);
 		}
 	}
