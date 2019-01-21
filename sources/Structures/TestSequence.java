@@ -87,7 +87,7 @@ public class TestSequence {
 	}
 
 	public static void main(String[] args) {
-		Random r = new Random(0);
+		Random r = new Random();
 		Sequence s1, s2;
 		s1 = new SequenceTableau();
 		s2 = new SequenceListe();
