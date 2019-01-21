@@ -31,7 +31,7 @@ class SequenceListe implements Sequence {
 	// Les méthodes implémentant l'interface
 	// doivent être publiques
 	@Override
-	public void insereTete(String element) {
+	public void insereTete(int element) {
 		Maillon m = new Maillon(element, tete);
 		if (queue == null)
 			queue = m;
@@ -39,7 +39,7 @@ class SequenceListe implements Sequence {
 	}
 
 	@Override
-	public void insereQueue(String element) {
+	public void insereQueue(int element) {
 		Maillon m = new Maillon(element, null);
 		if (queue == null) {
 			tete = queue = m;
@@ -50,8 +50,8 @@ class SequenceListe implements Sequence {
 	}
 
 	@Override
-	public String extraitTete() {
-		String resultat;
+	public int extraitTete() {
+		int resultat;
 		// Exception si tete == null (sequence vide)
 		resultat = tete.element;
 		tete = tete.suivant;

@@ -26,11 +26,11 @@
  */
 
 interface Sequence {
-	void insereTete(String element);
+	void insereTete(int element);
 
-	void insereQueue(String element);
+	void insereQueue(int element);
 
-	String extraitTete();
+	int extraitTete();
 
 	boolean estVide();
 }
