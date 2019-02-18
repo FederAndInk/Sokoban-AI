@@ -26,9 +26,9 @@
  *          38401 Saint Martin d'Hères
  */
 
+import java.io.InputStream;
 import java.util.Random;
 
-import Global.Configuration;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -54,12 +54,18 @@ public class ExempleJavaFXAvecCanvas extends Application {
 	Image img;
 	Random r;
 
-	// Methode permettant de démarrer une application JavaFX
+	// Programme principal, ne fait que lancer l'application JavaFX
+	public static void main(String[] args) {
+		ExempleJavaFXAvecCanvas.launch(args);
+	}
+
+	// Methode de démarrage d'une application JavaFX
 	@Override
 	public void start(Stage primaryStage) {
 		final boolean fullScreen = false;
 		r = new Random();
 
+		// Titre de la fenêtre
 		primaryStage.setTitle("Sokoban");
 		// Plein écran (éventuellement)
 		if (fullScreen) {
@@ -67,13 +73,15 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		}
 
 		/*
-		 * Exemple simple :
+		 * Exemple illustratif :
 		 * - quelques composants graphiques, une zone de dessin et du texte
 		 * - quelques conteneurs pour contenir ces composants, des boites
 		 * - une fenêtre dont le contenu est déterminé par un conteneur (c'est forcément un conteneur)
 		 * On peut remarquer que l'agencement des composants graphiques est déterminé par les conteneurs,
 		 * qui sont toujours associé à un plan d'organisation sous jacent (Layout)
 		 */
+
+		// Zone de dessin
 		can = new Canvas(600, 400);
 		// Un conteneur simple qui remplit toute la place disponible
 		Pane vue = new Pane(can);
@@ -81,16 +89,16 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		// Une boite horizontale avec 3 bouts de texte
 		HBox boiteTexte = new HBox();
 		boiteTexte.getChildren().add(new Label("<"));
-		Label label = new Label("Redimensionez !");
+		Label label = new Label("Cliquez moi !");
 		boiteTexte.getChildren().add(label);
 		boiteTexte.getChildren().add(new Label(">"));
-		// Le label est centré dans l'espace qu'on lui alloue
+		// Le texte est centré dans l'espace qu'on lui alloue
 		label.setAlignment(Pos.CENTER);
 		// S'il y a de la place, on donne tout au label
 		HBox.setHgrow(label, Priority.ALWAYS);
 		label.setMaxWidth(Double.MAX_VALUE);
 
-		// Une boite verticale pour contenir tout le reste
+		// Une boite verticale pour contenir toute la scène
 		VBox boiteScene = new VBox();
 		boiteScene.getChildren().add(vue);
 		boiteScene.getChildren().add(boiteTexte);
@@ -103,26 +111,40 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		// On affiche la fenêtre (donne leur taille aux objets graphiques)
 		primaryStage.show();
 
+		// On affiche la première image dans la fenêtre
+		// (lorsque les objets graphiques ont leurs dimensions)
+		// Attention : Images/Pousseur.png doit être dans le CLASSPATH (cf. Correction)
+		InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("Images/Pousseur.png");
+		img = new Image(in);
+		x = (int) can.getWidth() / 2;
+		y = (int) can.getHeight() / 2;
+		trace();
+
 		/*
 		 * On définit l'interaction :
 		 * - toute interaction est gérée par l'utilisateur via une fonction de réaction, EventHandler.handle
 		 * - tout composant peut réagir à l'interaction
 		 * EventHandler est générique, on la spécialise pour le type d'évènement qui nous intéresse
 		 */
+
 		// Clics de souris sur le label
+		// Exemple avec un objet d'une classe anonyme pour réagir au clic
 		label.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent e) {
 				System.out.println("Vous lisez le label d'un oeil circonspet...");
 			}
 		});
-		/* Dans le cas de l'image, on veut compter le nombre de clics. Pour l'exemple, on passe
-		 * par une classe non anonyme qui contient un entier pour faire le compte.
-		 */
-		vue.setOnMouseClicked(new CibleMouvante(this));
 
-		/* Le redimensionnement aussi est géré par un évènement
-		 */
+		// Dans le cas de l'image, on veut compter le nombre de clics
+		// Dans cet exemple, on passe par un objet d'une classe nommée CibleMouvante qui
+		// contient
+		// un entier pour faire le compte
+		can.setOnMouseClicked(new CibleMouvante(this));
+
+		// Le redimensionnement aussi est géré par un évènement
+		// Ici, on crée un objet d'une classe anonyme qui servira à réagir au
+		// redimensionnent selon les deux axes
 		ChangeListener<Number> ecouteurRedimensionnement = new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -132,6 +154,7 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		};
 		can.widthProperty().addListener(ecouteurRedimensionnement);
 		can.heightProperty().addListener(ecouteurRedimensionnement);
+
 		// On redimensionne le canvas en même temps que son conteneur
 		// Remarque : à faire après le primaryStage.show() sinon le Pane 'vue' a une
 		// taille nulle qui est transmise au Canvas
@@ -145,12 +168,6 @@ public class ExempleJavaFXAvecCanvas extends Application {
 				System.out.println("Fin du jeu");
 			}
 		});
-
-		// On affiche la première image dans la fenêtre
-		img = new Image(Configuration.charge("Images/Pousseur.png"));
-		x = (int) can.getWidth() / 2;
-		y = (int) can.getHeight() / 2;
-		trace();
 	}
 
 	// Efface tout puis trace l'image aux coordonnées enregistrées
@@ -158,7 +175,7 @@ public class ExempleJavaFXAvecCanvas extends Application {
 		GraphicsContext gc = can.getGraphicsContext2D();
 		// On remplit en blanc pour voir le Canvas
 		gc.setFill(Color.WHITE);
-		gc.clearRect(0, 0, can.getWidth(), can.getHeight());
+		gc.fillRect(0, 0, can.getWidth(), can.getHeight());
 		gc.drawImage(img, x - 50, y - 50, 100, 100);
 	}
 
