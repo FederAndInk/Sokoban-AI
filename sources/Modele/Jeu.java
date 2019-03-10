@@ -31,7 +31,7 @@ import java.io.InputStream;
 import Global.Configuration;
 import Patterns.Observable;
 
-public class Jeu extends Observable implements EtatHistorique {
+public class Jeu extends Observable {
 	LecteurNiveaux l;
 	Niveau n;
 	Coup dernierCoup;
@@ -73,12 +73,10 @@ public class Jeu extends Observable implements EtatHistorique {
 		metAJour();
 	}
 
-	@Override
 	public boolean peutAnnuler() {
 		return niveau().peutAnnuler();
 	}
 
-	@Override
 	public boolean peutRefaire() {
 		return niveau().peutRefaire();
 	}

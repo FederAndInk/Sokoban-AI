@@ -31,7 +31,7 @@ import Patterns.Commande;
 import Structures.FabriqueSequence;
 import Structures.Sequence;
 
-public class HistoriqueAPile<E extends Commande> implements EtatHistorique {
+public class HistoriqueAPile<E extends Commande> {
 	Sequence<E> passe, futur;
 
 	HistoriqueAPile() {
