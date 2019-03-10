@@ -26,23 +26,22 @@
  */
 package Vue;
 
-import Modele.EtatHistorique;
-import Patterns.Observable;
+import Modele.Jeu;
 import Patterns.Observateur;
 import javafx.scene.control.Button;
 
 public class BoutonAnnuler extends Button implements Observateur {
-	EtatHistorique histo;
+	Jeu jeu;
 
-	BoutonAnnuler(Observable o, EtatHistorique h) {
-		histo = h;
+	BoutonAnnuler(Jeu j) {
+		jeu = j;
 		setText("<");
-		o.ajouteObservateur(this);
+		jeu.ajouteObservateur(this);
 	}
 
 	@Override
 	public void miseAJour() {
-		if (histo.peutAnnuler())
+		if (jeu.peutAnnuler())
 			this.setDisable(false);
 		else
 			this.setDisable(true);

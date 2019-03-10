@@ -27,9 +27,6 @@
 
 package Modele;
 
-import Global.Configuration;
-import Structures.Sequence;
-
 public class Niveau extends HistoriqueAPile<Coup> {
 	static final int VIDE = 0;
 	static final int MUR = 1;
