@@ -90,8 +90,12 @@ public abstract class NiveauConsultable extends HistoriqueAPile<Coup> {
 		return aCaisse(cases[l][c]);
 	}
 
-	public boolean estOccupable(int i, int j) {
-		return !aMur(i, j) && !aCaisse(i, j);
+	public boolean estDedans(int l, int c) {
+		return l >= 0 && c >= 0 && l < lignes() && c < colonnes();
+	}
+
+	public boolean estOccupable(int l, int c) {
+		return estDedans(l, c) && !aMur(l, c) && !aCaisse(l, c);
 	}
 
 	public int lignePousseur() {

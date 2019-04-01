@@ -67,10 +67,11 @@ public class HistoriqueAPile<E extends Commande> {
 	}
 
 	public void faire(E nouveau) {
-		nouveau.execute();
-		passe.insereTete(nouveau);
-		while (!futur.estVide()) {
-			futur.extraitTete();
+		if (nouveau.execute()) {
+			passe.insereTete(nouveau);
+			while (!futur.estVide()) {
+				futur.extraitTete();
+			}
 		}
 	}
 }

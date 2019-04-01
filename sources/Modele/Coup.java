@@ -26,10 +26,10 @@
  */
 package Modele;
 
-import Structures.Iterateur;
-import Structures.Sequence;
 import Global.Configuration;
 import Patterns.Commande;
+import Structures.Iterateur;
+import Structures.Sequence;
 
 public class Coup extends Commande {
 	Niveau n;
@@ -51,23 +51,27 @@ public class Coup extends Commande {
 	}
 
 	@Override
-	public void execute() {
+	public boolean execute() {
 		int dstL = posL + dirL;
 		int dstC = posC + dirC;
-		if (caisse) {
-			n.deplace(dstL, dstC, dstL + dirL, dstC + dirC);
-			n.comptePoussee();
-		}
-		n.deplace(posL, posC, dstL, dstC);
-		if (marques != null) {
-			Iterateur<Marque> it;
-			for (it = marques.iterateur(); it.aProchain();) {
-				Marque m = it.prochain();
-				n.marquer(m.ligne, m.colonne, m.nouvelle);
+		if (!(dstL == posL && dstC == posC)) {
+			if (caisse) {
+				n.deplace(dstL, dstC, dstL + dirL, dstC + dirC);
+				n.comptePoussee();
 			}
+			n.deplace(posL, posC, dstL, dstC);
+			if (marques != null) {
+				Iterateur<Marque> it;
+				for (it = marques.iterateur(); it.aProchain();) {
+					Marque m = it.prochain();
+					n.marquer(m.ligne, m.colonne, m.nouvelle);
+				}
+			}
+			n.comptePas();
+			sens = 1;
+			return true;
 		}
-		n.comptePas();
-		sens = 1;
+		return false;
 	}
 
 	@Override
