@@ -34,6 +34,34 @@ import java.util.logging.Logger;
 import Global.Configuration;
 
 /**
+ * Pair
+ */
+class Pair<T1, T2> {
+	public T1 first;
+	public T2 second;
+
+	public Pair(T1 first, T2 second) {
+		this.first = first;
+		this.second = second;
+	}
+}
+
+enum Direction {
+	LEFT(-1, 0), //
+	RIGHT(1, 0), //
+	UP(0, -1), //
+	DOWN(0, 1);//
+
+	int c;
+	int l;
+
+	Direction(int c, int l) {
+		this.c = c;
+		this.l = l;
+	}
+}
+
+/**
  * IAAssistance
  */
 class PriorityPoint {
@@ -47,6 +75,18 @@ class PriorityPoint {
 		this.prio = prio;
 	}
 
+	PriorityPoint(PriorityPoint pp) {
+		this.c = pp.c;
+		this.l = pp.l;
+		this.prio = pp.prio;
+	}
+
+	public PriorityPoint add(Direction d) {
+		c += d.c;
+		l += d.l;
+		return this;
+	}
+
 	/**
 	 * @param l the l to set
 	 */
@@ -55,13 +95,12 @@ class PriorityPoint {
 		this.l = l;
 	}
 
-	public ArrayList<PriorityPoint> getNeighbor() {
-		ArrayList<PriorityPoint> list = new ArrayList<>();
+	public ArrayList<Pair<PriorityPoint, Direction>> getNeighbor() {
+		ArrayList<Pair<PriorityPoint, Direction>> list = new ArrayList<>();
 
-		list.add(new PriorityPoint(c + 1, l, c + 1));
-		list.add(new PriorityPoint(c, l + 1, c + 1));
-		list.add(new PriorityPoint(c - 1, l, c + 1));
-		list.add(new PriorityPoint(c, l - 1, c + 1));
+		for (Direction d : Direction.values()) {
+			list.add(new Pair<>((new PriorityPoint(c, l, prio + 1)).add(d), d));
+		}
 
 		return list;
 	}
@@ -96,6 +135,11 @@ public class IAAssistance extends IA {
 		logger.info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
 	}
 
+	public boolean estPoussable(PriorityPoint pp, Direction d) {
+		PriorityPoint ppPlusLoin = new PriorityPoint(pp).add(d);
+		return niveau.aCaisse(pp.l, pp.c) && niveau.estOccupable(ppPlusLoin.l, ppPlusLoin.c);
+	}
+
 	@Override
 	public void joue() {
 		int lP = niveau.lignePousseur();
@@ -120,18 +164,26 @@ public class IAAssistance extends IA {
 
 			while (!pq.isEmpty()) {
 				PriorityPoint pp = pq.remove();
-				controle.marquer(pp.l, pp.c, 1);
-				for (PriorityPoint ngb : pp.getNeighbor()) {
+				if (niveau.marque(pp.l, pp.c) != 2) {
+					controle.marquer(pp.l, pp.c, 1);
+				}
+				for (Pair<PriorityPoint, Direction> pNgbDir : pp.getNeighbor()) {
+					PriorityPoint ngb = pNgbDir.first;
+					if (niveau.aCaisse(ngb.l, ngb.c) && estPoussable(ngb, pNgbDir.second)) {
+						PriorityPoint ngbD = new PriorityPoint(ngb).add(pNgbDir.second);
+						controle.marquer(ngbD.l, ngbD.c, 2);
+					}
+
 					if (niveau.estOccupable(ngb.l, ngb.c)) {
 						if (!accessibles.containsKey(ngb) || ngb.prio < accessibles.get(ngb)) {
 							accessibles.put(ngb, ngb.prio);
 							pq.remove(ngb);
 							pq.add(ngb);
+
 						}
 					}
 				}
 			}
-			controle.marquer(lP, cP, 2);
 
 			controle.jeu.metAJour();
 		}
