@@ -32,12 +32,12 @@ import java.util.logging.Logger;
 
 import Global.Configuration;
 
-public class IAAssistance extends IA {
+public class IAIA extends IA {
 	Logger logger;
 	HashMap<PriorityPoint, Pair<Integer, PriorityPoint>> accessibles;
 	PriorityPoint curr;
 
-	public IAAssistance() {
+	public IAIA() {
 		logger = Configuration.instance().logger();
 		accessibles = new HashMap<>();
 	}
