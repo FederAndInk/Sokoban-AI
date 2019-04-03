@@ -99,6 +99,7 @@ class PriorityPoint {
 		ArrayList<Pair<PriorityPoint, Direction>> list = new ArrayList<>();
 
 		for (Direction d : Direction.values()) {
+			// on rajoute 1 au chemin
 			list.add(new Pair<>((new PriorityPoint(c, l, prio + 1)).add(d), d));
 		}
 
@@ -122,7 +123,7 @@ class PriorityPoint {
 
 public class IAAssistance extends IA {
 	Logger logger;
-	HashMap<PriorityPoint, Integer> accessibles;
+	HashMap<PriorityPoint, Pair<Integer, PriorityPoint>> accessibles;
 	PriorityPoint curr;
 
 	public IAAssistance() {
@@ -148,42 +149,55 @@ public class IAAssistance extends IA {
 			curr = new PriorityPoint(cP, lP, 0);
 			logger.info("Update AI accessibles");
 			accessibles.clear();
+
+			// on clear les marques posées
 			for (int l = 0; l < niveau.lignes(); l++) {
 				for (int c = 0; c < niveau.colonnes(); c++) {
 					int marque = niveau.marque(l, c);
-					if (marque != 0)
+					if (marque != 0) {
 						controle.marquer(l, c, 0);
+					}
 				}
 			}
 
+			// Dijktra begins
+			// Le constructeur prend une fonction servant à déterminer le tri des éléments
+			// (la comparaison)
 			PriorityQueue<PriorityPoint> pq = new PriorityQueue<>((p1, p2) -> {
 				return p1.prio.compareTo(p2.prio);
 			});
 
+			// L'origine est la position du pousseur :
 			pq.add(new PriorityPoint(cP, lP, 0));
 
 			while (!pq.isEmpty()) {
 				PriorityPoint pp = pq.remove();
+				// Check juste si la case n'est pas marron
 				if (niveau.marque(pp.l, pp.c) != 2) {
+					// On met une marque verte
 					controle.marquer(pp.l, pp.c, 1);
 				}
 				for (Pair<PriorityPoint, Direction> pNgbDir : pp.getNeighbor()) {
 					PriorityPoint ngb = pNgbDir.first;
 					if (niveau.aCaisse(ngb.l, ngb.c) && estPoussable(ngb, pNgbDir.second)) {
+						// ON marque la case suivant la boite grâce à la direction
 						PriorityPoint ngbD = new PriorityPoint(ngb).add(pNgbDir.second);
 						controle.marquer(ngbD.l, ngbD.c, 2);
 					}
-
+					// si la case est soit un goal, soit un vide
 					if (niveau.estOccupable(ngb.l, ngb.c)) {
-						if (!accessibles.containsKey(ngb) || ngb.prio < accessibles.get(ngb)) {
-							accessibles.put(ngb, ngb.prio);
+						// Si on vient de trouver le premier chemin vers la case
+						// ou
+						if (!accessibles.containsKey(ngb) || ngb.prio < accessibles.get(ngb).first) {
+							accessibles.put(ngb, new Pair<>(ngb.prio, pp));
 							pq.remove(ngb);
 							pq.add(ngb);
-
+							// update prev
 						}
 					}
 				}
 			}
+			// dijkstra ends
 
 			controle.jeu.metAJour();
 		}
