@@ -136,83 +136,95 @@ class LevelState {
 
 public class IAIA extends IA {
 	Logger logger;
-	HashMap<LevelState, Pair<Integer, LevelState>> accessibles;
-	PriorityPoint curr;
+	ArrayList<Direction> path;
+	int currPosPath;
+	PriorityPoint lastPos;
 
 	public IAIA() {
 		logger = Configuration.instance().logger();
-		accessibles = new HashMap<>();
+		path = new ArrayList<>();
+	}
+
+	private PriorityPoint getPlayerPos() {
+		return new PriorityPoint(niveau.colonnePousseur(), niveau.lignePousseur(), 0);
 	}
 
 	@Override
 	public void initialise() {
+		HashMap<LevelState, Pair<Integer, LevelState>> accessibles = new HashMap<>();
 		logger.info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
+		int lP = niveau.lignePousseur();
+		int cP = niveau.colonnePousseur();
+		lastPos = getPlayerPos();
+		logger.info("Update AI accessibles");
+		accessibles.clear();
+
+		// on clear les marques posées
+		for (int l = 0; l < niveau.lignes(); l++) {
+			for (int c = 0; c < niveau.colonnes(); c++) {
+				int marque = niveau.marque(l, c);
+				if (marque != 0) {
+					controle.marquer(l, c, 0);
+				}
+			}
+		}
+
+		// Dijktra commence
+		// Le constructeur prend une fonction servant à déterminer le tri des éléments
+		// (la comparaison)
+		PriorityQueue<LevelState> pq = new PriorityQueue<>((ls1, ls2) -> {
+			// minimize the number of player steps
+			return ls1.getNbSteps().compareTo(ls2.getNbSteps());
+		});
+
+		// L'origine est la position du pousseur :
+		LevelState lvlState = new LevelState(niveau);
+		pq.add(lvlState);
+		accessibles.put(lvlState, new Pair<>(0, lvlState));
+		while (!pq.isEmpty() && (lvlState == null || !lvlState.isResolved())) {
+			lvlState = pq.remove();
+
+			for (LevelState lsNbg : lvlState.getNeighbor()) {
+				// Si on vient de trouver le premier chemin vers la case
+				// ou on a trouvé un chemin plus court
+				if (!accessibles.containsKey(lsNbg) || lsNbg.getNbSteps() < accessibles.get(lsNbg).first) {
+					accessibles.put(lsNbg, new Pair<>(lsNbg.getNbSteps(), lvlState));
+					pq.remove(lsNbg);
+					pq.add(lsNbg);
+					// update prev
+				}
+			}
+		}
+		// fin de dijkstra
+		// arrivé ici, soit on a notre solution, soit on a tout analysé et il n'y a pas
+		// de solution
+
+		if (lvlState.isResolved()) {
+			// on affiche la solution trouvée
+			path.clear();
+			showPath(accessibles, lvlState);
+			currPosPath = 0;
+		}
 	}
 
 	@Override
 	public void joue() {
-		int lP = niveau.lignePousseur();
-		int cP = niveau.colonnePousseur();
-		if (curr == null || curr.c != cP || curr.l != lP) {
-			curr = new PriorityPoint(cP, lP, 0);
-			logger.info("Update AI accessibles");
-			accessibles.clear();
-
-			// on clear les marques posées
-			for (int l = 0; l < niveau.lignes(); l++) {
-				for (int c = 0; c < niveau.colonnes(); c++) {
-					int marque = niveau.marque(l, c);
-					if (marque != 0) {
-						controle.marquer(l, c, 0);
-					}
-				}
-			}
-
-			// Dijktra commence
-			// Le constructeur prend une fonction servant à déterminer le tri des éléments
-			// (la comparaison)
-			PriorityQueue<LevelState> pq = new PriorityQueue<>((ls1, ls2) -> {
-				// minimize the number of player steps
-				return ls1.getNbSteps().compareTo(ls2.getNbSteps());
-			});
-
-			// L'origine est la position du pousseur :
-			LevelState lvlState = new LevelState(niveau);
-			pq.add(lvlState);
-			accessibles.put(lvlState, new Pair<>(0, lvlState));
-			while (!pq.isEmpty() && (lvlState == null || !lvlState.isResolved())) {
-				lvlState = pq.remove();
-
-				for (LevelState lsNbg : lvlState.getNeighbor()) {
-					// Si on vient de trouver le premier chemin vers la case
-					// ou on a trouvé un chemin plus court
-					if (!accessibles.containsKey(lsNbg) || lsNbg.getNbSteps() < accessibles.get(lsNbg).first) {
-						accessibles.put(lsNbg, new Pair<>(lsNbg.getNbSteps(), lvlState));
-						pq.remove(lsNbg);
-						pq.add(lsNbg);
-						// update prev
-					}
-				}
-			}
-			// fin de dijkstra
-			// arrivé ici, soit on a notre solution, soit on a tout analysé et il n'y a pas
-			// de solution
-
-			if (lvlState.isResolved()) {
-				// on affiche la solution trouvée
-				showPath(accessibles, lvlState);
-			}
-
-			controle.jeu.metAJour();
+		if (!lastPos.equals(getPlayerPos())) {
+			initialise();
 		}
-
+		Direction d = path.get(currPosPath++);
+		controle.jeu.jouer(d.dL, d.dC);
+		lastPos = getPlayerPos();
+		controle.jeu.metAJour();
 	}
 
 	private void showPath(HashMap<LevelState, Pair<Integer, LevelState>> accessibles, LevelState lvlState) {
 		Pair<Integer, LevelState> pair = accessibles.get(lvlState);
 		if (pair.first != 0) {
 			showPath(accessibles, pair.second);
-			System.out.println(Direction.getDirection(pair.second.player, lvlState.player) + ": " + lvlState.player);
+			Direction d = Direction.getDirection(pair.second.player, lvlState.player);
+			path.add(d);
+			System.out.println(d + ": " + lvlState.player);
 		} else {
 			System.out.println("Begin: " + lvlState.player);
 		}
