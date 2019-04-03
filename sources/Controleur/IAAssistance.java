@@ -160,7 +160,7 @@ public class IAAssistance extends IA {
 				}
 			}
 
-			// Dijktra begins
+			// Dijktra commence
 			// Le constructeur prend une fonction servant à déterminer le tri des éléments
 			// (la comparaison)
 			PriorityQueue<PriorityPoint> pq = new PriorityQueue<>((p1, p2) -> {
@@ -180,14 +180,14 @@ public class IAAssistance extends IA {
 				for (Pair<PriorityPoint, Direction> pNgbDir : pp.getNeighbor()) {
 					PriorityPoint ngb = pNgbDir.first;
 					if (niveau.aCaisse(ngb.l, ngb.c) && estPoussable(ngb, pNgbDir.second)) {
-						// ON marque la case suivant la boite grâce à la direction
+						// On marque la case suivant la boite grâce à la direction
 						PriorityPoint ngbD = new PriorityPoint(ngb).add(pNgbDir.second);
 						controle.marquer(ngbD.l, ngbD.c, 2);
 					}
 					// si la case est soit un goal, soit un vide
 					if (niveau.estOccupable(ngb.l, ngb.c)) {
 						// Si on vient de trouver le premier chemin vers la case
-						// ou
+						// ou on a trouvé un chemin plus court
 						if (!accessibles.containsKey(ngb) || ngb.prio < accessibles.get(ngb).first) {
 							accessibles.put(ngb, new Pair<>(ngb.prio, pp));
 							pq.remove(ngb);
