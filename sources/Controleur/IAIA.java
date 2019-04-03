@@ -72,18 +72,18 @@ class LevelState {
 		for (Pair<PriorityPoint, Direction> p : player.getNeighbor()) {
 			// if "accessibles" with pousse boite
 			PriorityPoint pP = p.first;
-			if (isInBounds(pP)) {
-				if (isFree(pP) || (isBox(pP) && isPushable(pP, p.second))) {
-					PriorityPoint nextBox = box;
-					if (isBox(pP)) { // already pushable
-						nextBox = new PriorityPoint(box);
-						nextBox.add(p.second);
-						nextBox.prio++;
-					}
-
-					ar.add(new LevelState(p.first, nextBox, niv));
+			// if (isInBounds(pP)) {
+			if (isFree(pP) || (isPushable(pP, p.second))) {
+				PriorityPoint nextBox = box;
+				if (isBox(pP)) { // already pushable
+					nextBox = new PriorityPoint(box);
+					nextBox.add(p.second);
+					nextBox.prio++;
 				}
+
+				ar.add(new LevelState(p.first, nextBox, niv));
 			}
+			// }
 
 		}
 		return ar;
@@ -213,8 +213,7 @@ public class IAIA extends IA {
 		if (pair.first != 0) {
 			showPath(accessibles, pair.second);
 			System.out.println(Direction.getDirection(pair.second.player, lvlState.player) + ": " + lvlState.player);
-		}
-		else {
+		} else {
 			System.out.println("Begin: " + lvlState.player);
 		}
 	}
