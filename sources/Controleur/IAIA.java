@@ -70,9 +70,7 @@ class LevelState {
 	ArrayList<LevelState> getNeighbor() {
 		ArrayList<LevelState> ar = new ArrayList<>();
 		for (Pair<PriorityPoint, Direction> p : player.getNeighbor()) {
-			// if "accessibles" with pousse boite
 			PriorityPoint pP = p.first;
-			// if (isInBounds(pP)) {
 			if (isFree(pP) || (isPushable(pP, p.second))) {
 				PriorityPoint nextBox = box;
 				if (isBox(pP)) { // already pushable
@@ -83,7 +81,6 @@ class LevelState {
 
 				ar.add(new LevelState(p.first, nextBox, niv));
 			}
-			// }
 
 		}
 		return ar;
@@ -151,23 +148,13 @@ public class IAIA extends IA {
 
 	@Override
 	public void initialise() {
+		// Hashmap contenant une configuration visitée associée à sa configuration
+		// predec + la longueur pour l'atteindre
 		HashMap<LevelState, Pair<Integer, LevelState>> accessibles = new HashMap<>();
 		logger.info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
-		int lP = niveau.lignePousseur();
-		int cP = niveau.colonnePousseur();
 		lastPos = getPlayerPos();
 		logger.info("Update AI accessibles");
 		accessibles.clear();
-
-		// on clear les marques posées
-		for (int l = 0; l < niveau.lignes(); l++) {
-			for (int c = 0; c < niveau.colonnes(); c++) {
-				int marque = niveau.marque(l, c);
-				if (marque != 0) {
-					controle.marquer(l, c, 0);
-				}
-			}
-		}
 
 		// Dijktra commence
 		// Le constructeur prend une fonction servant à déterminer le tri des éléments
