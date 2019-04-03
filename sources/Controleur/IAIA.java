@@ -26,15 +26,117 @@
  */
 package Controleur;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.logging.Logger;
 
 import Global.Configuration;
+import Modele.Direction;
+import Modele.NiveauConsultable;
+import Modele.Pair;
+import Modele.PriorityPoint;
+
+/**
+ * LevelState
+ */
+class LevelState {
+	PriorityPoint player;
+	PriorityPoint box;
+	NiveauConsultable niv;
+
+	LevelState(NiveauConsultable niv) {
+		this.player = new PriorityPoint(niv.colonnePousseur(), niv.lignePousseur(), 0);
+		this.niv = niv;
+		this.box = getBoites();
+		Configuration.instance().logger().info("Create levelState with\n - player on: " + player + "\n - box on: " + box);
+	}
+
+	private LevelState(PriorityPoint player, PriorityPoint box, NiveauConsultable niv) {
+		this.player = player;
+		this.box = box;
+		this.niv = niv;
+		Configuration.instance().logger().info("Create levelState with\n - player on: " + player + "\n - box on: " + box);
+	}
+
+	public Integer getNbSteps() {
+		return player.prio;
+	}
+
+	public boolean isResolved() {
+		return niv.aBut(box.l, box.c);
+	}
+
+	ArrayList<LevelState> getNeighbor() {
+		ArrayList<LevelState> ar = new ArrayList<>();
+		for (Pair<PriorityPoint, Direction> p : player.getNeighbor()) {
+			// if "accessibles" with pousse boite
+			PriorityPoint pP = p.first;
+			if (isInBounds(pP)) {
+				if (isFree(pP) || (isBox(pP) && isPushable(pP, p.second))) {
+					PriorityPoint nextBox = box;
+					if (isBox(pP)) { // already pushable
+						nextBox = new PriorityPoint(box);
+						nextBox.add(p.second);
+						nextBox.prio++;
+					}
+
+					ar.add(new LevelState(p.first, nextBox, niv));
+				}
+			}
+
+		}
+		return ar;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof LevelState) {
+			LevelState ls = (LevelState) obj;
+			return ls.box.equals(box) && ls.player.equals(player);
+		}
+		return false;
+	}
+
+	@Override
+	// Notre fonction Hashcode permettant de hash une paire
+	public int hashCode() {
+		return player.hashCode() * 13 + box.hashCode();
+	}
+
+	private PriorityPoint getBoites() {
+		for (int l = 0; l < niv.lignes(); l++) {
+			for (int c = 0; c < niv.colonnes(); c++) {
+				if (niv.aCaisse(l, c)) {
+					return new PriorityPoint(c, l, 0);
+				}
+			}
+		}
+		return null;
+	}
+
+	private boolean isInBounds(PriorityPoint p) {
+		return niv.estDedans(p.l, p.c);
+	}
+
+	private boolean isBox(PriorityPoint p) {
+		return box.equals(p);
+	}
+
+	private boolean isFree(PriorityPoint p) {
+		return isInBounds(p) && !niv.aMur(p.l, p.c) && !isBox(p);
+	}
+
+	private boolean isPushable(PriorityPoint p, Direction d) {
+		PriorityPoint ppPlusLoin = new PriorityPoint(p).add(d);
+		return isBox(p) && isFree(ppPlusLoin);
+	}
+
+}
 
 public class IAIA extends IA {
 	Logger logger;
-	HashMap<PriorityPoint, Pair<Integer, PriorityPoint>> accessibles;
+	HashMap<LevelState, Pair<Integer, LevelState>> accessibles;
 	PriorityPoint curr;
 
 	public IAIA() {
@@ -45,11 +147,6 @@ public class IAIA extends IA {
 	@Override
 	public void initialise() {
 		logger.info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
-	}
-
-	public boolean estPoussable(PriorityPoint pp, Direction d) {
-		PriorityPoint ppPlusLoin = new PriorityPoint(pp).add(d);
-		return niveau.aCaisse(pp.l, pp.c) && niveau.estOccupable(ppPlusLoin.l, ppPlusLoin.c);
 	}
 
 	@Override
@@ -74,43 +171,51 @@ public class IAIA extends IA {
 			// Dijktra commence
 			// Le constructeur prend une fonction servant à déterminer le tri des éléments
 			// (la comparaison)
-			PriorityQueue<PriorityPoint> pq = new PriorityQueue<>((p1, p2) -> {
-				return p1.prio.compareTo(p2.prio);
+			PriorityQueue<LevelState> pq = new PriorityQueue<>((ls1, ls2) -> {
+				// minimize the number of player steps
+				return ls1.getNbSteps().compareTo(ls2.getNbSteps());
 			});
 
 			// L'origine est la position du pousseur :
-			pq.add(new PriorityPoint(cP, lP, 0));
+			LevelState lvlState = new LevelState(niveau);
+			pq.add(lvlState);
+			accessibles.put(lvlState, new Pair<>(0, lvlState));
+			while (!pq.isEmpty() && (lvlState == null || !lvlState.isResolved())) {
+				lvlState = pq.remove();
 
-			while (!pq.isEmpty()) {
-				PriorityPoint pp = pq.remove();
-				// Check juste si la case n'est pas marron
-				if (niveau.marque(pp.l, pp.c) != 2) {
-					// On met une marque verte
-					controle.marquer(pp.l, pp.c, 1);
-				}
-				for (Pair<PriorityPoint, Direction> pNgbDir : pp.getNeighbor()) {
-					PriorityPoint ngb = pNgbDir.first;
-					if (niveau.aCaisse(ngb.l, ngb.c) && estPoussable(ngb, pNgbDir.second)) {
-						// On marque la case suivant la boite grâce à la direction
-						PriorityPoint ngbD = new PriorityPoint(ngb).add(pNgbDir.second);
-						controle.marquer(ngbD.l, ngbD.c, 2);
-					}
-					// si la case est soit un goal, soit un vide
-					if (niveau.estOccupable(ngb.l, ngb.c)) {
-						// Si on vient de trouver le premier chemin vers la case
-						// ou on a trouvé un chemin plus court
-						if (!accessibles.containsKey(ngb) || ngb.prio < accessibles.get(ngb).first) {
-							accessibles.put(ngb, new Pair<>(ngb.prio, pp));
-							pq.remove(ngb);
-							pq.add(ngb);
-							// update prev
-						}
+				for (LevelState lsNbg : lvlState.getNeighbor()) {
+					// Si on vient de trouver le premier chemin vers la case
+					// ou on a trouvé un chemin plus court
+					if (!accessibles.containsKey(lsNbg) || lsNbg.getNbSteps() < accessibles.get(lsNbg).first) {
+						accessibles.put(lsNbg, new Pair<>(lsNbg.getNbSteps(), lvlState));
+						pq.remove(lsNbg);
+						pq.add(lsNbg);
+						// update prev
 					}
 				}
 			}
-			// dijkstra ends
+			// fin de dijkstra
+			// arrivé ici, soit on a notre solution, soit on a tout analysé et il n'y a pas
+			// de solution
+
+			if (lvlState.isResolved()) {
+				// on affiche la solution trouvée
+				showPath(accessibles, lvlState);
+			}
 
 			controle.jeu.metAJour();
+		}
+
+	}
+
+	private void showPath(HashMap<LevelState, Pair<Integer, LevelState>> accessibles, LevelState lvlState) {
+		Pair<Integer, LevelState> pair = accessibles.get(lvlState);
+		if (pair.first != 0) {
+			showPath(accessibles, pair.second);
+			System.out.println(Direction.getDirection(pair.second.player, lvlState.player) + ": " + lvlState.player);
+		}
+		else {
+			System.out.println("Begin: " + lvlState.player);
 		}
 	}
 

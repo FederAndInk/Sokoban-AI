@@ -98,6 +98,11 @@ public abstract class NiveauConsultable extends HistoriqueAPile<Coup> {
 		return estDedans(l, c) && !aMur(l, c) && !aCaisse(l, c);
 	}
 
+	public boolean estPoussable(int l, int c, Direction d) {
+		PriorityPoint ppPlusLoin = new PriorityPoint(c, l, 0).add(d);
+		return aCaisse(l, c) && estOccupable(ppPlusLoin.l, ppPlusLoin.c);
+	}
+
 	public int lignePousseur() {
 		return pousseurL;
 	}

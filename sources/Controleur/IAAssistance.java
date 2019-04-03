@@ -31,6 +31,9 @@ import java.util.PriorityQueue;
 import java.util.logging.Logger;
 
 import Global.Configuration;
+import Modele.Direction;
+import Modele.Pair;
+import Modele.PriorityPoint;
 
 public class IAAssistance extends IA {
 	Logger logger;
@@ -45,11 +48,6 @@ public class IAAssistance extends IA {
 	@Override
 	public void initialise() {
 		logger.info("Démarrage d'un nouveau niveau de taille " + niveau.lignes() + "x" + niveau.colonnes());
-	}
-
-	public boolean estPoussable(PriorityPoint pp, Direction d) {
-		PriorityPoint ppPlusLoin = new PriorityPoint(pp).add(d);
-		return niveau.aCaisse(pp.l, pp.c) && niveau.estOccupable(ppPlusLoin.l, ppPlusLoin.c);
 	}
 
 	@Override
@@ -90,7 +88,7 @@ public class IAAssistance extends IA {
 				}
 				for (Pair<PriorityPoint, Direction> pNgbDir : pp.getNeighbor()) {
 					PriorityPoint ngb = pNgbDir.first;
-					if (niveau.aCaisse(ngb.l, ngb.c) && estPoussable(ngb, pNgbDir.second)) {
+					if (niveau.aCaisse(ngb.l, ngb.c) && niveau.estPoussable(ngb.l, ngb.c, pNgbDir.second)) {
 						// On marque la case suivant la boite grâce à la direction
 						PriorityPoint ngbD = new PriorityPoint(ngb).add(pNgbDir.second);
 						controle.marquer(ngbD.l, ngbD.c, 2);

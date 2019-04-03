@@ -1,58 +1,30 @@
-package Controleur;
+package Modele;
 
 import java.util.ArrayList;
 
 /**
- * Pair
- */
-class Pair<T1, T2> {
-  public T1 first;
-  public T2 second;
-
-  public Pair(T1 first, T2 second) {
-    this.first = first;
-    this.second = second;
-  }
-}
-
-enum Direction {
-  LEFT(-1, 0), //
-  RIGHT(1, 0), //
-  UP(0, -1), //
-  DOWN(0, 1);//
-
-  int c;
-  int l;
-
-  Direction(int c, int l) {
-    this.c = c;
-    this.l = l;
-  }
-}
-
-/**
  * IAAssistance
  */
-class PriorityPoint {
-  int c;
-  int l;
-  Integer prio;
+public class PriorityPoint {
+  public int c;
+  public int l;
+  public Integer prio;
 
-  PriorityPoint(int c, int l, int prio) {
+  public PriorityPoint(int c, int l, int prio) {
     this.c = c;
     this.l = l;
     this.prio = prio;
   }
 
-  PriorityPoint(PriorityPoint pp) {
+  public PriorityPoint(PriorityPoint pp) {
     this.c = pp.c;
     this.l = pp.l;
     this.prio = pp.prio;
   }
 
   public PriorityPoint add(Direction d) {
-    c += d.c;
-    l += d.l;
+    c += d.dC;
+    l += d.dL;
     return this;
   }
 
@@ -87,5 +59,10 @@ class PriorityPoint {
       return c == pp.c && l == pp.l;
     }
     return false;
+  }
+
+  @Override
+  public String toString() {
+    return "(l, c) = [" + l + ", " + c + "]";
   }
 }
