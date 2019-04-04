@@ -42,21 +42,23 @@ import Modele.PriorityPoint;
  */
 class LevelState {
 	PriorityPoint player;
-	PriorityPoint box;
+	HashMap<PriorityPoint, PriorityPoint> box;
 	NiveauConsultable niv;
 
 	LevelState(NiveauConsultable niv) {
 		this.player = new PriorityPoint(niv.colonnePousseur(), niv.lignePousseur(), 0);
 		this.niv = niv;
-		this.box = getBoites();
-		Configuration.instance().logger().info("Create levelState with\n - player on: " + player + "\n - box on: " + box);
+		initBoites();
 	}
 
-	private LevelState(PriorityPoint player, PriorityPoint box, NiveauConsultable niv) {
-		this.player = player;
-		this.box = box;
-		this.niv = niv;
-		Configuration.instance().logger().info("Create levelState with\n - player on: " + player + "\n - box on: " + box);
+	public LevelState(LevelState ls) {
+		player = new PriorityPoint(ls.player);
+		box = new HashMap<>();
+		niv = ls.niv;
+		for (PriorityPoint p : ls.box.values()) {
+			PriorityPoint newP = new PriorityPoint(p);
+			box.put(newP, newP);
+		}
 	}
 
 	public Integer getNbSteps() {
@@ -64,7 +66,22 @@ class LevelState {
 	}
 
 	public boolean isResolved() {
-		return niv.aBut(box.l, box.c);
+		boolean ret = true;
+		for (PriorityPoint p : box.values()) {
+			ret = ret && niv.aBut(p.l, p.c);
+		}
+		return ret;
+	}
+
+	private void move(Direction d) {
+		player.add(d);
+		player.prio++;
+		if (isBox(player)) {
+			box.remove(player);
+			PriorityPoint newP = new PriorityPoint(player).add(d);
+			newP.prio++;
+			box.put(newP, newP);
+		}
 	}
 
 	ArrayList<LevelState> getNeighbor() {
@@ -72,14 +89,9 @@ class LevelState {
 		for (Pair<PriorityPoint, Direction> p : player.getNeighbor()) {
 			PriorityPoint pP = p.first;
 			if (isFree(pP) || (isPushable(pP, p.second))) {
-				PriorityPoint nextBox = box;
-				if (isBox(pP)) { // already pushable
-					nextBox = new PriorityPoint(box);
-					nextBox.add(p.second);
-					nextBox.prio++;
-				}
-
-				ar.add(new LevelState(p.first, nextBox, niv));
+				LevelState newLS = new LevelState(this);
+				newLS.move(p.second);
+				ar.add(newLS);
 			}
 
 		}
@@ -96,16 +108,17 @@ class LevelState {
 	}
 
 	@Override
-	// Notre fonction Hashcode permettant de hash une paire
 	public int hashCode() {
 		return player.hashCode() * 13 + box.hashCode();
 	}
 
-	private PriorityPoint getBoites() {
+	private HashMap<PriorityPoint, PriorityPoint> initBoites() {
+		box = new HashMap<>();
 		for (int l = 0; l < niv.lignes(); l++) {
 			for (int c = 0; c < niv.colonnes(); c++) {
 				if (niv.aCaisse(l, c)) {
-					return new PriorityPoint(c, l, 0);
+					PriorityPoint p = new PriorityPoint(c, l, 0);
+					box.put(p, p);
 				}
 			}
 		}
@@ -117,7 +130,7 @@ class LevelState {
 	}
 
 	private boolean isBox(PriorityPoint p) {
-		return box.equals(p);
+		return box.containsKey(p);
 	}
 
 	private boolean isFree(PriorityPoint p) {
@@ -136,10 +149,12 @@ public class IAIA extends IA {
 	ArrayList<Direction> path;
 	int currPosPath;
 	PriorityPoint lastPos;
+	int nbExplored;
 
 	public IAIA() {
 		logger = Configuration.instance().logger();
 		path = new ArrayList<>();
+		nbExplored = 0;
 	}
 
 	private PriorityPoint getPlayerPos() {
@@ -172,6 +187,7 @@ public class IAIA extends IA {
 			lvlState = pq.remove();
 
 			for (LevelState lsNbg : lvlState.getNeighbor()) {
+				nbExplored++;
 				// Si on vient de trouver le premier chemin vers la case
 				// ou on a trouvé un chemin plus court
 				if (!accessibles.containsKey(lsNbg) || lsNbg.getNbSteps() < accessibles.get(lsNbg).first) {
@@ -192,6 +208,7 @@ public class IAIA extends IA {
 			showPath(accessibles, lvlState);
 			currPosPath = 0;
 		}
+		logger.info("Nb state explored: " + nbExplored);
 	}
 
 	@Override
