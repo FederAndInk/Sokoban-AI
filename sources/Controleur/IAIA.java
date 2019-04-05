@@ -44,8 +44,10 @@ class LevelState {
 	PriorityPoint player;
 	HashMap<PriorityPoint, PriorityPoint> box;
 	NiveauConsultable niv;
+	boolean minPlayer;
 
-	LevelState(NiveauConsultable niv) {
+	LevelState(NiveauConsultable niv, boolean minPlayer) {
+		this.minPlayer = minPlayer;
 		this.player = new PriorityPoint(niv.colonnePousseur(), niv.lignePousseur(), 0);
 		this.niv = niv;
 		initBoites();
@@ -55,6 +57,7 @@ class LevelState {
 		player = new PriorityPoint(ls.player);
 		box = new HashMap<>();
 		niv = ls.niv;
+		minPlayer = ls.minPlayer;
 		for (PriorityPoint p : ls.box.values()) {
 			PriorityPoint newP = new PriorityPoint(p);
 			box.put(newP, newP);
@@ -62,13 +65,21 @@ class LevelState {
 	}
 
 	public Integer getNbSteps() {
-		return player.prio;
+		if (minPlayer) {
+			return player.prio;
+		} else {
+			int boxPrios = 0;
+			for (PriorityPoint b : box.values()) {
+				boxPrios += b.prio * niv.lignes() * niv.colonnes();
+			}
+			return player.prio + boxPrios;
+		}
 	}
 
 	public boolean isResolved() {
 		boolean ret = true;
 		for (PriorityPoint p : box.values()) {
-			ret = ret && niv.aBut(p.l, p.c);
+			ret = ret && isGoal(p);
 		}
 		return ret;
 	}
@@ -91,7 +102,9 @@ class LevelState {
 			if (isFree(pP) || (isPushable(pP, p.second))) {
 				LevelState newLS = new LevelState(this);
 				newLS.move(p.second);
-				ar.add(newLS);
+				if (newLS.isSolvable()) {
+					ar.add(newLS);
+				}
 			}
 
 		}
@@ -133,8 +146,37 @@ class LevelState {
 		return box.containsKey(p);
 	}
 
+	private boolean isWall(PriorityPoint p) {
+		return niv.aMur(p.l, p.c);
+	}
+
+	private boolean isGoal(PriorityPoint p) {
+		return niv.aBut(p.l, p.c);
+	}
+
 	private boolean isFree(PriorityPoint p) {
-		return isInBounds(p) && !niv.aMur(p.l, p.c) && !isBox(p);
+		return isInBounds(p) && !isWall(p) && !isBox(p);
+	}
+
+	private boolean isSolvable() {
+		boolean ret = true;
+		for (PriorityPoint p : box.values()) {
+			ret = ret && (isPushable(p) || isGoal(p));
+		}
+		return ret;
+	}
+
+	private boolean isPushable(PriorityPoint p) {
+		if (isBox(p)) {
+			PriorityPoint tl = new PriorityPoint(p).add(Direction.LEFT);
+			PriorityPoint tr = new PriorityPoint(p).add(Direction.RIGHT);
+			PriorityPoint tu = new PriorityPoint(p).add(Direction.UP);
+			PriorityPoint td = new PriorityPoint(p).add(Direction.DOWN);
+			boolean uord = isWall(tu) || isWall(td);
+			return !((isWall(tl) && uord) || (isWall(tr) && uord));
+		} else {
+			throw new IllegalArgumentException("no box at " + p);
+		}
 	}
 
 	private boolean isPushable(PriorityPoint p, Direction d) {
@@ -161,8 +203,7 @@ public class IAIA extends IA {
 		return new PriorityPoint(niveau.colonnePousseur(), niveau.lignePousseur(), 0);
 	}
 
-	@Override
-	public void initialise() {
+	private void find_solution() {
 		// Hashmap contenant une configuration visitée associée à sa configuration
 		// predec + la longueur pour l'atteindre
 		HashMap<LevelState, Pair<Integer, LevelState>> accessibles = new HashMap<>();
@@ -180,7 +221,7 @@ public class IAIA extends IA {
 		});
 
 		// L'origine est la position du pousseur :
-		LevelState lvlState = new LevelState(niveau);
+		LevelState lvlState = new LevelState(niveau, controle.con.f.isPlayerMin());
 		pq.add(lvlState);
 		accessibles.put(lvlState, new Pair<>(0, lvlState));
 		while (!pq.isEmpty() && (lvlState == null || !lvlState.isResolved())) {
@@ -208,17 +249,32 @@ public class IAIA extends IA {
 			showPath(accessibles, lvlState);
 			currPosPath = 0;
 		}
+		niveau.setAiInfo("Nb state explored: " + nbExplored);
 		logger.info("Nb state explored: " + nbExplored);
+	}
+
+	@Override
+	public void initialise() {
+		controle.con.f.ecouteurAIMin((e) -> {
+			controle.con.f.changeBoutonAIMin();
+			find_solution();
+		});
+
+		find_solution();
 	}
 
 	@Override
 	public void joue() {
 		if (!lastPos.equals(getPlayerPos())) {
-			initialise();
+			find_solution();
 		}
-		Direction d = path.get(currPosPath++);
-		controle.jeu.jouer(d.dL, d.dC);
-		lastPos = getPlayerPos();
+		if (currPosPath < path.size()) {
+			Direction d = path.get(currPosPath++);
+			controle.jeu.jouer(d.dL, d.dC);
+			lastPos = getPlayerPos();
+		} else {
+			niveau.setAiInfo("No solution");
+		}
 		controle.jeu.metAJour();
 	}
 
@@ -237,5 +293,6 @@ public class IAIA extends IA {
 	@Override
 	public void finalise() {
 		logger.info("Niveau terminé en " + niveau.nbPas() + " pas, et " + niveau.nbPoussees() + " Poussees !");
+		controle.con.basculeIA(false);
 	}
 }

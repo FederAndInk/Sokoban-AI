@@ -41,6 +41,7 @@ public abstract class NiveauConsultable extends HistoriqueAPile<Coup> {
 	int nbButs;
 	int nbCaissesSurBut;
 	int nbPas, nbPoussees;
+	String aiInfo;
 
 	public int lignes() {
 		return l;
@@ -125,6 +126,20 @@ public abstract class NiveauConsultable extends HistoriqueAPile<Coup> {
 
 	public int nbPoussees() {
 		return nbPoussees;
+	}
+
+	/**
+	 * @return the aiInfo
+	 */
+	public String getAiInfo() {
+		return aiInfo;
+	}
+
+	/**
+	 * @param aiInfo the aiInfo to set
+	 */
+	public void setAiInfo(String aiInfo) {
+		this.aiInfo = aiInfo;
 	}
 
 	public boolean estTermine() {

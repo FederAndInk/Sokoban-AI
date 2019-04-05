@@ -58,7 +58,10 @@ public class FenetreGraphique implements Observateur {
 	Canvas canvas;
 	GraphicsContext gc;
 	Label nbPas, nbPoussees;
+	Label nbAISteps;
 	ToggleButton IA;
+	Button AImin;
+	boolean playerMin;
 	Button prochain;
 	ToggleButton animation;
 	BoutonAnnuler annuler;
@@ -103,9 +106,19 @@ public class FenetreGraphique implements Observateur {
 		boiteTexte.getChildren().add(nbPas);
 		nbPoussees = new Label("Poussées :");
 		boiteTexte.getChildren().add(nbPoussees);
+		nbAISteps = new Label("");
+		boiteTexte.getChildren().add(nbAISteps);
 		IA = new ToggleButton("IA");
 		IA.setFocusTraversable(false);
 		boiteTexte.getChildren().add(IA);
+		AImin = new Button("Minimizing player movement");
+		AImin.setFocusTraversable(false);
+		playerMin = true;
+		ecouteurAIMin((e) -> {
+			changeBoutonAIMin();
+		});
+		changeBoutonAIMin(playerMin);
+		boiteTexte.getChildren().add(AImin);
 		animation = new ToggleButton("Animation");
 		animation.setFocusTraversable(false);
 		boiteTexte.getChildren().add(animation);
@@ -170,6 +183,10 @@ public class FenetreGraphique implements Observateur {
 		animation.setOnAction(h);
 	}
 
+	public void ecouteurAIMin(EventHandler<ActionEvent> h) {
+		AImin.setOnAction(h);
+	}
+
 	public void ecouteurProchain(EventHandler<ActionEvent> h) {
 		prochain.setOnAction(h);
 	}
@@ -186,12 +203,40 @@ public class FenetreGraphique implements Observateur {
 		IA.setSelected(value);
 	}
 
+	/**
+	 * @return the playerMin
+	 */
+	public boolean isPlayerMin() {
+		return playerMin;
+	}
+
+	public void changeBoutonAIMin() {
+		playerMin = !playerMin;
+		changeBoutonAIMin(playerMin);
+	}
+
+	/**
+	 * true: min player false: min box
+	 * 
+	 * @param value
+	 */
+	public void changeBoutonAIMin(boolean value) {
+		if (value) {
+			AImin.setText("Minimizing player movement");
+		} else {
+			AImin.setText("Minimizing box movement");
+		}
+	}
+
 	@Override
 	public void miseAJour() {
 		gc = canvas.getGraphicsContext2D();
 		vueNiveau.trace();
 		nbPas.setText("Pas :" + jeu.niveau().nbPas());
 		nbPoussees.setText("Poussées :" + jeu.niveau().nbPoussees());
+		if (jeu.niveau().getAIInfo() != null) {
+			nbAISteps.setText(jeu.niveau().getAIInfo());
+		}
 	}
 
 	double largeur() {

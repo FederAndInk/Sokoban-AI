@@ -35,6 +35,7 @@ public class Niveau extends NiveauConsultable {
 		nbButs = 0;
 		nbCaissesSurBut = 0;
 		pousseurL = pousseurC = -1;
+		aiInfo = null;
 	}
 
 	int ajuste(int cap, int objectif) {
@@ -166,5 +167,9 @@ public class Niveau extends NiveauConsultable {
 
 	public int contenu(int l, int c) {
 		return cases[l][c];
+	}
+
+	public String getAIInfo() {
+		return aiInfo;
 	}
 }
